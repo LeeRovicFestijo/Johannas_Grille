@@ -10,11 +10,12 @@ import {
   MdOutlineCurrencyExchange,
   MdOutlineGridView,
   MdOutlineLogout,
-  MdOutlineMessage,
   MdOutlinePeople,
   MdOutlineSettings,
   MdOutlineShoppingBag,
 } from "react-icons/md";
+import { CgProfile } from "react-icons/cg";
+
 import "./Sidebar.css";
 import { SidebarContext } from "../context/SidebarContext";
 
@@ -107,11 +108,11 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className="menu-item">
-              <Link to="/messages" className={`menu-link ${isActive("/messages") ? "active" : ""}`}>
+              <Link to="/profile" className={`menu-link ${isActive("/profile") ? "active" : ""}`}>
                 <span className="menu-link-icon">
-                  <MdOutlineMessage size={18} />
+                  <CgProfile size={18} />
                 </span>
-                <span className="menu-link-text">Messages</span>
+                <span className="menu-link-text">Profile</span>
               </Link>
             </li>
           </ul>

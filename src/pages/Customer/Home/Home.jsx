@@ -5,6 +5,7 @@ import ExploreMenu from '../../../components/Customer/ExploreMenu/ExploreMenu'
 import FoodDisplay from '../../../components/Customer/FoodDisplay/FoodDisplay'
 import Navbar from '../../../components/Customer/Navbar/Navbar'
 import Footer from '../../../components/Customer/Footer/Footer'
+import Carousel from '../../../components/Customer/Reservation/Carousel'
 
 const Home = () => {
   const [showLogin, setShowLogin] = useState(false)
@@ -13,11 +14,12 @@ const Home = () => {
 
   return (
     <div>
-    <Navbar setShowLogin={setShowLogin} />
+      <Navbar setShowLogin={setShowLogin} />
       {showLogin && <LoginPopUp setShowLogin={setShowLogin} />}
       <Header/>
       <ExploreMenu category={category} setCategory={setCategory}/>
       <FoodDisplay category={category}/>
+      <Carousel />
       <Footer/>
     </div>
   )
