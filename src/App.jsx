@@ -11,7 +11,7 @@ import Admin_LoginPopUp from './pages/Admin/Login/Login';
 import Order from './pages/Admin/Orders/Order'
 import Reservation from './pages/Admin/Reservation/Reservation'
 // import Dashboard from './pages/Admin/Dashboard/Dashboard';
-import BaseLayout from './pages/Admin/Layout/BaseLayout';
+import BaseLayout from './pages/Admin/Dashboard/Dashboard';
 // import FinalizeOrder from './pages/FinalizeOrder/FinalizeOrder';
 
 const App = () => {
