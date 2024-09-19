@@ -24,7 +24,7 @@
 }
 
 .item-food-card-info {
-    padding: 16px;
+    padding: 16px 0 0 0;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -39,15 +39,23 @@
     color: #666;
 }
 
-.item-btn-cart {
+.edit-delete-container {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 5px 0 0;
+}
+.edit-btn {
+    display: flex;
+    gap: 5px;
+}
+
+.edit-btn .item-btn-cart {
     background-color: #ffc107;
     color: white;
-    padding: 15px 30px;
+    padding: 15px 20px;
     border: none;
     border-radius: 50px;
     cursor: pointer;
-    font-size: 1.2rem;
-    font-weight: bold;
     margin-top: 20px;
     display: block; /* add this */
     margin: 20px auto; 

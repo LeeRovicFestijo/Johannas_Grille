@@ -22,8 +22,13 @@ const FoodItem = ({ id, name, price, description, image }) => {
       <p>{name}</p>
       {/* Add rating or other details here if needed */}
     </div>
-    <button className="btn-cart" >Add to Cart</button>
     {/* {showCart && <Cart id={id} name={name} image={image} description={description}/>}  */}
+  </div>
+  <div className="edit-delete-container">
+  <div className="edit-btn">
+  <button className="item-btn-cart" >e</button>
+  <button className="item-btn-cart" >d</button>
+  </div>
   </div>
 </div>
 

@@ -13,6 +13,7 @@ import Reservation from './pages/Admin/Reservation/Reservation'
 // import Dashboard from './pages/Admin/Dashboard/Dashboard';
 import BaseLayout from './pages/Admin/Dashboard/Dashboard';
 import Product from './pages/Admin/Product/Product';
+import Transaction from './pages/Admin/Transaction/Transaction'
 // import FinalizeOrder from './pages/FinalizeOrder/FinalizeOrder';
 
 const App = () => {
@@ -30,6 +31,7 @@ const App = () => {
           <Route path='/admin/order' element={<Order />} />
           <Route path='/admin/reservation' element={<Reservation />} />
           <Route path='/admin/product' element={<Product />} />
+          <Route path='/admin/transaction' element={<Transaction />} />
         </Routes>
       </div>
     </>

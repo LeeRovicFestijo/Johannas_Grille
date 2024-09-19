@@ -27,7 +27,7 @@ const Carousel = ({ items, autoPlayInterval = 1000 }) => {
   }, [currentIndex, autoPlayInterval]);
 
   return (
-    <div className="carousel-container">
+    <div className="carousel-container" id="reservation">
       <button className="carousel-button prev" onClick={prevSlide}>
         &#10094;
       </button>

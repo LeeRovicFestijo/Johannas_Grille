@@ -40,6 +40,9 @@ const AreaTop = () => {
 
   return (
     <section className="content-area-top">
+      {/* <div className="content-area">
+        <Header />
+      </div> */}
       <div className="area-top-l">
         <button
           className="sidebar-open-btn"
@@ -48,7 +51,7 @@ const AreaTop = () => {
         >
           <MdOutlineMenu size={24} />
         </button>
-        <h2 className="area-top-title">Dashboard</h2>
+        <h2 className="area-top-title"> Dashboard</h2>
       </div>
       <div className="area-top-r">
         <div

@@ -1,20 +1,19 @@
 import React, { useState } from 'react';
 import { IoIosCloseCircle } from "react-icons/io";
 import './ConfirmOrder.css';
+import { useNavigate } from 'react-router-dom';
 
 const ConfirmOrder = () => {
     // State to control visibility
-    const [isVisible, setIsVisible] = useState(true);
+    const navigate = useNavigate();
 
     // Function to handle closing the receipt
     const handleClose = () => {
-        setIsVisible(false);
-    };
-
-    // If not visible, return null (will remove the component from the DOM)
-    if (!isVisible) {
-        return null;
-    }
+        // Perform any logout logic here, such as clearing authentication tokens
+    
+        // Redirect to login page
+        navigate('/');
+      };
 
     return (
         <div className="receipt-container">

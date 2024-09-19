@@ -15,7 +15,6 @@ import {
   MdOutlineShoppingBag,
 } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
-
 import "./Sidebar.css";
 import { SidebarContext } from "../context/SidebarContext";
 
@@ -44,10 +43,10 @@ const Sidebar = () => {
   const isActive = (path) => location.pathname === path;  // Function to check active path
 
   return (
-    <nav
-      className={`sidebar ${isSidebarOpen ? "sidebar-show" : ""}`}
-      ref={navbarRef}
-    >
+      <nav
+        className={`sidebar ${isSidebarOpen ? "sidebar-show" : ""}`}
+        ref={navbarRef}
+      >
       <div className="sidebar-top">
         <div className="sidebar-brand">
         <img src={assets.logo} />
@@ -84,7 +83,7 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className="menu-item">
-              <Link to="/transaction" className={`menu-link ${isActive("/transaction") ? "active" : ""}`}>
+              <Link to="/admin/transaction" className={`menu-link ${isActive("/admin/transaction") ? "active" : ""}`}>
                 <span className="menu-link-icon">
                   <MdOutlineCurrencyExchange size={18} />
                 </span>
