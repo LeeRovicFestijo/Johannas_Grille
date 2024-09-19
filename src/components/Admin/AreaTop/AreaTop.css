@@ -9,7 +9,7 @@
   }
   
   .content-area-top .area-top-title {
-    color: var(--text-color-inverted);
+    color: #292929;
   }
   
   .content-area-top .area-top-l {
@@ -23,7 +23,7 @@
     align-items: center;
     display: none;
     margin-bottom: -1px;
-    color: var(--text-color-inverted);
+    color: #292929;
   }
   
   @media (max-width: 768px) {
@@ -35,7 +35,7 @@
   /* react-date-range plugin theme customization */
   .date-range-wrapper {
     display: inline-block;
-    box-shadow: var(--light-shadow1);
+    box-shadow:  rgba(0, 0, 0, 0.02) 0px 4px 12px;
   }
   
   .date-range-wrapper .rdrDateDisplay {
@@ -55,7 +55,7 @@
     position: absolute;
     top: 100%;
     width: 100%;
-    background-color: var(--light-color);
+    background-color: #ffffff;
     padding-top: 0;
     height: 40px;
     z-index: 1;
@@ -71,7 +71,7 @@
     top: calc(100% + 40px);
     left: 0;
     width: 100%;
-    background-color: var(--light-color);
+    background-color: #ffffff;
     height: 32px;
     z-index: 1;
   }
@@ -81,7 +81,7 @@
     top: calc(100% + 40px + 32px);
     left: 0;
     width: 100%;
-    background-color: var(--light-color);
+    background-color: #ffffff;
     z-index: 1;
   }
   
@@ -99,16 +99,16 @@
   }
   
   .date-range-wrapper .rdrDateDisplayWrapper {
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-color);
-    outline: var(--secondary-color);
+    background-color: #fff;
+    border-color: #fff;
+    outline: #fff;
   }
   
   .date-range-wrapper .rdrDateDisplayWrapper * {
-    background-color: var(--secondary-color);
-    border-color: var(--secondary-color);
-    outline: var(--secondary-color);
+    background-color: #fff;
+    border-color: #fff;
+    outline: #fff;
     box-shadow: none;
-    color: var(--base-text-color);
+    color: #676767;
   }
   

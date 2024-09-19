@@ -26,3 +26,29 @@
     transform: rotate(360deg);
   }
 }
+
+@media (max-width: 1400px) {
+  .content-wrapper {
+    padding: 32px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .content-wrapper {
+    margin-left: 56px;
+  }
+}
+
+@media (max-width: 768px) {
+  .content-wrapper {
+    margin-left: 0;
+    padding: 24px;
+  }
+}
+
+@media (max-width: 576px) {
+  .content-wrapper {
+    margin-left: 0;
+    padding: 16px;
+  }
+}

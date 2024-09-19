@@ -14,6 +14,7 @@ import Reservation from './pages/Admin/Reservation/Reservation'
 import BaseLayout from './pages/Admin/Dashboard/Dashboard';
 import Product from './pages/Admin/Product/Product';
 import Transaction from './pages/Admin/Transaction/Transaction'
+import Profile from './pages/Admin/Profile/Profile'
 // import FinalizeOrder from './pages/FinalizeOrder/FinalizeOrder';
 
 const App = () => {
@@ -32,6 +33,7 @@ const App = () => {
           <Route path='/admin/reservation' element={<Reservation />} />
           <Route path='/admin/product' element={<Product />} />
           <Route path='/admin/transaction' element={<Transaction />} />
+          <Route path='/admin/profile' element={<Profile />} />
         </Routes>
       </div>
     </>
