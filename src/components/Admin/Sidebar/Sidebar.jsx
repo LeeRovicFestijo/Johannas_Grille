@@ -92,7 +92,7 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className="menu-item">
-              <Link to="/product" className={`menu-link ${isActive("/product") ? "active" : ""}`}>
+              <Link to="/admin/product" className={`menu-link ${isActive("/admin/product") ? "active" : ""}`}>
                 <span className="menu-link-icon">
                   <MdOutlineShoppingBag size={20} />
                 </span>
