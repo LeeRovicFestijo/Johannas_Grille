@@ -99,16 +99,14 @@
   }
   
   .date-range-wrapper .rdrDateDisplayWrapper {
-    background-color: #fff;
-    border-color: #fff;
-    outline: #fff;
+    background-color: #fafafa;
+    border-color: #fafafa;
+    outline: #ffffff;
   }
   
   .date-range-wrapper .rdrDateDisplayWrapper * {
-    background-color: #fff;
-    border-color: #fff;
-    outline: #fff;
-    box-shadow: none;
-    color: #676767;
+    background-color: #fafafa;
+    border-color: #fafafa;
+    outline: #ffffff;
   }
   

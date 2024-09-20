@@ -15,6 +15,7 @@ import BaseLayout from './pages/Admin/Dashboard/Dashboard';
 import Product from './pages/Admin/Product/Product';
 import Transaction from './pages/Admin/Transaction/Transaction'
 import Profile from './pages/Admin/Profile/Profile'
+import Customer from './pages/Admin/User/Users'
 // import FinalizeOrder from './pages/FinalizeOrder/FinalizeOrder';
 
 const App = () => {
@@ -34,6 +35,7 @@ const App = () => {
           <Route path='/admin/product' element={<Product />} />
           <Route path='/admin/transaction' element={<Transaction />} />
           <Route path='/admin/profile' element={<Profile />} />
+          <Route path='/admin/customer' element={<Customer />} />
         </Routes>
       </div>
     </>
