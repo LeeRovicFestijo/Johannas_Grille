@@ -179,10 +179,6 @@
     flex-direction: column;
     justify-content: space-between;
   }
-  
-  .sidebar .sidebar-menu2 {
-    margin-top: auto;
-  }
 
   ul {
     list-style-type: none;

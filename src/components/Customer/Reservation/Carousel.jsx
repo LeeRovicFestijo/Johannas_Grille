@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './Carousel.css';
-import image1 from '../../../assets/Ribs.png';
-import image2 from '../../../assets/Crispy.png';
-import image3 from '../../../assets/Salmon.png';
+import image1 from '../../../assets/BA1.jpg';
+import image2 from '../../../assets/BA2.jpg';
+import image4 from '../../../assets/B1.jpg';
+import image5 from '../../../assets/B2.jpg';
+
 
 const Carousel = ({ items, autoPlayInterval = 1000 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -64,16 +66,23 @@ const items = [
     description: "This is the second slide"
   },
   {
-    image: image3,
-    title: "Slide 3",
+    image: image4,
+    title: "Slide 4",
     description: "This is the third slide"
-  }
+  },
+  {
+    image: image5,
+    title: "Slide 5",
+    description: "This is the fourth slide"
+  },
 ];
 
 const App = () => {
   return (
-    <div>
-      <h1>React Carousel Example</h1>
+    <div className='branch-name'>
+      < hr/>
+      <h1>Batangas Branch</h1>
+      < hr/>
       <Carousel items={items} autoPlayInterval={2000} />
     </div>
   );

@@ -15,6 +15,13 @@ import logout_icon from './logout_icon.png'
 import parcel_icon from './parcel_icon.png'
 import play_store from './play_store.png'
 import app_store from './app_store.png'
+import ba1 from './B1.jpg'
+import ba2 from './B2.jpg'
+import ba3 from './B3.jpg'
+import b1 from './BA1.jpg'
+import b2 from './BA2.jpg'
+import b3 from './BA3.jpg'
+
 
 import menu from './menu.png'
 import menu_1 from './Ribs.png'
@@ -59,7 +66,9 @@ export const assets = {
     app_store,
     parcel_icon,
     menu_3,
-    menu_1
+    menu_1,
+    b1, b2, b3,
+    ba1, ba2, ba3
 }
 
 export const menu_list = [

@@ -61,7 +61,7 @@ const AddToCart = () => {
       <div className="addtocart-container">
         <header className="addtocart-header">
           <i className="back-arrow" onClick={handleClose}>
-            <IoIosArrowBack size={33} />
+            <IoIosArrowBack size={30} />
           </i>
           <h2>My Cart</h2>
 
@@ -76,10 +76,10 @@ const AddToCart = () => {
         </header>
 
         <section className="addtocart-branch">
-          <i className="location-icon"><TbBrandGoogleMaps size={33} /></i>
+          <i className="location-icon"><TbBrandGoogleMaps size={31} /></i>
           <span>{selectedBranch}</span>
           <i className="down-icon" onClick={toggleDropdown}>
-            {isDropdownOpen ? <IoIosArrowUp size={30} /> : <IoIosArrowDown size={30} />}
+            {isDropdownOpen ? <IoIosArrowUp size={28} /> : <IoIosArrowDown size={28} />}
           </i>
         </section>
 
@@ -113,6 +113,12 @@ const AddToCart = () => {
                 <i className="quantity-btn" onClick={() => changeQuantity('salmon', 1)}><IoMdAdd /></i>
               </div>
             </div>
+          </div>
+        </div>
+
+        <div className="cart-add-ons">
+          <div className="cart-add-ons-item">
+            
           </div>
         </div>
 

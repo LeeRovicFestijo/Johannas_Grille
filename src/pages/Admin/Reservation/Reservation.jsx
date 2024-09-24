@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import Sidebar from "../../../components/Admin/Sidebar/Sidebar";
 import OrderAction from "../../../components/Admin/Reservation/ReservationEdit"; // Import the OrderAction component
 import "./Reservation.css";
 
+// Define table headers
 const TABLE_HEADS = [
   "Name",
   "Phone",
@@ -15,6 +16,7 @@ const TABLE_HEADS = [
   "Action",
 ];
 
+// Table data (can come from API)
 const TABLE_DATA = [
   {
     id: 100,
@@ -42,14 +44,50 @@ const TABLE_DATA = [
 ];
 
 const Orders = () => {
+  // State to manage the visibility of the edit popup form
+  const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
+  // State to manage the visibility of the delete confirmation popup
+  const [isDeletePopupOpen, setIsDeletePopupOpen] = useState(false);
+  // State to hold the item being edited or deleted
+  const [currentItem, setCurrentItem] = useState(null);
+
+  // Function to handle "edit" action
   const handleEdit = (item) => {
-    console.log("Editing item: ", item);
-    // Add logic to handle editing
+    setCurrentItem(item); // Set the item being edited
+    setIsEditPopupOpen(true); // Open the edit popup form
   };
 
+  // Function to handle "delete" action
   const handleDelete = (item) => {
-    console.log("Deleting item: ", item);
-    // Add logic to handle deletion
+    setCurrentItem(item); // Set the item being deleted
+    setIsDeletePopupOpen(true); // Open the delete confirmation popup
+  };
+
+  // Function to close the edit popup
+  const closeEditPopup = () => {
+    setIsEditPopupOpen(false);
+    setCurrentItem(null); // Clear the current item after closing
+  };
+
+  // Function to close the delete popup
+  const closeDeletePopup = () => {
+    setIsDeletePopupOpen(false);
+    setCurrentItem(null); // Clear the current item after closing
+  };
+
+  // Function to handle delete confirmation
+  const confirmDelete = () => {
+    console.log("Item deleted:", currentItem);
+    // Add your deletion logic here (e.g., API call to delete the item)
+    closeDeletePopup(); // Close the delete popup after deletion
+  };
+
+  // Function to handle form submit for editing
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+    console.log("Edited Item:", currentItem);
+    // Here you can make an API call to save the edited changes
+    closeEditPopup(); // Close the edit popup after saving
   };
 
   return (
@@ -98,6 +136,119 @@ const Orders = () => {
             </table>
           </div>
         </section>
+
+        {/* Edit Popup Form */}
+        {isEditPopupOpen && (
+          <div className="popup-overlay">
+            <div className="popup-form">
+              <h2>Edit Reservation</h2>
+              <form onSubmit={handleEditSubmit}>
+                <div className="form-group">
+                  <label htmlFor="name">Name</label>
+                  <input
+                    type="text"
+                    id="name"
+                    value={currentItem?.name || ""}
+                    onChange={(e) =>
+                      setCurrentItem({ ...currentItem, name: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="phone">Phone</label>
+                  <input
+                    type="text"
+                    id="phone"
+                    value={currentItem?.phone || ""}
+                    onChange={(e) =>
+                      setCurrentItem({ ...currentItem, phone: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="email">Email</label>
+                  <input
+                    type="email"
+                    id="email"
+                    value={currentItem?.email || ""}
+                    onChange={(e) =>
+                      setCurrentItem({ ...currentItem, email: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="branch">Branch</label>
+                  <input
+                    type="text"
+                    id="branch"
+                    value={currentItem?.branch || ""}
+                    onChange={(e) =>
+                      setCurrentItem({ ...currentItem, branch: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="status">Status</label>
+                  <select
+                    id="status"
+                    value={currentItem?.status || ""}
+                    onChange={(e) =>
+                      setCurrentItem({ ...currentItem, status: e.target.value })
+                    }
+                    required
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="canceled">Canceled</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="amount">Amount</label>
+                  <input
+                    type="number"
+                    id="amount"
+                    value={currentItem?.amount || ""}
+                    onChange={(e) =>
+                      setCurrentItem({ ...currentItem, amount: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+                <div className="form-actions">
+                  <button type="submit" className="save-btn">
+                    Save
+                  </button>
+                  <button type="button" className="cancel-btn" onClick={closeEditPopup}>
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Delete Confirmation Popup */}
+        {isDeletePopupOpen && (
+          <div className="popup-overlay">
+            <div className="popup-form">
+              <h2>Delete Order</h2>
+              <p>Are you sure you want to delete this order?</p>
+              <p><strong>Order ID: {currentItem?.id}</strong></p>
+              <div className="form-actions">
+                <button type="button" className="cancel-btn" onClick={closeDeletePopup}>
+                  Cancel
+                </button>
+                <button type="button" className="delete-confirm-btn" onClick={confirmDelete}>
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </main>
   );

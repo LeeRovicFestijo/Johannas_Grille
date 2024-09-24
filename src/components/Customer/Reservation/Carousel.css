@@ -27,14 +27,23 @@
   z-index: 1;
 }
 
+.branch-name h1 {
+  display: flex;
+  font-size: 25px;
+  justify-content: center;
+}
+
+.branch-name hr {
+  margin: 10px 0px;
+  height: 2px;
+  background-color: #e2e2e2;
+  border: none;
+}
+
 .carousel-button.prev {
   left: 0;
 }
 
 .carousel-button.next {
   right: 0;
-}
-
-h3, p {
-  text-align: center;
 }

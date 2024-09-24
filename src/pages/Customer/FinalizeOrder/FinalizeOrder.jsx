@@ -50,7 +50,7 @@ const FinalizeOrder = () => {
           <p>Total</p>
           <p>P745.00</p>
         </div>
-        <div className="bott">
+        <div className="fin-bott">
           <button className="finalize-btn" onClick={handleClick}>CONFIRM ORDER</button>
           {showReceipt && <ConfirmOrder />} 
         </div>

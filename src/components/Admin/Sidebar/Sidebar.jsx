@@ -117,27 +117,6 @@ const Sidebar = () => {
             </li>
           </ul>
         </div>
-
-        <div className="sidebar-menu sidebar-menu2">
-          <ul className="menu-list">
-            <li className="menu-item">
-              <Link to="/settings" className={`menu-link ${isActive("/settings") ? "active" : ""}`}>
-                <span className="menu-link-icon">
-                  <MdOutlineSettings size={20} />
-                </span>
-                <span className="menu-link-text">Settings</span>
-              </Link>
-            </li>
-            <li className="menu-item">
-              <Link to="/logout" className={`menu-link ${isActive("/logout") ? "active" : ""}`}>
-                <span className="menu-link-icon">
-                  <MdOutlineLogout size={20} />
-                </span>
-                <span className="menu-link-text">Logout</span>
-              </Link>
-            </li>
-          </ul>
-        </div>
       </div>
     </nav>
   );

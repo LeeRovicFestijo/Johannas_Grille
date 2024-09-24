@@ -10,13 +10,15 @@ import ConfirmOrder from './pages/Customer/ConfirmOrder/ConfirmOrder';
 import Admin_LoginPopUp from './pages/Admin/Login/Login';
 import Order from './pages/Admin/Orders/Order'
 import Reservation from './pages/Admin/Reservation/Reservation'
-// import Dashboard from './pages/Admin/Dashboard/Dashboard';
 import BaseLayout from './pages/Admin/Dashboard/Dashboard';
 import Product from './pages/Admin/Product/Product';
 import Transaction from './pages/Admin/Transaction/Transaction'
 import Profile from './pages/Admin/Profile/Profile'
 import Customer from './pages/Admin/User/Users'
-// import FinalizeOrder from './pages/FinalizeOrder/FinalizeOrder';
+import Employee_Dashboard from './pages/Employee/Dashboard/Dashboard';
+import OrderHistory from './pages/Employee/OrderHistory/OrderHistory'
+import Statistics from './pages/Employee/Statistics/Statistics'
+import ProductList from './pages/Employee/Product/Product'
 
 const App = () => {
   return (
@@ -36,6 +38,10 @@ const App = () => {
           <Route path='/admin/transaction' element={<Transaction />} />
           <Route path='/admin/profile' element={<Profile />} />
           <Route path='/admin/customer' element={<Customer />} />
+          <Route path='/employee/dashboard' element={<Employee_Dashboard />} />
+          <Route path='/employee/orderhistory' element={<OrderHistory />} />
+          <Route path='/employee/statistics' element={<Statistics />} />
+          <Route path='/employee/product' element={<ProductList />} />
         </Routes>
       </div>
     </>

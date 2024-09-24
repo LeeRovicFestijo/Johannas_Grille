@@ -24,7 +24,7 @@ const Admin_LoginPopUp = ({ setShowLogin }) => {
         if (data.role === 'admin') {
           navigate('/admin/dashboard'); // Admin dashboard
         } else {
-          navigate('/'); // Customer homepage
+          navigate('/employee/dashboard'); // Customer homepage
         }
       } else {
         alert(data.message); // Display error message if login fails

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { CgMoreVerticalAlt } from "react-icons/cg";
 import { useNavigate } from 'react-router-dom';
+import { CgProfile } from "react-icons/cg";
 import './Header.css'; // Import the new CSS file
+
 
 function Header({ text }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -31,17 +33,11 @@ function Header({ text }) {
       <h1>{text}</h1>
       <div className="profile-container">
         <div className="profile-info">
-          <div className="name">Candor, Valerie Myca L.</div>
+          <div className="name">Admin</div>
           <div className="role">Administrator</div>
         </div>
-        <img
-          loading="lazy"
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/734201e55d4fb723c84ea91e8101c53f5dea06defe30783025a534621eabbcb6?placeholderIfAbsent=true&apiKey=f5640191d60f45f28ab9a480644a186e"
-          alt="Administrator profile"
-          className="profile-image"
-        />
         <div className="dropdown">
-          <CgMoreVerticalAlt size={20} className="cursor-pointer" onClick={toggleDropdown} />
+        <i className="profile-image" onClick={toggleDropdown} >{<CgProfile size={40}/>}</i>
           {isDropdownOpen && (
             <div className="dropdown-content">
               <ul>

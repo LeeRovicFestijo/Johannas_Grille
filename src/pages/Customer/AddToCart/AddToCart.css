@@ -34,7 +34,7 @@
   }
   
   .addtocart-header h2 {
-    font-size: 30px;
+    font-size: 25px;
     font-weight: bold;
     text-align: center;
     padding-left: 50px;
@@ -62,12 +62,6 @@
     color: #333;
   }
   
-  .addtocart-items {
-    margin: 20px 0;
-    flex-grow: 1; /* Allow items section to grow and take space */
-    overflow-y: auto; /* Add scrolling if necessary */
-  }
-  
   .bott {
     margin-top: 20px;
     display: flex;
@@ -86,8 +80,8 @@
   }
   
   .addtocart-item-image {
-    width: 80px;
-    height: 75px;
+    width: 86px;
+    height: 68px;
     border-radius: 10px;
     margin-right: 10px;
   }
@@ -97,12 +91,12 @@
   }
   
   .addtocart-item-details p {
-    font-size: 16px;
+    font-size: 14px;
     margin: 0;
   }
   
   .addtocart-item-details span {
-    font-size: 14px;
+    font-size: 13px;
     color: #999;
   }
   
@@ -126,11 +120,7 @@
     margin: 0 10px;
     font-size: 16px;
   }
-  
-  .addtocart-summary {
-    margin: 20px 0;
-  }
-  
+
   .summary-item {
     display: flex;
     justify-content: space-between; /* Distributes the label and value across the line */
@@ -277,6 +267,7 @@
 .toggle-text span {
   flex: 1;
   text-align: center;
+  font-size: 13px;
 }
 
 /* Toggle Button */

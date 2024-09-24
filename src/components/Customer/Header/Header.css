@@ -22,7 +22,7 @@
     font-weight: 500;
     color: white;
     font-size: max(4vw,22px);
-    text-shadow: 5px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .header-contents p {
