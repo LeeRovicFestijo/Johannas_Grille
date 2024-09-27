@@ -9,7 +9,7 @@ import LoginPopUp from './pages/Customer/Login/Login';
 import ConfirmOrder from './pages/Customer/ConfirmOrder/ConfirmOrder';
 import Admin_LoginPopUp from './pages/Admin/Login/Login';
 import Order from './pages/Admin/Orders/Order'
-import Reservation from './pages/Admin/Reservation/Reservation'
+import Reservation from './pages/Employee/Reservation/Reservation'
 import BaseLayout from './pages/Admin/Dashboard/Dashboard';
 import Product from './pages/Admin/Product/Product';
 import Transaction from './pages/Admin/Transaction/Transaction'
@@ -33,7 +33,6 @@ const App = () => {
           <Route path='/admin/login' element={<Admin_LoginPopUp />} />
           <Route path='/admin/dashboard' element={<BaseLayout />} />
           <Route path='/admin/order' element={<Order />} />
-          <Route path='/admin/reservation' element={<Reservation />} />
           <Route path='/admin/product' element={<Product />} />
           <Route path='/admin/transaction' element={<Transaction />} />
           <Route path='/admin/profile' element={<Profile />} />
@@ -42,6 +41,7 @@ const App = () => {
           <Route path='/employee/orderhistory' element={<OrderHistory />} />
           <Route path='/employee/statistics' element={<Statistics />} />
           <Route path='/employee/product' element={<ProductList />} />
+          <Route path='/employee/reservation' element={<Reservation />} />
         </Routes>
       </div>
     </>

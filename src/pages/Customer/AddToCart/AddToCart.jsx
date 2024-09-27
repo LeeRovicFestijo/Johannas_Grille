@@ -21,6 +21,13 @@ const AddToCart = () => {
     salmon: 1,
   });
 
+  // State for add-ons
+  const [addons, setAddons] = useState({
+    extraRice: false,
+    drinks: false,
+    salad: false,
+  });
+
   const handleClick = () => {
     console.log("Finalize Order button clicked");
     setShowOrder(true);
@@ -52,9 +59,18 @@ const AddToCart = () => {
     });
   };
 
+  // Function to handle add-ons selection
+  const handleAddonChange = (addon) => {
+    setAddons((prevAddons) => ({
+      ...prevAddons,
+      [addon]: !prevAddons[addon],
+    }));
+  };
+
   if (!isVisible) {
     return null;
   }
+
 
   return (
     <div className="addtocart">
@@ -116,9 +132,38 @@ const AddToCart = () => {
           </div>
         </div>
 
+        {/* Add-ons Section */}
         <div className="cart-add-ons">
-          <div className="cart-add-ons-item">
-            
+          <h3>Add-ons</h3>
+          <div className="addon-option">
+            <label>
+              <input
+                type="checkbox"
+                checked={addons.extraRice}
+                onChange={() => handleAddonChange('extraRice')}
+              />
+              Extra Rice (P20)
+            </label>
+          </div>
+          <div className="addon-option">
+            <label>
+              <input
+                type="checkbox"
+                checked={addons.drinks}
+                onChange={() => handleAddonChange('drinks')}
+              />
+              Drinks (P50)
+            </label>
+          </div>
+          <div className="addon-option">
+            <label>
+              <input
+                type="checkbox"
+                checked={addons.salad}
+                onChange={() => handleAddonChange('salad')}
+              />
+              Salad (P100)
+            </label>
           </div>
         </div>
 
@@ -131,7 +176,19 @@ const AddToCart = () => {
           )}
           <div className="summary-item">
             <p className="summary-label">{isDelivery ? "Total" : "Total Amount"}</p>
-            <p className="summary-value">P{isDelivery ? (350 * quantities.ribs + 395 * quantities.salmon + 50) : (350 * quantities.ribs + 395 * quantities.salmon)}.00</p>
+            <p className="summary-value">
+              P
+              {isDelivery
+                ? (350 * quantities.ribs + 395 * quantities.salmon + 50 +
+                   (addons.extraRice ? 20 : 0) +
+                   (addons.drinks ? 50 : 0) +
+                   (addons.salad ? 100 : 0))
+                : (350 * quantities.ribs + 395 * quantities.salmon +
+                   (addons.extraRice ? 20 : 0) +
+                   (addons.drinks ? 50 : 0) +
+                   (addons.salad ? 100 : 0))
+              }.00
+            </p>
           </div>
         </div>
 

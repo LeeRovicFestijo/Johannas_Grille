@@ -1,33 +1,120 @@
-.admin-explore-menu {
+/* Menu.css */
+
+/* The main menu container */
+.admin-product-menu {
   display: flex;
   flex-direction: column;
 }
 
-.admin-explore-menu h1 {
+/* Heading styles */
+.admin-product-menu h1 {
   color: #262626;
   font-weight: 500;
 }
 
-.admin-explore-menu-text {
+/* Description text style */
+.admin-product-menu-description {
   max-width: 60%;
-  columns: #808080;
+  color: #808080;
 }
 
-.admin-explore-menu-list {
+/* Add products button */
+.admin-add-product-button {
+  position: absolute; /* Change to absolute for positioning */
+  right: 20px; /* Distance from the right edge of the page */
+  padding: 10px 20px;
+  background-color: #740003; /* Dark background */
+  color: white; /* White text */
+  border: none; /* No border */
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  margin-right: 50px;
+}
+
+.admin-add-product-button:hover {
+  background-color: #ffc107; /* Darker color on hover */
+}
+
+/* The popup form */
+.admin-popup-form {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* Dark background for modal effect */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.admin-popup-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.admin-popup-content h2 {
+  margin-bottom: 20px;
+}
+
+/* Form styles */
+.admin-popup-content form {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-popup-content label {
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.admin-popup-input {
+  margin-bottom: 15px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Button styles */
+.admin-popup-button {
+  padding: 10px 15px;
+  background-color: #4CAF50; /* Green background */
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 10px; /* Space above buttons */
+}
+
+.admin-popup-button.cancel {
+  background-color: #f44336; /* Red for cancel button */
+}
+
+.admin-popup-button:hover {
+  opacity: 0.8;
+}
+
+/* Styles for the product menu list */
+.admin-product-menu-list {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 30px;
   text-align: center;
-  margin: 20px 0px;
+  margin: 20px 0;
   overflow-x: scroll;
 }
 
-.admin-explore-menu-list::-webkit-scrollbar {
+.admin-product-menu-list::-webkit-scrollbar {
   display: none;
 }
 
-.admin-explore-menu-list-item img {
+.admin-product-menu-item img {
   width: 7.5vw;
   min-width: 80px;
   cursor: pointer;
@@ -35,27 +122,27 @@
   transition: 0.2s;
 }
 
-.admin-explore-menu-list-item p {
+.admin-product-menu-item p {
   margin-top: 10px;
   color: #000000;
-  font-size: max(1.4vw,10px);
+  font-size: max(1.4vw, 10px);
   cursor: pointer;
 }
 
-.admin-explore-menu hr {
-  margin: 10px 0px;
+.admin-product-menu hr {
+  margin: 10px 0;
   height: 2px;
   background-color: #e2e2e2;
   border: none;
 }
 
-.admin-explore-menu-list-item .active {
+.admin-product-menu-item .active {
   border: 4px solid tomato;
   padding: 2px;
 }
 
-@media (max-width:1050px) {
-  .admin-explore-menu-text{
+@media (max-width: 1050px) {
+  .admin-product-menu-description {
     max-width: 100%;
     font-size: 14px;
   }

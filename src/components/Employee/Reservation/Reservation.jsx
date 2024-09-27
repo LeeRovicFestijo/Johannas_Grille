@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import Sidebar from "../../../components/Admin/Sidebar/Sidebar";
-import OrderAction from "../../../components/Admin/Reservation/ReservationEdit"; // Import the OrderAction component
+import Sidebar from "../Sidebar/Sidebar";
+import OrderAction from "./ReservationEdit"; // Import the OrderAction component
 import "./Reservation.css";
 
 // Define table headers

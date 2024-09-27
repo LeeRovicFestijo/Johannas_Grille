@@ -76,14 +76,6 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className="menu-item">
-              <Link to="/admin/reservation" className={`menu-link ${isActive("/admin/reservation") ? "active" : ""}`}>
-                <span className="menu-link-icon">
-                  <MdOutlineAttachMoney size={20} />
-                </span>
-                <span className="menu-link-text">Reservation</span>
-              </Link>
-            </li>
-            <li className="menu-item">
               <Link to="/admin/transaction" className={`menu-link ${isActive("/admin/transaction") ? "active" : ""}`}>
                 <span className="menu-link-icon">
                   <MdOutlineCurrencyExchange size={18} />
