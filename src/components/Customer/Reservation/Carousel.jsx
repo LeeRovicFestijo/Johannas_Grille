@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import './Carousel.css';
+import './ReservationForm.css'; // Import CSS for the reservation form
 import image1 from '../../../assets/BA1.jpg';
 import image2 from '../../../assets/BA2.jpg';
 import image4 from '../../../assets/B1.jpg';
 import image5 from '../../../assets/B2.jpg';
-
+import ReservationForm from "../../../components/Customer/Reservation/ReservationForm";
 
 const Carousel = ({ items, autoPlayInterval = 1000 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isModalOpen, setModalOpen] = useState(false); // State to control modal visibility
 
   const prevSlide = () => {
     const newIndex = currentIndex === 0 ? items.length - 1 : currentIndex - 1;
@@ -49,6 +51,18 @@ const Carousel = ({ items, autoPlayInterval = 1000 }) => {
       <button className="carousel-button next" onClick={nextSlide}>
         &#10095;
       </button>
+
+      {/* Reserve Now Button */}
+      <div className="reserve-button-container">
+        <button className="reserve-now-button" onClick={() => setModalOpen(true)}>
+          Reserve Event Now!
+        </button>
+      </div>
+
+      {/* Modal for Reservation Form */}
+      {isModalOpen && (
+        <ReservationForm onClose={() => setModalOpen(false)} />
+      )}
     </div>
   );
 };
@@ -80,9 +94,9 @@ const items = [
 const App = () => {
   return (
     <div className='branch-name'>
-      < hr/>
+      <hr />
       <h1>Batangas Branch</h1>
-      < hr/>
+      <hr />
       <Carousel items={items} autoPlayInterval={2000} />
     </div>
   );

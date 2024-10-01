@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import AddToCart from '../../../pages/Customer/AddToCart/AddToCart';
 import Login from '../../../pages/Customer/Login/Login'
 import { FiShoppingCart } from "react-icons/fi";
-import { IoSearchSharp } from "react-icons/io5";
 
 
 const Navbar = ( ) => {
@@ -33,7 +32,6 @@ const Navbar = ( ) => {
         <a href='#footer'onClick={()=>setMenu("contact us")}className={menu==="contact us"?"active":""}>CONTACT US</a>
       </ul>
       <div className="navbar-right">
-        <i className="nav-search">{<IoSearchSharp size={28}/>}</i>
         <div className="navbar-search-icon">
           <i onClick={handleCartClick} className='nav'>{<FiShoppingCart size={26}/>}</i>
           {showaddCart && <AddToCart />}

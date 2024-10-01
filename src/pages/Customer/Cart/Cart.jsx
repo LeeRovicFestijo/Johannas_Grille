@@ -7,6 +7,7 @@ import { LuMinusCircle } from "react-icons/lu";
 
 function Cart ({ id, name }) {
   const [isVisible, setIsVisible] = useState(true);
+  const [quantity, setQuantity] = useState(1); // State for tracking quantity
 
   const foodItem = food_list.find(item => item.name === name);
   const description = foodItem ? foodItem.description : '';
@@ -23,6 +24,16 @@ function Cart ({ id, name }) {
     setIsVisible(false);  // Hide the cart
   };
 
+  const handleIncrement = () => {
+    setQuantity(prevQuantity => prevQuantity + 1); // Increment the quantity
+  };
+
+  const handleDecrement = () => {
+    if (quantity > 1) {
+      setQuantity(prevQuantity => prevQuantity - 1); // Decrement the quantity
+    }
+  };
+
   if (!isVisible) {
     return null; // Don't render the cart if it's not visible
   }
@@ -32,7 +43,7 @@ function Cart ({ id, name }) {
       <div className="cart-container-content">
         <div className="close">
           <button className="close-button" onClick={handleClose}>
-            <IoIosCloseCircle size={25}/>
+            <IoIosCloseCircle size={25} />
           </button>
         </div>
 
@@ -96,9 +107,13 @@ function Cart ({ id, name }) {
 
         <div className="quantity-control">
           <div className="quantity-button">
-            <i className="decrement"><LuMinusCircle size={25}/></i>
-            <span className="quantity">1</span>
-            <i className="increment"><MdAddCircleOutline size={25}/></i>
+            <i className="decrement" onClick={handleDecrement}>
+              <LuMinusCircle size={25} />
+            </i>
+            <span className="quantity">{quantity}</span>
+            <i className="increment" onClick={handleIncrement}>
+              <MdAddCircleOutline size={25} />
+            </i>
           </div>
           <button className="add-to-cart">ADD TO CART</button>
         </div>

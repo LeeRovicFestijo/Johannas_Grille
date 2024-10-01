@@ -96,7 +96,7 @@ const Sidebar = () => {
                 <span className="menu-link-icon">
                   <MdOutlinePeople size={20} />
                 </span>
-                <span className="menu-link-text">Customer</span>
+                <span className="menu-link-text">Users</span>
               </Link>
             </li>
             <li className="menu-item">
@@ -106,6 +106,15 @@ const Sidebar = () => {
                 </span>
                 <span className="menu-link-text">Profile</span>
               </Link>
+            </li>
+          </ul>
+        </div>
+        <div className="sidebar-menu em-sidebar-menu2">
+          <ul className="menu-list">
+            <li className="menu-item">
+              <div className="menu-link"> 
+                <span className="menu-link-text">Branch: Batangas City</span>
+              </div>
             </li>
           </ul>
         </div>

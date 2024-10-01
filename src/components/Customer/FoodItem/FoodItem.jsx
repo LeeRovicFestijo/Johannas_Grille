@@ -9,7 +9,11 @@ const FoodItem = ({ id, name, price, description, image }) => {
   const [showCart, setShowCart] = useState(false); // Initialize a state to track whether to show the cart
   
   const handleClick = () => {
-    setShowCart(true); // Set showCart to true when the button is clicked
+    setShowCart(false); // Set showCart to true when the button is clicked
+
+    setTimeout(() => {
+      setShowCart(true);
+    }, 0);
   };
 
   return (

@@ -1,8 +1,18 @@
 import React, { useState } from 'react';
 import './Login.css';
+import { IoIosCloseCircle } from "react-icons/io";
 
-const LoginPopUp = ({ setShowLogin }) => {
+const LoginPopUp = () => {
   const [currState, setCurrState] = useState("Sign Up");
+  const [isVisible, setIsVisible] = useState(true);
+
+  const handleClose = () => {
+    setIsVisible(false);
+  };
+
+  if (!isVisible) {
+    return null;
+  }
 
   return (
     <div className='login-popup'>
@@ -16,7 +26,7 @@ const LoginPopUp = ({ setShowLogin }) => {
           )}
         </div>
         <div className="login-popup-right">
-          <span className="login-popup-close" onClick={() => setShowLogin(false)}>&times;</span>
+          <span className="login-popup-close" onClick={handleClose}><IoIosCloseCircle size={25} /></span>
           <h2>{currState}</h2>
           {currState === "Sign Up" && <input type="text" placeholder='Name' required />}
           <input type="email" placeholder='Email' required />
