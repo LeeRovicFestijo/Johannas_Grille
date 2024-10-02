@@ -5,7 +5,7 @@ const { Pool } = require('pg');
 
 // Initialize express app
 const app = express();
-const port = 5000;
+const port = 3000;
 
 // Middleware
 app.use(cors());
@@ -15,51 +15,44 @@ app.use(bodyParser.json());
 const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
-  database: 'johannasgrille',
+  database: 'johannasdb',
   password: 'password',
   port: 5432, // Default PostgreSQL port
 });
 
 // Endpoint for Sign Up
-app.post('/signup', async (req, res) => {
-  const { name, email, password, address } = req.body;
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
 
   try {
-    const result = await pool.query(
-      'INSERT INTO users (name, email, password, address) VALUES ($1, $2, $3, $4) RETURNING *',
-      [name, email, password, address]
-    );
-    res.json({ success: true, user: result.rows[0] });
+    // Query to get the user's details including firstname and lastname
+    const result = await pool.query('SELECT firstname, lastname, usertype, password FROM usertbl WHERE username = $1', [username]);
+    const user = result.rows[0];
+
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'User not found' });
+    }
+
+    // Check if the password matches
+    if (user.password !== password) {
+      return res.status(400).json({ success: false, message: 'Invalid credentials' });
+    }
+
+    // Send back firstname and lastname instead of username
+    res.json({ 
+      success: true, 
+      firstname: user.firstname, 
+      lastname: user.lastname, 
+      usertype: user.usertype 
+    });
   } catch (err) {
-    res.status(500).json({ success: false, message: 'Error during sign up' });
+    console.error('Error during login:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
   }
 });
 
-// Endpoint for Login
-app.post('/login', async (req, res) => {
-    const { email, password } = req.body;
-  
-    try {
-      // Check if user exists
-      const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-      const user = result.rows[0];
-  
-      if (!user) {
-        return res.status(400).json({ success: false, message: 'User not found' });
-      }
-  
-      // Check if the plain text password matches
-      if (user.password !== password) {
-        return res.status(400).json({ success: false, message: 'Invalid credentials' });
-      }
-  
-      // If login is successful, send the user's role as well
-      res.json({ success: true, role: user.role });
-    } catch (err) {
-      console.error('Error during login:', err);
-      res.status(500).json({ success: false, message: 'Server error' });
-    }
-  });
+
+
   
 
 // Start the server

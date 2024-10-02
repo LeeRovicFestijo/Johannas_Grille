@@ -1,53 +1,69 @@
-import Sidebar from "../../../components/Admin/Sidebar/Sidebar";
-import "./Profile.css";
+import "./Profile.css"; // Assuming the styles are in ProfileAdmin.css
 import { RxAvatar } from "react-icons/rx";
+import Sidebar from "../../../components/Admin/Sidebar/Sidebar";
 
-const Profile = () => {
+const ProfileAdmin = () => {
   return (
-    <main className="page-wrapper">
+    <main>
       {/* Left side - Sidebar */}
       <Sidebar />
+
       {/* Right side - Content of the page */}
-      <div className="content-wrapper">
-        <div className="profile-part-content">
+      <div className="admin-profile-wrapper">
+        <div className="admin-profile-header">
           <h1>Profile</h1>
-          <div className="profile-part-card">
-            <div className="profile-part-left">
-              <RxAvatar className="avatar" size={100} />
-              <h2>Robelyn Macaraig</h2>
-              <p className="location">New York, USA</p>
+        </div>
+
+        <div className="admin-profile-content">
+          {/* Left Section: Profile Picture and Info */}
+          <div className="admin-profile-info">
+            <div className="admin-avatar-box">
+              <RxAvatar className="admin-avatar" size={100} />
+            </div>
+            <h2>Robelyn Macaraig</h2>
+            <p className="admin-location">Admin</p>
+
+            {/* Personal Information */}
+            <div className="admin-personal-info">
+              <p>robelyn.macaraig@gmail.com</p>
+              {/* <p>+639032145678</p> */}
+            </div>
+          </div>
+
+          {/* Right Section: Account Settings Form */}
+          <div className="admin-profile-form">
+            <h3>Account Settings</h3>
+            <div className="admin-form-row">
+              <div className="admin-form-group">
+                <label htmlFor="first-name">First Name</label>
+                <input type="text" id="first-name" placeholder="First Name" />
+              </div>
+              <div className="admin-form-group">
+                <label htmlFor="last-name">Last Name</label>
+                <input type="text" id="last-name" placeholder="Last Name" />
+              </div>
             </div>
 
-            <div className="profile-part-right">
-              <div className="profile-part-info-section">
-                <h3>Information</h3>
-                <div className="profile-part-info-row">
-                  <label>Name:</label>
-                  <input type="text" value="Sara" />
-                </div>
-                <div className="profile-part-info-row">
-                  <label>Full Name:</label>
-                  <input type="text" value="Tancredi" />
-                </div>
-                <div className="profile-part-info-row">
-                  <label>Email Address:</label>
-                  <input type="email" value="SaraTancredi@gmail.com" />
-                </div>
-                <div className="profile-part-info-row">
-                  <label>Phone Number:</label>
-                  <input type="tel" value="(+98) 9123728167" />
-                </div>
-                <div className="profile-part-info-row">
-                  <label>Location:</label>
-                  <input type="text" placeholder="e.g. New York, USA" />
-                </div>
-                <div className="profile-part-info-row">
-                  <label>Postal Code:</label>
-                  <input type="text" value="23728167" />
-                </div>
+            <div className="admin-form-row">
+              <div className="admin-form-group">
+                <label htmlFor="username">Username</label>
+                <input type="text" id="username" placeholder="username" />
               </div>
-              <button className="profile-part-save-changes-btn">Save Changes</button>
+              <div className="admin-form-group">
+                <label htmlFor="email">Email Address</label>
+                <input type="email" id="email" placeholder="Email Address" />
+              </div>
             </div>
+
+            {/* <h3>Change Password</h3> */}
+            {/* <div className="admin-form-row">
+              <div className="admin-form-group">
+                <label htmlFor="usertype">User Type</label>
+                <input type="text" id="usertype" placeholder="usertype" />
+              </div>
+            </div> */}
+
+            <button className="admin-update-btn">Update</button>
           </div>
         </div>
       </div>
@@ -55,4 +71,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default ProfileAdmin;

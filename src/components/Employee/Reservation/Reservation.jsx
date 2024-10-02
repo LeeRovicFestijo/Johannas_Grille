@@ -1,19 +1,17 @@
 import React, { useState } from "react";
-import Sidebar from "../Sidebar/Sidebar";
 import OrderAction from "./ReservationEdit"; // Import the OrderAction component
 import "./Reservation.css";
 
 // Define table headers
 const TABLE_HEADS = [
-  "Name",
-  "Phone",
-  "Email",
-  "Branch",
-  "Date",
-  "Time",
-  "Status",
+  "ReservationID",
+  "CustomerID",
+  "NumberOfGuests",
+  "ReservationDate",
+  "ReservationTime",
   "Amount",
-  "Action",
+  "PaymentMethod",
+  "Status",
 ];
 
 // Table data (can come from API)
@@ -91,9 +89,7 @@ const Orders = () => {
   };
 
   return (
-    <main className="page-wrapper">
-      <Sidebar />
-      <div className="content-wrapper">
+      <div className="res-content-wrapper">
         <h1>Reservation Page</h1>
         <section className="or-content-area-table">
           <div className="or-data-table-info">
@@ -250,7 +246,6 @@ const Orders = () => {
           </div>
         )}
       </div>
-    </main>
   );
 };
 

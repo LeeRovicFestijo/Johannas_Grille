@@ -3,8 +3,8 @@
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  width: 350px;
-  margin: 10px;
+  width: 374px;
+  margin: 10px 0;
   font-family: Arial, sans-serif;
   overflow: hidden;
 }
@@ -25,10 +25,6 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-}
-
-.em-order-details {
-  margin: 20px 0;
 }
 
 .em-order-item-detail {

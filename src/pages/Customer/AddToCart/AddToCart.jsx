@@ -13,7 +13,10 @@ const AddToCart = () => {
   const [showOrder, setShowOrder] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState('Main Branch, Bauan Batangas City');
-  const [isDelivery, setIsDelivery] = useState(true);
+  const [isPickUp, setIsPickUp] = useState(true);
+  const [pickupTime, setPickupTime] = useState('Standard 50mins'); // Default pickup time
+  const [pickupDate, setPickupDate] = useState(new Date().toISOString().substring(0, 10)); // Default to today
+  const [pickupHour, setPickupHour] = useState('12:00'); // Default time
 
   // State for item quantities
   const [quantities, setQuantities] = useState({
@@ -27,50 +30,57 @@ const AddToCart = () => {
     drinks: false,
     salad: false,
   });
-
+  
+  // Toggle the visibility of the order summary
   const handleClick = () => {
-    console.log("Finalize Order button clicked");
-    setShowOrder(true);
+    setShowOrder(false);
+    setTimeout(() => {
+      setShowOrder(true);
+    }, 0);
   };
 
+  // Close the cart
   const handleClose = () => {
     setIsVisible(false);
   };
 
+  // Toggle dropdown for branch selection
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
+  // Select a branch from the dropdown
   const selectBranch = (branch) => {
     setSelectedBranch(branch);
     setIsDropdownOpen(false);
   };
 
+  // Toggle between pickup and preorder
   const toggleFunction = () => {
-    setIsDelivery(!isDelivery);
-    console.log(isDelivery ? "Switched to Dine In" : "Switched to Delivery");
+    setIsPickUp(!isPickUp);
+    console.log(isPickUp ? "Switched to PreOrder" : "Switched to PickUp");
   };
 
-  // Function to handle quantity changes
+  // Change quantity for items
   const changeQuantity = (item, change) => {
     setQuantities(prevQuantities => {
-      const newQuantity = Math.max(prevQuantities[item] + change, 1); // Ensure quantity doesn't go below 1
+      const newQuantity = Math.max(prevQuantities[item] + change, 1);
       return { ...prevQuantities, [item]: newQuantity };
     });
   };
 
-  // Function to handle add-ons selection
+  // Handle add-ons selection
   const handleAddonChange = (addon) => {
-    setAddons((prevAddons) => ({
+    setAddons(prevAddons => ({
       ...prevAddons,
       [addon]: !prevAddons[addon],
     }));
   };
 
+  // Render nothing if the cart is not visible
   if (!isVisible) {
     return null;
   }
-
 
   return (
     <div className="addtocart">
@@ -81,13 +91,13 @@ const AddToCart = () => {
           </i>
           <h2>My Cart</h2>
 
-          {/* Toggle Button */}
+          {/* Toggle Button for Pickup and PreOrder */}
           <div className="toggle-container" onClick={toggleFunction}>
             <div className="toggle-text">
-              <span>PreOrder</span>
               <span>PickUp</span>
+              <span>PreOrder</span>
             </div>
-            <div className={`toggle-btn ${isDelivery ? 'delivery' : 'dine-in'}`}></div>
+            <div className={`toggle-btn ${isPickUp ? 'pickup' : 'preorder'}`}></div>
           </div>
         </header>
 
@@ -107,6 +117,7 @@ const AddToCart = () => {
         )}
 
         <div className="addtocart-items">
+          {/* Ribs Item */}
           <div className="addtocart-item">
             <img src={assets.menu_1} alt="Babyback Ribs" className="addtocart-item-image" />
             <div className="addtocart-item-details">
@@ -119,6 +130,7 @@ const AddToCart = () => {
             </div>
           </div>
 
+          {/* Salmon Item */}
           <div className="addtocart-item">
             <img src={assets.menu_3} alt="Grilled Salmon" className="addtocart-item-image" />
             <div className="addtocart-item-details">
@@ -168,17 +180,37 @@ const AddToCart = () => {
         </div>
 
         <div className="addtocart-summary">
-          {isDelivery && (
-            <div className="summary-item">
-              <p className="summary-label">Delivery Fee</p>
-              <p className="summary-value">P50.00</p>
+          {/* Pickup Date and Time */}
+          {isPickUp && (
+            <div className="pickup-time">
+              <label htmlFor="pickupDate">Pick-up Date:</label>
+              <input
+                type="date"
+                id="pickupDate"
+                value={pickupDate}
+                onChange={(e) => setPickupDate(e.target.value)}
+              />
+              <label htmlFor="pickupHour">Pick-up Time:</label>
+              <select
+                id="pickupHour"
+                value={pickupHour}
+                onChange={(e) => setPickupHour(e.target.value)}
+              >
+                <option value="12:00">12:00 PM</option>
+                <option value="12:30">12:30 PM</option>
+                <option value="1:00">1:00 PM</option>
+                <option value="1:30">1:30 PM</option>
+                {/* Add more time options as needed */}
+              </select>
             </div>
           )}
+
+          {/* Total Amount */}
           <div className="summary-item">
-            <p className="summary-label">{isDelivery ? "Total" : "Total Amount"}</p>
+            <p className="summary-label">{isPickUp ? "Total" : "Total Amount"}</p>
             <p className="summary-value">
               P
-              {isDelivery
+              {isPickUp
                 ? (350 * quantities.ribs + 395 * quantities.salmon + 50 +
                    (addons.extraRice ? 20 : 0) +
                    (addons.drinks ? 50 : 0) +
@@ -186,19 +218,34 @@ const AddToCart = () => {
                 : (350 * quantities.ribs + 395 * quantities.salmon +
                    (addons.extraRice ? 20 : 0) +
                    (addons.drinks ? 50 : 0) +
-                   (addons.salad ? 100 : 0))
-              }.00
+                   (addons.salad ? 100 : 0))}
+              .00
             </p>
           </div>
         </div>
 
         <div className="bott">
-          <button className="finalize-btn" onClick={handleClick}>FINALIZE ORDER</button>
-          {showOrder && <FinalizeOrder />}
+          <button className="finalize-btn" onClick={handleClick}>FINALIZE ORDER
+          </button>
         </div>
       </div>
+
+      {/* Conditional rendering for the Finalize Order component */}
+      {showOrder && (
+        <FinalizeOrder
+          selectedBranch={selectedBranch}
+          quantities={quantities}
+          addons={addons}
+          pickupDate={pickupDate}
+          pickupHour={pickupHour}
+          isPickUp={isPickUp}
+          onClose={() => setShowOrder(false)}
+        />
+      )}
     </div>
   );
 };
 
 export default AddToCart;
+
+

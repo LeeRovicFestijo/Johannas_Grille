@@ -13,12 +13,13 @@ import Reservation from './pages/Employee/Reservation/Reservation'
 import BaseLayout from './pages/Admin/Dashboard/Dashboard';
 import Product from './pages/Admin/Product/Product';
 import Transaction from './pages/Admin/Transaction/Transaction'
-import Profile from './pages/Admin/Profile/Profile'
 import Customer from './pages/Admin/User/Users'
 import Employee_Dashboard from './pages/Employee/Dashboard/Dashboard';
 import OrderHistory from './pages/Employee/OrderHistory/OrderHistory'
 import Statistics from './pages/Employee/Statistics/Statistics'
 import ProductList from './pages/Employee/Product/Product'
+import ProfileAdmin from './pages/Admin/Profile/Profile';
+import ProtectedRoute from './components/Admin/PrivateRoute';
 
 const App = () => {
   return (
@@ -32,10 +33,15 @@ const App = () => {
           <Route path='/confirm' element={<ConfirmOrder />} />
           <Route path='/admin/login' element={<Admin_LoginPopUp />} />
           <Route path='/admin/dashboard' element={<BaseLayout />} />
+          <Route path="/admin/dashboard" element={
+          <ProtectedRoute>
+            <BaseLayout />
+          </ProtectedRoute>
+        } />
           <Route path='/admin/order' element={<Order />} />
           <Route path='/admin/product' element={<Product />} />
           <Route path='/admin/transaction' element={<Transaction />} />
-          <Route path='/admin/profile' element={<Profile />} />
+          <Route path='/admin/profile' element={<ProfileAdmin />} />
           <Route path='/admin/customer' element={<Customer />} />
           <Route path='/employee/dashboard' element={<Employee_Dashboard />} />
           <Route path='/employee/orderhistory' element={<OrderHistory />} />

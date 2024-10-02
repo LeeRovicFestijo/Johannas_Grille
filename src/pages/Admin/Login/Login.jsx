@@ -2,38 +2,45 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
-const Admin_LoginPopUp = ({ setShowLogin }) => {
-  const [email, setEmail] = useState('');
+const Admin_LoginPopUp = () => {
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    try {
-      // Login API call
-      const response = await fetch('http://localhost:5000/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-  
-      const data = await response.json();
-      if (data.success) {
-        // Redirect based on user role
-        if (data.role === 'admin') {
-          navigate('/admin/dashboard'); // Admin dashboard
-        } else {
-          navigate('/employee/dashboard'); // Customer homepage
-        }
+  try {
+    // Login API call
+    const response = await fetch('http://localhost:3000/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password }),
+    });
+
+    const data = await response.json();
+    if (data.success) {
+      // Store user info in session storage
+      sessionStorage.setItem('username', username);
+      sessionStorage.setItem('firstname', data.firstname); // Store firstname
+      sessionStorage.setItem('lastname', data.lastname);   // Store lastname
+      sessionStorage.setItem('usertype', data.usertype);
+      sessionStorage.setItem('token', data.token); // If token is provided by backend
+
+      // Redirect based on user role
+      if (data.usertype === 'Admin') {
+        navigate('/admin/dashboard'); // Admin dashboard
       } else {
-        alert(data.message); // Display error message if login fails
+        navigate('/employee/dashboard'); // Employee dashboard
       }
-    } catch (error) {
-      console.error('Error logging in:', error);
+    } else {
+      alert(data.message); // Display error message if login fails
     }
-  };
-  
+  } catch (error) {
+    console.error('Error logging in:', error);
+  }
+};
+
 
   return (
     <div className='admin-login-popup'>
@@ -45,10 +52,10 @@ const Admin_LoginPopUp = ({ setShowLogin }) => {
         <div className="admin-login-popup-right">
           <h2>Login</h2>
           <input 
-            type="email" 
-            placeholder='Email' 
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="text" 
+            placeholder='Username' 
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             required 
           />
           <input 

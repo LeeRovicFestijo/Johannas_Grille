@@ -104,7 +104,7 @@ const AreaBarChart = () => {
               tickSize={0}
               axisLine={false}
               tick={{
-                fill: "#f3f3f3",
+                fill: "#000000",
               }}
             />
             <YAxis
@@ -114,7 +114,7 @@ const AreaBarChart = () => {
               axisLine={false}
               tickSize={0}
               tick={{
-                fill: "#f3f3f3",
+                fill: "#000000",
               }}
             />
             <Tooltip
