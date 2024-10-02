@@ -1,67 +1,88 @@
-import "./Profile.css"; // Assuming the styles are in ProfileAdmin.css
-import { RxAvatar } from "react-icons/rx";
+import React, { useEffect, useState } from 'react';
 import Sidebar from "../../../components/Admin/Sidebar/Sidebar";
+import { RxAvatar } from "react-icons/rx";
+import "./Profile.css";
 
 const ProfileAdmin = () => {
+  const [firstname, setFirstname] = useState('');
+  const [lastname, setLastname] = useState('');
+  const [email, setEmail] = useState('');  // This should store the email
+  const [usertype, setUserType] = useState('');
+  const [username, setUsername] = useState('');
+
+  useEffect(() => {
+    setFirstname(sessionStorage.getItem('firstname'));
+    setLastname(sessionStorage.getItem('lastname'));
+    setEmail(sessionStorage.getItem('email')); // Check if this retrieves the email
+    setUserType(sessionStorage.getItem('usertype'));
+    setUsername(sessionStorage.getItem('username'));
+  
+    console.log(sessionStorage.getItem('email')); // Check if email is retrieved correctly
+  }, []);
+  
+
   return (
     <main>
-      {/* Left side - Sidebar */}
       <Sidebar />
-
-      {/* Right side - Content of the page */}
       <div className="admin-profile-wrapper">
         <div className="admin-profile-header">
           <h1>Profile</h1>
         </div>
 
         <div className="admin-profile-content">
-          {/* Left Section: Profile Picture and Info */}
           <div className="admin-profile-info">
             <div className="admin-avatar-box">
               <RxAvatar className="admin-avatar" size={100} />
             </div>
-            <h2>Robelyn Macaraig</h2>
-            <p className="admin-location">Admin</p>
-
-            {/* Personal Information */}
+            <h2>{firstname} {lastname}</h2>
             <div className="admin-personal-info">
-              <p>robelyn.macaraig@gmail.com</p>
-              {/* <p>+639032145678</p> */}
+              <p>{usertype}</p> {/* Display the actual email */}
             </div>
           </div>
 
-          {/* Right Section: Account Settings Form */}
           <div className="admin-profile-form">
             <h3>Account Settings</h3>
             <div className="admin-form-row">
               <div className="admin-form-group">
                 <label htmlFor="first-name">First Name</label>
-                <input type="text" id="first-name" placeholder="First Name" />
+                <input 
+                  type="text" 
+                  id="first-name" 
+                  value={firstname} 
+                  onChange={(e) => setFirstname(e.target.value)} 
+                />
               </div>
               <div className="admin-form-group">
                 <label htmlFor="last-name">Last Name</label>
-                <input type="text" id="last-name" placeholder="Last Name" />
+                <input 
+                  type="text" 
+                  id="last-name" 
+                  value={lastname} 
+                  onChange={(e) => setLastname(e.target.value)} 
+                />
               </div>
             </div>
 
             <div className="admin-form-row">
               <div className="admin-form-group">
                 <label htmlFor="username">Username</label>
-                <input type="text" id="username" placeholder="username" />
+                <input 
+                  type="text" 
+                  id="username" 
+                  value={username} 
+                  onChange={(e) => setUsername(e.target.value)} 
+                />
               </div>
               <div className="admin-form-group">
                 <label htmlFor="email">Email Address</label>
-                <input type="email" id="email" placeholder="Email Address" />
+                <input 
+                  type="email" 
+                  id="email" 
+                  value={email} 
+                  onChange={(e) => setEmail(e.target.value)} 
+                />
               </div>
             </div>
-
-            {/* <h3>Change Password</h3> */}
-            {/* <div className="admin-form-row">
-              <div className="admin-form-group">
-                <label htmlFor="usertype">User Type</label>
-                <input type="text" id="usertype" placeholder="usertype" />
-              </div>
-            </div> */}
 
             <button className="admin-update-btn">Update</button>
           </div>

@@ -8,38 +8,39 @@ const Admin_LoginPopUp = () => {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-  try {
-    // Login API call
-    const response = await fetch('http://localhost:3000/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, password }),
-    });
+    try {
+      // Login API call
+      const response = await fetch('http://localhost:3000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
 
-    const data = await response.json();
-    if (data.success) {
-      // Store user info in session storage
-      sessionStorage.setItem('username', username);
-      sessionStorage.setItem('firstname', data.firstname); // Store firstname
-      sessionStorage.setItem('lastname', data.lastname);   // Store lastname
-      sessionStorage.setItem('usertype', data.usertype);
-      sessionStorage.setItem('token', data.token); // If token is provided by backend
+      const data = await response.json();
+      if (data.success) {
+        // Store user info in sessionStorage
+        sessionStorage.setItem('username', username);
+        sessionStorage.setItem('firstname', data.firstname); // Store firstname
+        sessionStorage.setItem('lastname', data.lastname);   // Store lastname
+        sessionStorage.setItem('email', data.email);
+        sessionStorage.setItem('usertype', data.usertype);
+        sessionStorage.setItem('token', data.token);         // If token is provided by backend
 
-      // Redirect based on user role
-      if (data.usertype === 'Admin') {
-        navigate('/admin/dashboard'); // Admin dashboard
+        // Redirect based on user role
+        if (data.usertype === 'Admin') {
+          navigate('/admin/dashboard'); // Admin dashboard
+        } else {
+          navigate('/employee/dashboard'); // Employee dashboard
+        }
       } else {
-        navigate('/employee/dashboard'); // Employee dashboard
+        alert(data.message); // Display error message if login fails
       }
-    } else {
-      alert(data.message); // Display error message if login fails
+    } catch (error) {
+      console.error('Error logging in:', error);
     }
-  } catch (error) {
-    console.error('Error logging in:', error);
-  }
-};
+  };
 
 
   return (
@@ -51,19 +52,19 @@ const Admin_LoginPopUp = () => {
         </div>
         <div className="admin-login-popup-right">
           <h2>Login</h2>
-          <input 
-            type="text" 
-            placeholder='Username' 
+          <input
+            type="text"
+            placeholder='Username'
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            required 
+            required
           />
-          <input 
-            type="password" 
-            placeholder='Password' 
+          <input
+            type="password"
+            placeholder='Password'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required 
+            required
           />
           <button className="admin-login-popup-button" onClick={handleLogin}>
             Login
@@ -71,7 +72,7 @@ const Admin_LoginPopUp = () => {
         </div>
       </div>
     </div>
-  );  
+  );
 };
 
 export default Admin_LoginPopUp;

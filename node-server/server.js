@@ -25,8 +25,7 @@ app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    // Query to get the user's details including firstname and lastname
-    const result = await pool.query('SELECT firstname, lastname, usertype, password FROM usertbl WHERE username = $1', [username]);
+    const result = await pool.query('SELECT firstname, lastname, usertype, password, email FROM usertbl WHERE username = $1', [username]);
     const user = result.rows[0];
 
     if (!user) {
@@ -38,21 +37,19 @@ app.post('/login', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Invalid credentials' });
     }
 
-    // Send back firstname and lastname instead of username
+    // Send back firstname, lastname, usertype, and email
     res.json({ 
       success: true, 
       firstname: user.firstname, 
       lastname: user.lastname, 
-      usertype: user.usertype 
-    });
+      usertype: user.usertype, 
+      email: user.email // This should return the correct email value
+   });   
   } catch (err) {
     console.error('Error during login:', err);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 });
-
-
-
   
 
 // Start the server

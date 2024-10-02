@@ -1,6 +1,6 @@
 import React from 'react';
 import './Header.css'
-import { BsEmojiExpressionless } from "react-icons/bs";
+import ProfileHeader from './HeaderProfile';
 import { IoIosSearch } from "react-icons/io";
 import { HiOutlineBell } from "react-icons/hi2";
 
@@ -19,7 +19,7 @@ const Header = () => {
     </div>
       <div className="em-profile-icon">
         <i>< HiOutlineBell size={27} /> </i>
-        <i>< BsEmojiExpressionless size={30} /> </i>
+        <i>< ProfileHeader /> </i>
       </div>
     </header>
   );
