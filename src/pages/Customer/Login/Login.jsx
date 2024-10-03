@@ -28,10 +28,15 @@ const LoginPopUp = () => {
         <div className="login-popup-right">
           <span className="login-popup-close" onClick={handleClose}><IoIosCloseCircle size={25} /></span>
           <h2>{currState}</h2>
-          {currState === "Sign Up" && <input type="text" placeholder='Name' required />}
+          {currState === "Sign Up" && 
+          <input type="text" placeholder='Name' required />
+          }
           <input type="email" placeholder='Email' required />
+          <input type="number" placeholder='Phone Number' required />
+          {currState === "Sign Up" && 
+          <input type="text" placeholder='Address' required />
+          }
           <input type="password" placeholder='Password' required />
-          {currState === "Sign Up" && <input type="text" placeholder='Address' required />}
           <button className="login-popup-button">
             {currState === "Sign Up" ? "Sign Up" : "Login"}
           </button>

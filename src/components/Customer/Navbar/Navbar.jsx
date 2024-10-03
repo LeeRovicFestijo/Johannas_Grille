@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import './Navbar.css'
 import { assets } from '../../../assets/assets'
 import { Link } from 'react-router-dom';
-import AddToCart from '../../../pages/Customer/AddToCart/AddToCart';
+import AddToCart from '../../../pages/Customer/Cart/Cart';
 import Login from '../../../pages/Customer/Login/Login'
 import { FiShoppingCart } from "react-icons/fi";
 

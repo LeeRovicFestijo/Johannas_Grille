@@ -3,10 +3,10 @@ import React, { useState }from "react";
 import { IoIosArrowBack } from "react-icons/io";
 import { TbBrandGoogleMaps } from "react-icons/tb";
 import { IoIosArrowDown } from "react-icons/io";
-import './FinalizeOrder.css';
-import ConfirmOrder from "../../Customer/ConfirmOrder/ConfirmOrder";
+import './Payment.css';
+import Receipt from "../Receipt/Receipt";
 
-const FinalizeOrder = () => {
+const Payment = () => {
 
     const [isVisible, setIsVisible] = useState(true);
     const [showReceipt, setShowReceipt] = useState(false); 
@@ -52,11 +52,11 @@ const FinalizeOrder = () => {
         </div>
         <div className="fin-bott">
           <button className="finalize-btn" onClick={handleClick}>CONFIRM ORDER</button>
-          {showReceipt && <ConfirmOrder />} 
+          {showReceipt && < Receipt />} 
         </div>
       </div>
     </div>
   );
 };
 
-export default FinalizeOrder;
+export default Payment;

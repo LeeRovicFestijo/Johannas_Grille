@@ -1,131 +1,324 @@
-.cart-container {
-    justify-content: center;
+/* General styles */
+.addtocart {
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.80);
+  z-index: 1;
+}
+
+.addtocart-container {
+  width: 450px;
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 100vh; /* Full height */
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 12px 0 0 12px; /* Rounded corner only on the left */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Space between items */
+  animation: slideIn 0.5s forwards;
+  overflow-y: auto; /* Enable vertical scrolling */
+  padding-right: 10px; /* Optional: Adds space for scrollbar */
+}
+
+  .addtocart-header {
+    display: flex;
     align-items: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1;
+    justify-content: center; /* Center the content */
+    padding-bottom: 10px;
   }
-  .cart-container-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 400px;
-    padding: 20px;
-    border-radius: 8px;
-    background-color: white;
-  }
-  
-  .close {
-    display: flex;
-    justify-content: flex-end;   /* Aligns items to the right */
-    align-items: flex-start; 
-  }
-  
-  .cart-container-content hr {
-    margin: 10px 0px;
-    height: 2px;
-    background-color: #e2e2e2;
-    border: none;
-  }
-  
-  
-  .cart-item-image {
-    display: block;
-    margin: 0 auto;
-    width: 320px;
-    height: 200px;
-    border-radius: 15px 15px 8px 0px;
-  }
-  
-  .header-img {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .close-button {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    display: flex;
-    justify-content: flex-end;   /* Aligns items to the right */
-    align-items: flex-start; 
-  }
-  
-  .cart-right h2 {
-    font-size: 1.5rem;
+
+  .addtocart-header h2 {
+    font-size: 25px;
     font-weight: bold;
     text-align: center;
-    display: block;
-    margin: 0 auto; 
+    padding-left: 50px;
+    padding-top: 9px;
   }
-  
-  .item-details {
-    margin-top: 20px;
-  }
-  
-  .item-name h3 {
-    font-size: 1.2rem;
-    margin-bottom: 10px; 
-    text-align: center;
-    padding-top: 10px;
-  }
-  
-  .quantity-control {
-    align-items: center;
-    display: grid;
-    grid-template-columns: 1fr 1fr; 
-  }
-  
-  .quantity-button{
+
+  .addtocart-branch {
     display: flex;
-    padding-top: 10px;
-  }
-  
-  .quantity {
-    margin: 0 10px;
-    font-size: 1.2rem;
-  }
-  
-  .size-options {
-    margin-top: 20px;
-    padding-top: 10px;
-  }
-  
-  .size-option {
-    display: flex;
-    justify-content: space-between;
     align-items: center;
+    padding: 10px 0;
+  }
+  .addtocart-branch .down-icon {
+    display: flex;
+    margin-left: auto;
+    color: black;
+  }
+  .addtocart-branch i {
+    margin-right: 10px;
+    font-size: 20px;
+    color: #e63946;
+  }
+
+  .addtocart-branch span {
+    font-size: 16px;
+    color: #333;
+  }
+
+  .bott {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .addtocart-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: white;
     margin-bottom: 10px;
+    box-shadow: 0px 2px 4px rgba(202, 79, 79, 0.912);
+    
   }
-  
-  input[type="radio"] {
+
+  .addtocart-item-image {
+    width: 86px;
+    height: 68px;
+    border-radius: 10px;
     margin-right: 10px;
   }
-  
-  .price {
-    font-size: 1rem;
-    color: #555;
+
+  .addtocart-item-details {
+    flex-grow: 1;
   }
-  
-  .add-to-cart {
-    display: block;
-    margin: 0 auto; 
-    background-color: #ffc107;
-    color: white;
-    padding: 15px 30px;
-    border: none;
-    border-radius: 50px;
+
+  .addtocart-item-details p {
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .addtocart-item-details span {
+    font-size: 13px;
+    color: #999;
+  }
+
+  .addtocart-item-quantity {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+    justify-content: flex-end;  
+  }
+
+  .quantity-btn {
+    padding-top: 5px;
     cursor: pointer;
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin-top: 20px;
-    height: 58px;
-    width: 200px;
   }
+
+  .addtocart-item-details .quantity {
+    color: black;
+  }
+
+  .count {
+    margin: 0 10px;
+    font-size: 16px;
+  }
+
+  .summary-item {
+    display: flex;
+    justify-content: space-between; /* Distributes the label and value across the line */
+    padding: 10px 0;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+  }
+
+  .summary-label {
+    font-weight: bold;
+    font-size: 16px;
+  }
+
+  .summary-value {
+    font-size: 16px;
+    color: #333;
+  }
+
+  .finalize-btn {
+    width: 100%;
+    background-color: #ffc107 !important;
+    border: none;
+    padding: 15px;
+    border-radius: 50px;
+    font-size: 18px;
+    font-weight: bold;
+    color: black !important;
+    cursor: pointer;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+
+  .finalize-btn:hover {
+    background-color: #ffb300;
+  }
+
+  .addtocart-header .back-arrow {
+    position: absolute;
+    top: 14px;
+    left: 8px;
+    cursor: pointer;
+  }
+  .branch-dropdown {
+    background-color: #f9f9f9;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .branch-dropdown p {
+    margin: 5px 0;
+    cursor: pointer;
+  }
+
+  .branch-dropdown p:hover {
+    background-color: #eee;
+    border-radius: 4px;
+    padding: 5px;
+  }
+
+  .addtocart-header {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  }
+
+  .toggle-switch {
+  position: relative;
+  width: 80px;
+  height: 30px;
+  }
+
+  .toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  width: 90%;
+  height: 100%;
+  border-radius: 30px;
+  background-color: #ccc;
+  transition: background-color 0.3s;
+  }
+
+  .toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: white;
+  transition: transform 0.3s;
+  transform: translateX(2px);
+  }
+
+  .toggle-slider.on {
+  background-color: #4CAF50;
+  }
+
+  .toggle-slider.on::before {
+  transform: translateX(40px);
+  }
+
+  .toggle-slider.off {
+  background-color: #f70101;
+  }
+
+  .toggle-slider.off::before {
+  transform: translateX(2px);
+  }
+
+  .toggle-slider:hover {
+  background-color: #bbb;
+  }
+
+  /* Toggle Container */
+  .toggle-container {
+  width: 152px;
+  height: 40px;
+  background-color: #ddd;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 5px;
+  margin-top: 10px;
+  position: relative;
+  }
+
+  .toggle-text {
+  color: black;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  font-weight: bold;
+  color: #666;
+  }
+
+  .toggle-text span {
+  flex: 1;
+  text-align: center;
+  font-size: 13px;
+  margin-right: 8px;
+  }
+
+  /* Toggle Button */
+  .toggle-btn {
+  width: 75px;
+  height: 30px;
+  background-color: white;
+  border-radius: 15px;
+  position: absolute;
+  top: 5px;
+  transition: all 0.3s ease;
+  }
+
+  .toggle-btn.pickup {
+  background-color: #a03931; /* Green for Delivery */
+  left: 5px;
+  }
+
+  .toggle-btn.preorder {
+  background-color: #FFC107; /* Red for Dine-In */
+  left: 73px;
+  }
+
+  .pickup-time {
+    margin-top: 20px; /* Space above pickup time section */
+  }
+  
+  .pickup-time label {
+    margin-right: 10px; /* Space between label and input */
+  }
+  
+  .pickup-time input,
+  .pickup-time select {
+    padding: 8px; /* Padding for input and select */
+    border: 1px solid #ccc; /* Border for input and select */
+    border-radius: 4px; /* Rounded corners */
+    width: 100%; /* Full width */
+    margin-bottom: 10px; /* Space below inputs */
+  }
+
+  @keyframes slideIn {
+    from {
+        right: -100%;
+    }
+    to {
+        right: 0;
+    }
+  }
+
+

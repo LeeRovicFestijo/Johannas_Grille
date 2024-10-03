@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import './FoodItem.css'
 // import { useNavigate } from 'react-router-dom';
 // import { assets } from '../../assets/assets'
-import Cart from '../../../pages/Customer/Cart/Cart'; // Import the Cart component
+import Cart from '../../../pages/Customer/ItemPopup/ItemPopup'; // Import the Cart component
 
 const FoodItem = ({ id, name, price, description, image }) => {
   const [showCart, setShowCart] = useState(false); // Initialize a state to track whether to show the cart

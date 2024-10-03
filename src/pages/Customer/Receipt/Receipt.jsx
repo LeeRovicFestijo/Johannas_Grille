@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { IoIosCloseCircle } from "react-icons/io";
-import './ConfirmOrder.css';
+import './Receipt.css';
 import { useNavigate } from 'react-router-dom';
 
-const ConfirmOrder = () => {
+const Receipt = () => {
     // State to control visibility
     const navigate = useNavigate();
 
@@ -48,4 +48,4 @@ const ConfirmOrder = () => {
     );
 };
 
-export default ConfirmOrder;
+export default Receipt;

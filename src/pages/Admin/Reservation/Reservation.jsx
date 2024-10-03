@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import Sidebar from "../../../components/Admin/Sidebar/Sidebar";
-import TransactionPopup from "../../../components/Admin/Transaction/TransactionEdit";
+import ReservationPopup from "../../../components/Admin/Reservation/ReservationPopup";
 import { RiEditLine } from "react-icons/ri"; // Make sure to import your icons
 import { MdDeleteOutline } from "react-icons/md";
-import "./Transaction.css";
+import "./Reservation.css";
 
 const TABLE_HEADS = [
   "Name",
@@ -85,7 +85,7 @@ const TABLE_DATA = [
     amount: 80,
   },
 ];
-const Transaction = () => {
+const ReservationList = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
 
@@ -106,9 +106,6 @@ const Transaction = () => {
         <div>
           <h1>Reservation Page</h1>
           <section className="tra-content-area-table">
-            <div className="tra-data-table-info">
-              <h1 className="tra-data-table-title">Lists</h1>
-            </div>
             <div className="tra-data-table-diagram">
               <table>
                 <thead>
@@ -136,10 +133,10 @@ const Transaction = () => {
                       <td>${dataItem.amount.toFixed(2)}</td>
                       <td className="tra-dt-cell-action">
                         <i onClick={() => handleEditClick(dataItem)}>
-                          <RiEditLine size={25} />
+                          <RiEditLine size={25} onClick={() => handleEditClick(dataItem)}/>
                         </i>
                         <i>
-                          <MdDeleteOutline size={25} />
+                          <MdDeleteOutline size={25} onClick={() => handleEditClick(dataItem)}/>
                         </i>
                       </td>
                     </tr>
@@ -151,7 +148,7 @@ const Transaction = () => {
         </div>
 
         {isEditModalOpen && (
-          <TransactionPopup
+          <ReservationPopup
             dataItem={selectedOrder} // Change here
             onClose={handleCloseModal} // Change here
           />
@@ -161,4 +158,4 @@ const Transaction = () => {
   );
 };
 
-export default Transaction;
+export default ReservationList;

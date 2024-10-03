@@ -1,11 +1,11 @@
 // TRANSACTIONACTION.JSX;
 import React, { useState } from "react";
-import Sidebar from "../../../components/Admin/Sidebar/Sidebar";
+import Sidebar from "../Sidebar/Sidebar";
 import { VscEdit } from "react-icons/vsc";
 import { MdDeleteOutline } from "react-icons/md";
-import OrderPopup from './TransactionEdit'
+import ReservationPopup from './ReservationPopup'
 
-const TransactionEdit = (Transaction) => {
+const ReservationEdit = (Transaction) => {
 
     
     const [editData, setEditData] = useState(null);
@@ -73,8 +73,8 @@ const TransactionEdit = (Transaction) => {
                     </div>
                 </section>
 
-                <OrderPopup/>
-                {editData && <TransactionEdit dataItem={editData} onClose={handleClosePopup} />}
+                <ReservationPopup/>
+                {editData && <ReservationEdit dataItem={editData} onClose={handleClosePopup} />}
             </div>
         </main>
     );

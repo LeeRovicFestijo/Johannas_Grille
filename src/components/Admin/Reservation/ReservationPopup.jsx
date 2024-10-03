@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import "./TransactionEdit.css"; // Assuming you have a CSS file
+import "./ReservationPopup.css"; // Assuming you have a CSS file
 
-const TransactionPopup = ({ dataItem, onClose }) => {
+const ReservationPopup = ({ dataItem, onClose }) => {
   const [formData, setFormData] = useState({
     productName: dataItem?.name || "",
     status: dataItem?.status || "pending",
@@ -73,4 +73,4 @@ const TransactionPopup = ({ dataItem, onClose }) => {
   );
 };
 
-export default TransactionPopup;
+export default ReservationPopup;

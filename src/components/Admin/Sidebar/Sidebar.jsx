@@ -3,18 +3,17 @@ import { useContext, useEffect, useRef } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { assets } from '../../../assets/assets'
 
-import {
-  MdOutlineAttachMoney,
-  MdOutlineBarChart,
-  MdOutlineClose,
-  MdOutlineCurrencyExchange,
-  MdOutlineGridView,
-  MdOutlineLogout,
-  MdOutlinePeople,
-  MdOutlineSettings,
-  MdOutlineShoppingBag,
-} from "react-icons/md";
-import { CgProfile } from "react-icons/cg";
+  import {
+    MdOutlineBarChart,
+    MdOutlineClose,
+    MdOutlineCurrencyExchange,
+    MdOutlineGridView,
+    MdOutlineLogout,
+    MdOutlinePeople,
+    MdOutlineSettings,
+    MdOutlineShoppingBag,
+  } from "react-icons/md";
+  import { CgProfile } from "react-icons/cg";
 
 import "./Sidebar.css";
 import { SidebarContext } from "../context/SidebarContext";
@@ -72,15 +71,23 @@ const Sidebar = () => {
                 <span className="menu-link-icon">
                   <MdOutlineBarChart size={20} />
                 </span>
-                <span className="menu-link-text">Orders</span>
+                <span className="menu-link-text">Order History</span>
               </Link>
             </li>
             <li className="menu-item">
-              <Link to="/admin/transaction" className={`menu-link ${isActive("/admin/transaction") ? "active" : ""}`}>
+              <Link to="/admin/reservation" className={`menu-link ${isActive("/admin/reservation") ? "active" : ""}`}>
                 <span className="menu-link-icon">
                   <MdOutlineCurrencyExchange size={18} />
                 </span>
-                <span className="menu-link-text">Transactions</span>
+                <span className="menu-link-text">Reservation Lists</span>
+              </Link>
+            </li>
+            <li className="menu-item">
+              <Link to="/admin/inventory" className={`menu-link ${isActive("/admin/inventory") ? "active" : ""}`}>
+                <span className="menu-link-icon">
+                  <CgProfile size={18} />
+                </span>
+                <span className="menu-link-text">Inventory</span>
               </Link>
             </li>
             <li className="menu-item">
@@ -96,7 +103,15 @@ const Sidebar = () => {
                 <span className="menu-link-icon">
                   <MdOutlinePeople size={20} />
                 </span>
-                <span className="menu-link-text">Users</span>
+                <span className="menu-link-text">Customer</span>
+              </Link>
+            </li>
+            <li className="menu-item">
+              <Link to="/admin/employeelist" className={`menu-link ${isActive("/admin/employeelist") ? "active" : ""}`}>
+                <span className="menu-link-icon">
+                  <CgProfile size={18} />
+                </span>
+                <span className="menu-link-text">Employee</span>
               </Link>
             </li>
             <li className="menu-item">
