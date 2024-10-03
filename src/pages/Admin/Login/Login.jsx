@@ -47,8 +47,8 @@ const Admin_LoginPopUp = () => {
     <div className='admin-login-popup'>
       <div className="admin-login-popup-content">
         <div className="admin-login-popup-left">
-          <h2>Login to Your Account</h2>
-          <p>Don't have an account? <span onClick={() => alert('Redirect to Sign Up')}>Sign Up Here</span></p>
+          {/* Add the logo image with the class 'admin-login-logo' */}
+          <img src="/src/assets/logo.png" alt="Logo" className="admin-login-logo" />
         </div>
         <div className="admin-login-popup-right">
           <h2>Login</h2>
