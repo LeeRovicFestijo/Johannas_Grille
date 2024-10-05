@@ -1,93 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../../../components/Admin/Sidebar/Sidebar";
 import ReservationPopup from "../../../components/Admin/Reservation/ReservationPopup";
 import { RiEditLine } from "react-icons/ri"; // Make sure to import your icons
 import { MdDeleteOutline } from "react-icons/md";
 import "./Reservation.css";
 
-const TABLE_HEADS = [
-  "Name",
-  "Phone",
-  "Email",
-  "Branch",
-  "Date",
-  "Time",
-  "Status",
-  "Amount",
-  "Action",
-];
-
-const TABLE_DATA = [
-  {
-    id: 100,
-    name: "Afaq Karim",
-    phone: 1234567890,
-    email: "john@gmail.com",
-    date: "Sept 20,2024",
-    branch: "BATANGAS",
-    time: "7:00 am",
-    status: "pending",
-    amount: 400,
-  },
-  {
-    id: 101,
-    name: "Afaq Karim",
-    phone: 1234567890,
-    email: "john@gmail.com",
-    branch: "BATANGAS",
-    date: "Sept 20,2024",
-    time: "10:00 am",
-    status: "pending",
-    amount: 288,
-  },
-  {
-    id: 102,
-    name: "Afaq Karim",
-    phone: 1234567890,
-    email: "john@gmail.com",
-    branch: "BATANGAS",
-    date: "Sept 20,2024",
-    time: "12:00 pm",
-    status: "pending",
-    amount: 500,
-  },
-  {
-    id: 103,
-    name: "Afaq Karim",
-    phone: 1234567890,
-    email: "john@gmail.com",
-    branch: "BAUAN",
-    date: "Sept 20,2024",
-    time: "2:00 pm",
-    status: "pending",
-    amount: 100,
-  },
-  {
-    id: 104,
-    name: "Afaq Karim",
-    phone: 1234567890,
-    email: "john@gmail.com",
-    branch: "BATANGAS",
-    date: "Sept 20,2024",
-    time: "4:00 pm",
-    status: "pending",
-    amount: 60,
-  },
-  {
-    id: 105,
-    name: "Afaq Karim",
-    phone: 1234567890,
-    email: "john@gmail.com",
-    branch: "BAUAN",
-    date: "Sept 20,2024",
-    time: "6:00 pm",
-    status: "pending",
-    amount: 80,
-  },
-];
 const ReservationList = () => {
+  const [reservations, setReservations] = useState([]);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/reservations'); // Adjust this to your API URL
+      const data = await response.json();
+      setReservations(data); // Update state with fetched data
+      window.location.reload()
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  // Triggering fetchData when the component mounts
+  const fetchReservations = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/reservations');
+      if (response.ok) {
+        const data = await response.json();
+        setReservations(data);
+      } else {
+        console.error('Error fetching menu items:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching menu items:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchReservations();
+  }, []);
 
   const handleEditClick = (order) => {
     setSelectedOrder(order);
@@ -110,17 +61,21 @@ const ReservationList = () => {
               <table>
                 <thead>
                   <tr>
-                    {TABLE_HEADS.map((th, index) => (
-                      <th key={index}>{th}</th>
-                    ))}
+                    <th>Name</th>
+                    <th>Phone</th>
+                    <th>Branch</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Amount</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {TABLE_DATA.map((dataItem) => (
+                  {reservations.map((dataItem) => (
                     <tr key={dataItem.id}>
                       <td>{dataItem.name}</td>
                       <td>{dataItem.phone}</td>
-                      <td>{dataItem.email}</td>
                       <td>{dataItem.branch}</td>
                       <td>{dataItem.date}</td>
                       <td>{dataItem.time}</td>
@@ -133,10 +88,10 @@ const ReservationList = () => {
                       <td>${dataItem.amount.toFixed(2)}</td>
                       <td className="tra-dt-cell-action">
                         <i onClick={() => handleEditClick(dataItem)}>
-                          <RiEditLine size={25} onClick={() => handleEditClick(dataItem)}/>
+                          <RiEditLine size={25} />
                         </i>
                         <i>
-                          <MdDeleteOutline size={25} onClick={() => handleEditClick(dataItem)}/>
+                          <MdDeleteOutline size={25} onClick={() => handleEditClick(dataItem)} />
                         </i>
                       </td>
                     </tr>
@@ -149,8 +104,8 @@ const ReservationList = () => {
 
         {isEditModalOpen && (
           <ReservationPopup
-            dataItem={selectedOrder} // Change here
-            onClose={handleCloseModal} // Change here
+            dataItem={selectedOrder}
+            onClose={handleCloseModal}
           />
         )}
       </div>

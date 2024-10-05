@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../../../components/Admin/Sidebar/Sidebar";
 import "./Inventory.css";
 import { MdDeleteOutline } from "react-icons/md";
@@ -15,23 +15,22 @@ const TABLE_HEADS = [
   "Action",
 ];
 
-const TABLE_DATA = [
-  // Customer transactions
-  {
-    id: 100,
-    menuitid: 100,
-    name: "Doe",
-    quantity: 20,
-    endinv: 3,
-    cob: 10,
-    remarks: 10,
-    date: "10/03/2024",
-  },
-];
-
-
 const Inventory = () => {
 
+  const [inventory, setInventory] = useState([]);
+
+  useEffect(() => {
+    const fetchInventory = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/api/inventory");
+        const data = await response.json();
+        setInventory(data);
+      } catch (error) {
+        console.error("Error fetching inventory:", error);
+      }
+    };
+    fetchInventory();
+  }, []);
   return (
     <main className="page-wrapper">
       <Sidebar />
@@ -49,7 +48,7 @@ const Inventory = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {TABLE_DATA?.map((dataItem) => (
+                  {inventory?.map((dataItem) => (
                     <tr key={dataItem.id}>
                     
                       <td>{dataItem.menuitid}</td>

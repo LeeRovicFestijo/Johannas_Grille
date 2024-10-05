@@ -9,7 +9,6 @@ const Admin_LoginPopUp = () => {
 
   const handleLogin = async () => {
     try {
-      // Login API call
       const response = await fetch('http://localhost:3000/login', {
         method: 'POST',
         headers: {
@@ -17,30 +16,38 @@ const Admin_LoginPopUp = () => {
         },
         body: JSON.stringify({ username, password }),
       });
-
-      const data = await response.json();
-      if (data.success) {
-        // Store user info in sessionStorage
-        sessionStorage.setItem('username', username);
-        sessionStorage.setItem('firstname', data.firstname); // Store firstname
-        sessionStorage.setItem('lastname', data.lastname);   // Store lastname
-        sessionStorage.setItem('email', data.email);
-        sessionStorage.setItem('usertype', data.usertype);
-        sessionStorage.setItem('token', data.token);         // If token is provided by backend
-
-        // Redirect based on user role
-        if (data.usertype === 'Admin') {
-          navigate('/admin/dashboard'); // Admin dashboard
+  
+      // Check if response is JSON
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        const data = await response.json();
+        if (data.success) {
+          sessionStorage.setItem('username', username);
+          sessionStorage.setItem('firstname', data.firstname);
+          sessionStorage.setItem('lastname', data.lastname);
+          sessionStorage.setItem('email', data.email);
+          sessionStorage.setItem('usertype', data.usertype);
+          sessionStorage.setItem('token', data.token);
+  
+          if (data.usertype === 'Admin') {
+            navigate('/admin/dashboard');
+          } else {
+            navigate('/employee/dashboard');
+          }
         } else {
-          navigate('/employee/dashboard'); // Employee dashboard
+          alert(data.message); // Display error message if login fails
         }
       } else {
-        alert(data.message); // Display error message if login fails
+        // Handle non-JSON responses
+        const errorMessage = await response.text();
+        console.error('Non-JSON response:', errorMessage);
+        alert('Login failed. Please try again.');
       }
     } catch (error) {
       console.error('Error logging in:', error);
     }
   };
+  
 
 
   return (

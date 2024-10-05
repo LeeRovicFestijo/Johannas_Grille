@@ -1,26 +1,42 @@
 import React, { useState } from 'react';
-import './Menu.css';
 import { menu_list } from '../../../assets/assets';
+import './Menu.css';
 
-const Menu = ({ category, setCategory }) => {
-  const [showPopup, setShowPopup] = useState(false); // Controls popup visibility
-  const [productName, setProductName] = useState(''); // Track product name
-  const [price, setPrice] = useState(''); // Track price
-  const [selectedCategory, setSelectedCategory] = useState(''); // Track selected category
-  const [image, setImage] = useState(null); // Track image file
+const Menu = ({ category, setCategory, refreshItems }) => {
+  const [showPopup, setShowPopup] = useState(false);
+  const [productName, setProductName] = useState('');
+  const [price, setPrice] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [image, setImage] = useState(null);
 
-  const categories = ["Appetizer", "Must", "House", "Party", "Dessert", "Drink"]; // Dropdown options
+  const categories = ["Appetizer", "Must", "House", "Party", "Dessert", "Drink"];
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here, such as sending data to the server
-    console.log({
-      productName,
-      price,
-      selectedCategory,
-      image,
-    });
-    setShowPopup(false); // Close the popup after submitting
+  
+    const formData = new FormData();
+    formData.append('name', productName);
+    formData.append('price', price);
+    formData.append('category', selectedCategory);
+    formData.append('image', image);
+  
+    try {
+      const response = await fetch('http://localhost:3000/api/menuitems', {
+        method: 'POST',
+        body: formData,
+      });
+  
+      if (response.ok) {
+        const result = await response.json();
+        console.log('New menu item added:', result);
+        setShowPopup(false);
+        refreshItems();  // Trigger data refresh after adding item
+      } else {
+        console.error('Error adding menu item');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   const handleImageChange = (e) => {
@@ -30,13 +46,11 @@ const Menu = ({ category, setCategory }) => {
   return (
     <div className="admin-product-menu" id="admin-product-menu">
       <h1>Product</h1>
-      <p className="admin-product-menu-description">{/* Description here */}</p>
 
       <button className="admin-add-product-button" onClick={() => setShowPopup(true)}>
         Add Products
       </button>
 
-      {/* Conditionally render the popup */}
       {showPopup && (
         <div className="admin-popup-form">
           <div className="admin-popup-content">
@@ -107,6 +121,6 @@ const Menu = ({ category, setCategory }) => {
       <hr />
     </div>
   );
-}
+};
 
 export default Menu;

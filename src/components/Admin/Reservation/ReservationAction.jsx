@@ -33,7 +33,6 @@ const ReservationEdit = (Transaction) => {
                                 <tr>
                                     <th>Name</th>
                                     <th>Phone</th>
-                                    <th>Email</th>
                                     <th>Branch</th>
                                     <th>Date</th>
                                     <th>Time</th>
@@ -47,7 +46,6 @@ const ReservationEdit = (Transaction) => {
                                     <tr key={dataItem.id}>
                                         <td>{dataItem.name}</td>
                                         <td>{dataItem.phone}</td>
-                                        <td>{dataItem.email}</td>
                                         <td>{dataItem.branch}</td>
                                         <td>{dataItem.date}</td>
                                         <td>{dataItem.time}</td>

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../../../components/Admin/Sidebar/Sidebar";
-import TransactionPopup from "../../../components/Admin/Reservation/ReservationPopup";
-import { RiEditLine } from "react-icons/ri"; // Make sure to import your icons
+import EditModal from "./EditEmployee"; // Import the new EditModal component
+import { RiEditLine } from "react-icons/ri";
 import { MdDeleteOutline } from "react-icons/md";
 import "./Employee.css";
 
@@ -11,34 +11,92 @@ const TABLE_HEADS = [
   "FirstName",
   "LastName",
   "Email",
-  "PhoneNumber",
   "BranchID",
   "Action",
 ];
 
-const TABLE_DATA = [
-  {
-    id: 100,
-    user: "Employee",
-    fname: "Afaq",
-    lname: "Lisbo",
-    email: "john@gmail.com",
-    phone: 1234567890,
-    branch: "BATANGAS",
-  },
-];
 const EmployeeList = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [employees, setEmployees] = useState([]); // State to hold user data
 
-  const handleEditClick = (order) => {
-    setSelectedOrder(order);
+  // Fetch data from the API when the component mounts
+  const fetchEmployees = () => {
+    fetch("http://localhost:3000/api/employees") // Ensure this matches your Express route
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => setEmployees(data))
+      .catch((error) => console.error("Error fetching employee data:", error));
+  };
+
+  useEffect(() => {
+    fetchEmployees();
+  }, []);
+
+  const handleEditClick = (employee) => {
+    setSelectedEmployee(employee);
     setIsEditModalOpen(true);
   };
 
   const handleCloseModal = () => {
-    setSelectedOrder(null);
+    setSelectedEmployee(null);
     setIsEditModalOpen(false);
+  };
+
+  const handleSaveChanges = (updatedEmployee) => {
+    // Send updated data to server (PUT request)
+    fetch(`http://localhost:3000/api/employeesedit/${updatedEmployee.userid}`, {
+      method: "PUT", // or PATCH depending on your API
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedEmployee),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then(() => {
+        // Optionally update the local employees state immediately
+        setEmployees((prevEmployees) =>
+          prevEmployees.map((emp) =>
+            emp.userid === updatedEmployee.userid ? updatedEmployee : emp
+          )
+        );
+
+        // Re-fetch all employees to ensure the latest data from server
+        fetchEmployees();
+
+        handleCloseModal();
+      })
+      .catch((error) => console.error("Error updating employee:", error));
+  };
+
+  const handleDelete = (employeeId) => {
+    if (!window.confirm("Are you sure you want to delete this employee?")) {
+      return; // Cancel the deletion if the user doesn't confirm
+    }
+
+    // Send DELETE request to server
+    fetch(`http://localhost:3000/api/employees/${employeeId}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to delete employee");
+        }
+        // Remove employee from local state after successful deletion
+        setEmployees((prevEmployees) =>
+          prevEmployees.filter((employee) => employee.userid !== employeeId)
+        );
+      })
+      .catch((error) => console.error("Error deleting employee:", error));
   };
 
   return (
@@ -58,20 +116,19 @@ const EmployeeList = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {TABLE_DATA.map((dataItem) => (
-                    <tr key={dataItem.id}>
-                      <td>{dataItem.id}</td>
-                      <td>{dataItem.user}</td>
-                      <td>{dataItem.fname}</td>
-                      <td>{dataItem.lname}</td>
-                      <td>{dataItem.email}</td>
-                      <td>{dataItem.phone}</td>
-                      <td>{dataItem.branch}</td>
+                  {employees.map((employee) => (
+                    <tr key={employee.userid}>
+                      <td>{employee.userid}</td>
+                      <td>{employee.usertype}</td>
+                      <td>{employee.firstname}</td>
+                      <td>{employee.lastname}</td>
+                      <td>{employee.email}</td>
+                      <td>{employee.branchid}</td>
                       <td className="emplo-dt-cell-action">
-                        <i onClick={() => handleEditClick(dataItem)}>
+                        <i onClick={() => handleEditClick(employee)}>
                           <RiEditLine size={25} />
                         </i>
-                        <i>
+                        <i onClick={() => handleDelete(employee.userid)}>
                           <MdDeleteOutline size={25} />
                         </i>
                       </td>
@@ -84,9 +141,10 @@ const EmployeeList = () => {
         </div>
 
         {isEditModalOpen && (
-          <TransactionPopup
-            dataItem={selectedOrder} // Change here
-            onClose={handleCloseModal} // Change here
+          <EditModal
+            employeeData={selectedEmployee}
+            onClose={handleCloseModal}
+            onSave={handleSaveChanges}
           />
         )}
       </div>

@@ -232,7 +232,7 @@ const AddToCart = () => {
 
       {/* Conditional rendering for the Finalize Order component */}
       {showOrder && (
-        <FinalizeOrder
+        <Payment
           selectedBranch={selectedBranch}
           quantities={quantities}
           addons={addons}
