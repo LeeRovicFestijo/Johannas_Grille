@@ -3,6 +3,7 @@ import Sidebar from "../../../components/Admin/Sidebar/Sidebar";
 import EditModal from "./EditEmployee"; // Import the new EditModal component
 import { RiEditLine } from "react-icons/ri";
 import { MdDeleteOutline } from "react-icons/md";
+import { AiOutlineUserAdd } from "react-icons/ai";
 import "./Employee.css";
 
 const TABLE_HEADS = [
@@ -11,7 +12,7 @@ const TABLE_HEADS = [
   "FirstName",
   "LastName",
   "Email",
-  "BranchID",
+  "Branch",
   "Action",
 ];
 
@@ -123,8 +124,11 @@ const EmployeeList = () => {
                       <td>{employee.firstname}</td>
                       <td>{employee.lastname}</td>
                       <td>{employee.email}</td>
-                      <td>{employee.branchid}</td>
+                      <td>{employee.branch}</td>
                       <td className="emplo-dt-cell-action">
+                        <i>
+                        <AiOutlineUserAdd size={25}/>
+                        </i>
                         <i onClick={() => handleEditClick(employee)}>
                           <RiEditLine size={25} />
                         </i>

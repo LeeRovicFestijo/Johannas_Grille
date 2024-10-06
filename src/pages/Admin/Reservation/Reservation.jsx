@@ -61,9 +61,8 @@ const ReservationList = () => {
               <table>
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>Phone</th>
-                    <th>Branch</th>
+                    <th>CustomerID</th>
+                    <th>Guests</th>
                     <th>Date</th>
                     <th>Time</th>
                     <th>Status</th>
@@ -72,30 +71,44 @@ const ReservationList = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {reservations.map((dataItem) => (
-                    <tr key={dataItem.id}>
-                      <td>{dataItem.name}</td>
-                      <td>{dataItem.phone}</td>
-                      <td>{dataItem.branch}</td>
-                      <td>{dataItem.date}</td>
-                      <td>{dataItem.time}</td>
-                      <td>
-                        <div className="tra-dt-status">
-                          <span className={`tra-dt-status-dot dot-${dataItem.status}`}></span>
-                          <span className="tra-dt-status-text">{dataItem.status}</span>
-                        </div>
-                      </td>
-                      <td>${dataItem.amount.toFixed(2)}</td>
-                      <td className="tra-dt-cell-action">
-                        <i onClick={() => handleEditClick(dataItem)}>
-                          <RiEditLine size={25} />
-                        </i>
-                        <i>
-                          <MdDeleteOutline size={25} onClick={() => handleEditClick(dataItem)} />
-                        </i>
-                      </td>
-                    </tr>
-                  ))}
+                  {reservations.map((dataItem) => {
+                    const formattedDate = new Date(dataItem.reservationdate).toLocaleDateString("en-US", {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    });
+
+                    const formattedTime = new Date(`1970-01-01T${dataItem.reservationtime}`).toLocaleTimeString("en-US", {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: true
+                    });
+
+                    return (
+                      <tr key={dataItem.id}>
+                        <td>{dataItem.customerid}</td>
+                        <td>{dataItem.numberofguests}</td>
+                        <td>{formattedDate}</td>
+                        <td>{formattedTime}</td>
+                        <td>
+                          <div className="tra-dt-status">
+                            <span className={`tra-dt-status-dot dot-${dataItem.status}`}></span>
+                            <span className="tra-dt-status-text">{dataItem.status}</span>
+                          </div>
+                        </td>
+                        <td>P{dataItem.amount.toFixed(2)}</td>
+                        <td className="tra-dt-cell-action">
+                          <i onClick={() => handleEditClick(dataItem)}>
+                            <RiEditLine size={25} />
+                          </i>
+                          <i>
+                            <MdDeleteOutline size={25} onClick={() => handleEditClick(dataItem)} />
+                          </i>
+                        </td>
+                      </tr>
+                    );
+                  })}
+
                 </tbody>
               </table>
             </div>

@@ -71,6 +71,7 @@
 
   .emplo-content-area-table .emplo-data-table-diagram table .emplo-dt-cell-emplo-action {
     text-align: center;
+    gap: 5px;
   }
 
   .emplo-content-area-table .emplo-data-table-diagram table .emplo-dt-status {

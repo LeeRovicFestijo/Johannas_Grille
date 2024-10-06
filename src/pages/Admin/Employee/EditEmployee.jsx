@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import './EditEmployee.css'
 
 const EditModal = ({ employeeData, onClose, onSave }) => {
   const [employee, setEmployee] = useState(employeeData);
@@ -44,27 +45,53 @@ const EditModal = ({ employeeData, onClose, onSave }) => {
       <div className="modal-content">
         <h2>Edit Employee</h2>
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="firstname">First Name</label>
-            <input
-              type="text"
-              id="firstname"
-              name="firstname"
-              value={employee.firstname}
-              onChange={handleChange}
-              required
-            />
+          <div className="emplo-container">
+            <div className="form-group1">
+              <label htmlFor="firstname">First Name</label>
+              <input
+                type="text"
+                id="firstname"
+                name="firstname"
+                value={employee.firstname}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group1">
+              <label htmlFor="lastname">Last Name</label>
+              <input
+                type="text"
+                id="lastname"
+                name="lastname"
+                value={employee.lastname}
+                onChange={handleChange}
+                required
+              />
+            </div>
           </div>
-          <div className="form-group">
-            <label htmlFor="lastname">Last Name</label>
-            <input
-              type="text"
-              id="lastname"
-              name="lastname"
-              value={employee.lastname}
-              onChange={handleChange}
-              required
-            />
+          <div className="emplo-details">
+            <div className="form-group2">
+              <label htmlFor="username">Username</label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                value={employee.username}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group2">
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={employee.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
           </div>
           <div className="form-group">
             <label htmlFor="email">Email</label>
@@ -94,7 +121,7 @@ const EditModal = ({ employeeData, onClose, onSave }) => {
               type="text"
               id="branchid"
               name="branchid"
-              value={employee.branchid}
+              value={employee.branch}
               onChange={handleChange}
               required
             />
