@@ -67,6 +67,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
+
 // Fetch all menu items
 app.get('/api/menuitems', async (req, res) => {
   try {
@@ -77,8 +78,6 @@ app.get('/api/menuitems', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
-
-
 
 // Fetch a single menu item by ID
 app.get('/api/menuitems/:id', async (req, res) => {
@@ -128,6 +127,25 @@ app.put('/api/menuitems/:id', upload.single('image'), async (req, res) => {
   }
 });
 
+// Insert Menu Items
+app.post('/api/menuitems', upload.single('image'), async (req, res) => {
+  const { name, price, category } = req.body;
+  const image_url = req.file ? `/uploads/${req.file.filename}` : null;
+
+  try {
+    const result = await pool.query(
+      'INSERT INTO menuitemtbl (name, price, category, image_url) VALUES ($1, $2, $3, $4) RETURNING *',
+      [name, price, category, image_url]
+    );
+    res.status(201).json(result.rows[0]); // Return the newly added menu item
+  } catch (err) {
+    console.error('Error adding menu item:', err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+// delete menu items
+
 app.delete('/api/products/:id', async (req, res) => {
   const { id } = req.params;
 
@@ -157,21 +175,7 @@ app.get('/api/categories', async (req, res) => {
   }
 });
 
-app.post('/api/menuitems', upload.single('image'), async (req, res) => {
-  const { name, price, category } = req.body;
-  const image_url = req.file ? `/uploads/${req.file.filename}` : null;
 
-  try {
-    const result = await pool.query(
-      'INSERT INTO menuitemtbl (name, price, category, image_url) VALUES ($1, $2, $3, $4) RETURNING *',
-      [name, price, category, image_url]
-    );
-    res.status(201).json(result.rows[0]); // Return the newly added menu item
-  } catch (err) {
-    console.error('Error adding menu item:', err.message);
-    res.status(500).send('Server error');
-  }
-});
 
 // Fetch all users
 app.get('/api/employees', async (req, res) => {
@@ -184,49 +188,68 @@ app.get('/api/employees', async (req, res) => {
   }
 });
 
+// Fetch all users by id
 app.get('/api/employees/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await pool.query('SELECT * FROM usertbl WHERE userid = $1', [id]);
-    if (result.rows.length > 0) {
-      res.json(result.rows[0]);
-    } else {
-      res.status(404).send('Menu item not found');
-    }
+      const result = await pool.query('SELECT * FROM usertbl WHERE userid = $1', [id]);
+      if (result.rows.length > 0) {
+          res.json(result.rows[0]); // Return the employee details
+      } else {
+          res.status(404).send('Employee not found');
+      }
   } catch (err) {
-    console.error('Error fetching menu item:', err.message);
-    res.status(500).send('Server error');
+      console.error('Error fetching employee details:', err.message);
+      res.status(500).send('Server error');
   }
 });
 
 
-app.put("/api/employeesedit/:id", async (req, res) => {
+app.put('/api/employees/:id', upload.single('image'), async (req, res) => {
   const { id } = req.params;
-  const employeeId = parseInt(id, 10);
-  const { firstname, lastname, email, usertype, branchid } = req.body;
+  console.log("EmployeeId:", id);  // Log the ID
+  const { firstname, lastname, email, username, branch } = req.body;
+  console.log("Body data:", { firstname, lastname, email, username, branch });  // Log body data
+  const image_url = req.file ? `/uploads/${req.file.filename}` : null;
 
-  console.log("ID received in URL:", id);
-  console.log("Data received in body:", req.body);
+  try {
+      let query = 'UPDATE usertbl SET firstname = $1, lastname = $2, email = $3, username = $4, branch = $5';
+      let values = [firstname, lastname, email, username, branch];
+
+      if (image_url) {
+          query += ', image_url = $6 WHERE userid = $7 RETURNING *';
+          values.push(image_url, id);
+      }
+      query += ' WHERE userid = $6 RETURNING *'; // Use $7 for id
+      values.push(id);
+
+      const result = await pool.query(query, values);
+      if (result.rows.length > 0) {
+          res.json(result.rows[0]); // Return the updated item
+      } else {
+          res.status(404).send('Employee not found');
+      }
+  } catch (err) {
+      console.error('Error updating employee details:', err.message);
+      res.status(500).send('Server error');
+  }
+});
+
+
+//add employee
+app.post("/api/employeeadd", upload.single('image'), async (req, res) => {
+  const {usertype, firstname, lastname, email, username, password, branch} = req.body;
+  const image_url = req.file ? `/uploads/${req.file.filename}` : null;
 
   try {
     const result = await pool.query(
-      `UPDATE usertbl 
-       SET firstname = $1, lastname = $2, email = $3, usertype = $4, branchid = $5 
-       WHERE userid = $6 
-       RETURNING *`,
-      [firstname, lastname, email, usertype, branchid, employeeId]
+      'INSERT INTO usertbl (usertype, firstname, lastname, email, username, password, branch, image_url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
+      [usertype, firstname, lastname, email, username, password, branch, image_url]
     );
-
-    if (result.rows.length === 0) {
-      console.log("Employee not found for ID:", id); // Debug log
-      return res.status(404).json({ error: "Employee not found" });
-    }
-
-    console.log("Employee updated successfully:", result.rows[0]); // Debug log
-    res.json(result.rows[0]);
-  } catch (error) {
-    console.error("Error updating employee:", error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(201).json(result.rows[0]); // Return the newly added menu item
+  } catch (err) {
+    console.error('Error adding employee:', err.message);
+    res.status(500).send('Server error');
   }
 });
 

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../../components/Admin/Sidebar/Sidebar";
-import EditModal from "./EditEmployee"; // Import the new EditModal component
+import EditModal from "../../../components/Admin/Employee/EditEmployee";
+import AddModal from "../../../components/Admin/Employee/AddEmployee";
 import { RiEditLine } from "react-icons/ri";
 import { MdDeleteOutline } from "react-icons/md";
-import { AiOutlineUserAdd } from "react-icons/ai";
 import "./Employee.css";
 
 const TABLE_HEADS = [
@@ -16,20 +16,15 @@ const TABLE_HEADS = [
   "Action",
 ];
 
-const EmployeeList = () => {
+const EmployeeList = (id) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const [employees, setEmployees] = useState([]); // State to hold user data
+  const [employees, setEmployees] = useState([]);
 
-  // Fetch data from the API when the component mounts
   const fetchEmployees = () => {
-    fetch("http://localhost:3000/api/employees") // Ensure this matches your Express route
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
+    fetch("http://localhost:3000/api/employees")
+      .then((response) => response.json())
       .then((data) => setEmployees(data))
       .catch((error) => console.error("Error fetching employee data:", error));
   };
@@ -38,65 +33,48 @@ const EmployeeList = () => {
     fetchEmployees();
   }, []);
 
-  const handleEditClick = (employee) => {
-    setSelectedEmployee(employee);
-    setIsEditModalOpen(true);
+  const handleAddClick = () => {
+    setIsAddModalOpen(true);
   };
+
+  const handleEditClick = (employee) => {
+    setIsEditModalOpen(true);
+    setSelectedEmployee(employee.userid);  // Pass the employee's ID here
+  };
+
+  const handleUpdate = () => {
+    fetchEmployees(); // Refresh the menu items list
+  };
+
 
   const handleCloseModal = () => {
     setSelectedEmployee(null);
     setIsEditModalOpen(false);
+    setIsAddModalOpen(false);
   };
 
-  const handleSaveChanges = (updatedEmployee) => {
-    // Send updated data to server (PUT request)
-    fetch(`http://localhost:3000/api/employeesedit/${updatedEmployee.userid}`, {
-      method: "PUT", // or PATCH depending on your API
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updatedEmployee),
+  const handleSaveNewEmployee = (formData) => {
+    fetch("http://localhost:3000/api/employeeadd", {
+      method: "POST",
+      body: formData,
     })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then(() => {
-        // Optionally update the local employees state immediately
-        setEmployees((prevEmployees) =>
-          prevEmployees.map((emp) =>
-            emp.userid === updatedEmployee.userid ? updatedEmployee : emp
-          )
-        );
-
-        // Re-fetch all employees to ensure the latest data from server
-        fetchEmployees();
-
+      .then((response) => response.json())
+      .then((data) => {
+        setEmployees((prev) => [...prev, data]);
         handleCloseModal();
       })
-      .catch((error) => console.error("Error updating employee:", error));
+      .catch((error) => console.error("Error adding employee:", error));
   };
 
   const handleDelete = (employeeId) => {
     if (!window.confirm("Are you sure you want to delete this employee?")) {
-      return; // Cancel the deletion if the user doesn't confirm
+      return;
     }
 
-    // Send DELETE request to server
     fetch(`http://localhost:3000/api/employees/${employeeId}`, {
       method: "DELETE",
     })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to delete employee");
-        }
-        // Remove employee from local state after successful deletion
-        setEmployees((prevEmployees) =>
-          prevEmployees.filter((employee) => employee.userid !== employeeId)
-        );
-      })
+      .then((response) => response.ok && setEmployees((prev) => prev.filter((e) => e.userid !== employeeId)))
       .catch((error) => console.error("Error deleting employee:", error));
   };
 
@@ -105,7 +83,12 @@ const EmployeeList = () => {
       <Sidebar />
       <div className="content-wrapper">
         <div>
-          <h1>Employee Account</h1>
+          <div className="emp-header-container">
+            <button className="admin-add-product-button" onClick={handleAddClick}>
+              Add Employee
+            </button>
+            <h1>Employee Account</h1>
+          </div>
           <section className="emplo-content-area-table">
             <div className="emplo-data-table-diagram">
               <table>
@@ -126,9 +109,6 @@ const EmployeeList = () => {
                       <td>{employee.email}</td>
                       <td>{employee.branch}</td>
                       <td className="emplo-dt-cell-action">
-                        <i>
-                        <AiOutlineUserAdd size={25}/>
-                        </i>
                         <i onClick={() => handleEditClick(employee)}>
                           <RiEditLine size={25} />
                         </i>
@@ -144,11 +124,18 @@ const EmployeeList = () => {
           </section>
         </div>
 
-        {isEditModalOpen && (
+        {isEditModalOpen && selectedEmployee && (
           <EditModal
-            employeeData={selectedEmployee}
+            employeeId={selectedEmployee}  // Pass employeeId properly
             onClose={handleCloseModal}
-            onSave={handleSaveChanges}
+            onSave={handleUpdate}
+          />
+        )}
+
+        {isAddModalOpen && (
+          <AddModal
+            onClose={handleCloseModal}
+            onSave={handleSaveNewEmployee} // Pass the save handler
           />
         )}
       </div>

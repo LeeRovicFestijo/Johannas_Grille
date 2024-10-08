@@ -22,6 +22,7 @@ import ProductList from './pages/Employee/Product/Product'
 import ProfileAdmin from './pages/Admin/Profile/Profile';
 import ProtectedRoute from './components/Admin/PrivateRoute';
 import Inventory from './pages/Admin/Inventory/Inventory';
+import ProfileEmployee from './pages/Employee/Profile/Profile';
 
 const App = () => {
   return (
@@ -52,6 +53,7 @@ const App = () => {
           <Route path='/employee/statistics' element={<Statistics />} />
           <Route path='/employee/product' element={<ProductList />} />
           <Route path='/employee/reservation' element={<Reservation />} />
+          <Route path='/employee/profile' element={<ProfileEmployee />} />
         </Routes>
       </div>
     </>

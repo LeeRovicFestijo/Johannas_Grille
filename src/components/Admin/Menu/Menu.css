@@ -26,9 +26,9 @@
   background-color: #740003; /* Dark background */
   color: white; /* White text */
   border: none; /* No border */
-  border-radius: 5px; /* Rounded corners */
+  border-radius: 15px; /* Rounded corners */
   cursor: pointer; /* Pointer cursor on hover */
-  margin-right: 50px;
+  margin: 8px 40px 0 0;
 }
 
 .admin-add-product-button:hover {

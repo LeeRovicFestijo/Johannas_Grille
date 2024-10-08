@@ -64,6 +64,14 @@ const Sidebar = () => {
                 <span className="em-menu-link-text">Product</span>
               </Link>
             </li>
+            <li className="em-menu-item">
+              <Link to="/employee/profile" className={`em-menu-link ${isActive("/employee/profile") ? "active" : ""}`}>
+                <span className="em-menu-link-icon">
+                  <PiDiceFiveLight size={18} />
+                </span>
+                <span className="em-menu-link-text">Profile</span>
+              </Link>
+            </li>
           </ul>
         </div>
         <div className="sidebar-menu em-sidebar-menu2">
