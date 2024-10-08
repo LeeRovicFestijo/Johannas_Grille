@@ -88,60 +88,60 @@ const EditPopup = ({ productId, onClose, onSave }) => {
   };
 
   return (
-    <div className="popup">
-      <div className="popup-inner">
-        <button onClick={onClose}>Close</button>
-        <form onSubmit={handleSave}>
-          <label htmlFor="name">Name</label>
-          <input
-            id="name"
-            type="text"
-            value={updatedName}
-            onChange={(e) => setUpdatedName(e.target.value)}
-          />
-
-          <label htmlFor="price">Price</label>
-          <input
-            id="price"
-            type="text"
-            value={updatedPrice}
-            onChange={(e) => setUpdatedPrice(e.target.value)}
-          />
-
-          <label htmlFor="category">Category:</label>
-          <select
-            id="category"
-            value={updatedCategory}
-            onChange={(e) => setUpdatedCategory(e.target.value)}
-          >
-            <option value="">Select a category</option>
-            {categories.length > 0 ? (
-              categories.map((category, index) => (
-                <option key={index} value={category}>
-                  {category}
-                </option>
-              ))
-            ) : (
-              <option value="">No categories available</option>
-            )}
-          </select>
-
-          <label htmlFor="image">Upload Image</label>
-          <input
-            id="image"
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-          />
-
-          {imagePreview && (
+    <div className="edit-popup">
+      <div className="edit-popup-inner">
+        <h2>Edit Menu Item</h2>
+        <div className="edit-popup-content">
+          <div className="edit-popup-left">
+            <label>Upload Image</label>
             <div className="image-preview">
-              <img src={imagePreview} alt="Preview" />
+              <img src={imagePreview || '/placeholder.png'} alt="Preview" />
             </div>
-          )}
+            <input type="file" accept="image/*" onChange={handleImageChange} />
+          </div>
 
-          <button type="submit">Save</button>
-        </form>
+          <div className="edit-popup-right">
+            <label>Product Name</label>
+            <input
+              type="text"
+              value={updatedName}
+              onChange={(e) => setUpdatedName(e.target.value)}
+            />
+
+            <label>Price</label>
+            <input
+              type="number"
+              value={updatedPrice}
+              onChange={(e) => setUpdatedPrice(e.target.value)}
+            />
+
+            <label>Category</label>
+            <select
+              value={updatedCategory}
+              onChange={(e) => setUpdatedCategory(e.target.value)}
+            >
+              <option value="">Select a category</option>
+              {categories.length > 0 ? (
+                categories.map((category, index) => (
+                  <option key={index} value={category}>
+                    {category}
+                  </option>
+                ))
+              ) : (
+                <option value="">No categories available</option>
+              )}
+            </select>
+
+            <div className="edit-popup-buttons">
+              <button type="submit" className="save-button" onClick={handleSave}>
+                Save Changes
+              </button>
+              <button type="button" className="cancel-button" onClick={onClose}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

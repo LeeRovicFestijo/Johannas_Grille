@@ -30,7 +30,7 @@ const Menu = ({ category, setCategory, refreshItems }) => {
         const result = await response.json();
         console.log('New menu item added:', result);
         setShowPopup(false);
-        refreshItems();  // Trigger data refresh after adding item
+        refreshItems();
       } else {
         console.error('Error adding menu item');
       }
@@ -44,7 +44,7 @@ const Menu = ({ category, setCategory, refreshItems }) => {
   };
 
   return (
-    <div className="admin-product-menu" id="admin-product-menu">
+    <div className="admin-product-menu">
       <h1>Product</h1>
 
       <button className="admin-add-product-button" onClick={() => setShowPopup(true)}>
@@ -52,11 +52,11 @@ const Menu = ({ category, setCategory, refreshItems }) => {
       </button>
 
       {showPopup && (
+
         <div className="admin-popup-form">
           <div className="admin-popup-content">
             <h2>Add New Product</h2>
             <form onSubmit={handleFormSubmit}>
-              <label>Product Name:</label>
               <input
                 type="text"
                 placeholder="Enter product name"
@@ -65,8 +65,7 @@ const Menu = ({ category, setCategory, refreshItems }) => {
                 onChange={(e) => setProductName(e.target.value)}
                 required
               />
-
-              <label>Price:</label>
+      
               <input
                 type="number"
                 placeholder="Enter product price"
@@ -75,8 +74,7 @@ const Menu = ({ category, setCategory, refreshItems }) => {
                 onChange={(e) => setPrice(e.target.value)}
                 required
               />
-
-              <label>Category:</label>
+      
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
@@ -90,20 +88,22 @@ const Menu = ({ category, setCategory, refreshItems }) => {
                   </option>
                 ))}
               </select>
-
-              <label>Upload Image:</label>
+      
               <input
                 type="file"
                 className="admin-popup-input"
                 onChange={handleImageChange}
                 required
               />
-
-              <button type="submit" className="admin-popup-button">Submit</button>
-              <button type="button" className="admin-popup-button cancel" onClick={() => setShowPopup(false)}>Cancel</button>
+      
+              <div className="admin-popup-actions">
+                <button type="submit" className="admin-popup-button submit">Submit</button>
+                <button type="button" className="admin-popup-button cancel" onClick={() => setShowPopup(false)}>Cancel</button>
+              </div>
             </form>
           </div>
         </div>
+      
       )}
 
       <div className="admin-product-menu-list">
@@ -118,7 +118,6 @@ const Menu = ({ category, setCategory, refreshItems }) => {
           </div>
         ))}
       </div>
-      <hr />
     </div>
   );
 };

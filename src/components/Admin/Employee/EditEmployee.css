@@ -21,9 +21,10 @@
 
 .edit-emplo-image-preview img {
     width: 200px;
-    height: auto;
-    border-radius: 8px;
-}
+    height: 200px;
+    object-fit: cover; /* Ensures the image covers the area while maintaining aspect ratio */
+    border-radius: 5px; /* Optional: for a modern, rounded look */
+  }
 
 .edit-emplo-container {
     display: flex;
@@ -62,7 +63,7 @@
     border-radius: 4px;
 }
 
-.button .edit-emplo-popup-button {
+.edit-emplo-popup-button {
     padding: 10px 15px;
     background-color: #4CAF50;
     color: white;
@@ -72,6 +73,6 @@
     margin-top: 10px;
 }
 
-.button .edit-emplo-popup-button.cancel {
+.edit-emplo-popup-button.cancel {
     background-color: #f44336;
 }

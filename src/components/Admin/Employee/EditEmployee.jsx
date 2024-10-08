@@ -105,7 +105,7 @@ const EditModal = ({ employeeId, onClose, onSave }) => {
                 type="text"
                 id="firstname"
                 name="firstname"
-                classname="edit-emplo-info-input"
+                className="edit-emplo-info-input"
                 value={UpdatedempfName}
                 onChange={(e) => setUpdatedfName(e.target.value)}
                 required
@@ -117,7 +117,7 @@ const EditModal = ({ employeeId, onClose, onSave }) => {
                 type="text"
                 id="lastname"
                 name="lastname"
-                classname="edit-emplo-info-input"
+                className="edit-emplo-info-input"
                 value={UpdatedemplName}
                 onChange={(e) => setUpdatedlName(e.target.value)}
                 required
@@ -131,7 +131,7 @@ const EditModal = ({ employeeId, onClose, onSave }) => {
                 type="text"
                 id="username"
                 name="username"
-                classname="edit-emplo-info-input"
+                className="edit-emplo-info-input"
                 value={Updatedusername}
                 onChange={(e) => setUpdatedUsername(e.target.value)}
                 required
@@ -141,7 +141,7 @@ const EditModal = ({ employeeId, onClose, onSave }) => {
               type="email"
               id="email"
               name="email"
-              classname="edit-emplo-info-input"
+              className="edit-emplo-info-input"
               value={Updatedemail}
               onChange={(e) => setUpdatedEmail(e.target.value)}
               required
@@ -151,14 +151,14 @@ const EditModal = ({ employeeId, onClose, onSave }) => {
               type="text"
               id="branch"
               name="branch"
-              classname="edit-emplo-info-input"
+              className="edit-emplo-info-input"
               value={UpdatedselectedBranch}
               onChange={(e) => setUpdatedSelectedBranch(e.target.value)}
               required
             />
-            <div className="button">
-            <button type="edit-emplo-popup-button">Save Changes</button>
-            <button type="edit-emplo-popup-button cancel" classname="cancel"onClick={onClose}>Cancel</button>
+            <div>
+            <button className="edit-emplo-popup-button" type="save">Save Changes</button>
+            <button className="edit-emplo-popup-button cancel" type="cancel" onClick={onClose}>Cancel</button>
           </div>  
           </div>
         </form>
