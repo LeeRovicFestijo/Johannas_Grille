@@ -29,31 +29,26 @@ const App = () => {
     <>
       <div className='app'>
         <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/cart' element={<Cart />} />
-          <Route path='/add-to-cart' element={<AddToCart />} />
-          <Route path='/login' element={<LoginPopUp />} />
-          <Route path='/confirm' element={<ConfirmOrder />} />
-          <Route path='/admin/login' element={<Admin_LoginPopUp />} />
-          <Route path='/admin/dashboard' element={<BaseLayout />} />
-          <Route path="/admin/dashboard" element={
-          <ProtectedRoute>
-            <BaseLayout />
-          </ProtectedRoute>
-        } />
-          <Route path='/admin/order' element={<Order />} />
-          <Route path='/admin/product' element={<Product />} />
-          <Route path='/admin/reservation' element={<ReservationList />} />
-          <Route path='/admin/employeelist' element={<EmployeeList />} />
-          <Route path='/admin/profile' element={<ProfileAdmin />} />
-          <Route path='/admin/customer' element={<CustomerList />} />
-          <Route path='/admin/inventory' element={<Inventory />} />
-          <Route path='/employee/dashboard' element={<Employee_Dashboard />} />
-          <Route path='/employee/orderhistory' element={<OrderHistory />} />
-          <Route path='/employee/statistics' element={<Statistics />} />
-          <Route path='/employee/product' element={<ProductList />} />
-          <Route path='/employee/reservation' element={<Reservation />} />
-          <Route path='/employee/profile' element={<ProfileEmployee />} />
+          <Route path='/' element={<Home/> } />
+          <Route path='/cart' element={ <Cart /> } />
+          <Route path='/add-to-cart' element={ <AddToCart /> } />
+          <Route path='/login' element={ <LoginPopUp /> } />
+          <Route path='/confirm' element={ <ConfirmOrder /> } />
+          <Route path='/admin/login' element={ <Admin_LoginPopUp />} />
+          <Route path="/admin/dashboard" element={<ProtectedRoute> <BaseLayout /> </ProtectedRoute> } />
+          <Route path='/admin/order' element={<ProtectedRoute> <Order /> </ProtectedRoute>} />
+          <Route path='/admin/product' element={<ProtectedRoute> <Product /> </ProtectedRoute>} />
+          <Route path='/admin/reservation' element={<ProtectedRoute> <ReservationList /> </ProtectedRoute>} />
+          <Route path='/admin/employeelist' element={<ProtectedRoute> <EmployeeList /> </ProtectedRoute>} />
+          <Route path='/admin/profile' element={<ProtectedRoute> <ProfileAdmin /> </ProtectedRoute>} />
+          <Route path='/admin/customer' element={<ProtectedRoute> <CustomerList /> </ProtectedRoute>} />
+          <Route path='/admin/inventory' element={<ProtectedRoute> <Inventory /> </ProtectedRoute>} />
+          <Route path='/employee/dashboard' element={<ProtectedRoute> <Employee_Dashboard /> </ProtectedRoute>} />
+          <Route path='/employee/orderhistory' element={<ProtectedRoute> <OrderHistory /> </ProtectedRoute>} />
+          <Route path='/employee/statistics' element={<ProtectedRoute> <Statistics /> </ProtectedRoute>} />
+          <Route path='/employee/product' element={<ProtectedRoute> <ProductList /> </ProtectedRoute>} />
+          <Route path='/employee/reservation' element={<ProtectedRoute> <Reservation /> </ProtectedRoute>} />
+          <Route path='/employee/profile' element={<ProtectedRoute> <ProfileEmployee /> </ProtectedRoute>} />
         </Routes>
       </div>
     </>

@@ -13,6 +13,13 @@
     font-size: 2.5rem;
     font-weight: bold;
   }
+
+  .employee-img {
+    object-fit: contain;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+  }
   
   .emp-profile-container {
     display: flex;

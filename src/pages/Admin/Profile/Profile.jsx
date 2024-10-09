@@ -4,20 +4,25 @@ import { RxAvatar } from "react-icons/rx";
 import "./Profile.css";
 
 const ProfileAdmin = () => {
+  const [image, setImage] = useState('');
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
-  const [email, setEmail] = useState('');  // This should store the email
+  const [email, setEmail] = useState('');
   const [usertype, setUserType] = useState('');
   const [username, setUsername] = useState('');
 
   useEffect(() => {
+    const storedImage = sessionStorage.getItem('image');
+    console.log('Image URL:', storedImage); // Log the image URL for debugging
+
+    // Prepend base URL if necessary
+    const baseURL = 'http://localhost:3000';
+    setImage(storedImage ? `${baseURL}${storedImage}` : '');
     setFirstname(sessionStorage.getItem('firstname'));
     setLastname(sessionStorage.getItem('lastname'));
-    setEmail(sessionStorage.getItem('email')); // Check if this retrieves the email
+    setEmail(sessionStorage.getItem('email'));
     setUserType(sessionStorage.getItem('usertype'));
     setUsername(sessionStorage.getItem('username'));
-  
-    console.log(sessionStorage.getItem('email')); // Check if email is retrieved correctly
   }, []);
   
 
@@ -32,11 +37,15 @@ const ProfileAdmin = () => {
         <div className="admin-profile-content">
           <div className="admin-profile-info">
             <div className="admin-avatar-box">
-              <RxAvatar className="admin-avatar" size={100} />
+              {image ? (
+                <img src={image} alt="Profile" className="admin-avatar-img" />
+              ) : (
+                <RxAvatar className="admin-avatar" size={100} />
+              )}
             </div>
             <h2>{firstname} {lastname}</h2>
             <div className="admin-personal-info">
-              <p>{usertype}</p> {/* Display the actual email */}
+              <p>{usertype}</p>
             </div>
           </div>
 

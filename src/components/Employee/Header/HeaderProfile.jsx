@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import './HeaderProfile.css'; // Import the CSS
 
 function ProfileHeader({ text }) {
+  const [image, setImage] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -34,6 +35,12 @@ function ProfileHeader({ text }) {
   };
 
   useEffect(() => {
+    const storedImage = sessionStorage.getItem('image');
+    console.log('Image URL:', storedImage); // Log the image URL for debugging
+
+    // Prepend base URL if necessary
+    const baseURL = 'http://localhost:3000';
+    setImage(storedImage ? `${baseURL}${storedImage}` : '');
     const username = sessionStorage.getItem('username');
     const usertype = sessionStorage.getItem('usertype');
 
@@ -55,7 +62,11 @@ function ProfileHeader({ text }) {
         </div>
         <div className="emp-dropdown">
           <i className="emp-profile-image" onClick={toggleDropdown} aria-expanded={isDropdownOpen}>
-            <CgProfile size={40} />
+            {image ? (
+              <img src={image} alt="Profile" className="employee-img" />
+            ) : (
+              <CgProfile size={100} />
+            )}
           </i>
           {isDropdownOpen && (
             <div className="emp-dropdown-content">

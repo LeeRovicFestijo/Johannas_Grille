@@ -28,6 +28,8 @@ const Admin_LoginPopUp = () => {
           sessionStorage.setItem('email', data.email);
           sessionStorage.setItem('usertype', data.usertype);
           sessionStorage.setItem('token', data.token);
+          sessionStorage.setItem('image', data.image);
+
   
           if (data.usertype === 'Admin') {
             navigate('/admin/dashboard');
