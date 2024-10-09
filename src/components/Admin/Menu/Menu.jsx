@@ -7,25 +7,29 @@ const Menu = ({ category, setCategory, refreshItems }) => {
   const [productName, setProductName] = useState('');
   const [price, setPrice] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [availability, setAvailability] = useState('');
+  const [portion, setPortion] = useState('');
   const [image, setImage] = useState(null);
 
   const categories = ["Appetizer", "Must", "House", "Party", "Dessert", "Drink"];
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-  
+
     const formData = new FormData();
     formData.append('name', productName);
     formData.append('price', price);
     formData.append('category', selectedCategory);
+    formData.append('availability', availability);
+    formData.append('portion', portion);
     formData.append('image', image);
-  
+
     try {
       const response = await fetch('http://localhost:3000/api/menuitems', {
         method: 'POST',
         body: formData,
       });
-  
+
       if (response.ok) {
         const result = await response.json();
         console.log('New menu item added:', result);
@@ -65,7 +69,25 @@ const Menu = ({ category, setCategory, refreshItems }) => {
                 onChange={(e) => setProductName(e.target.value)}
                 required
               />
-      
+
+              <input
+                type="text"
+                placeholder="Enter product availability"
+                className="admin-popup-input"
+                value={availability}
+                onChange={(e) => setAvailability(e.target.value)}
+                required
+              />
+
+              <input
+                type="text"
+                placeholder="Enter product portion"
+                className="admin-popup-input"
+                value={portion}
+                onChange={(e) => setPortion(e.target.value)}
+                required
+              />
+
               <input
                 type="number"
                 placeholder="Enter product price"
@@ -74,7 +96,7 @@ const Menu = ({ category, setCategory, refreshItems }) => {
                 onChange={(e) => setPrice(e.target.value)}
                 required
               />
-      
+
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
@@ -88,14 +110,14 @@ const Menu = ({ category, setCategory, refreshItems }) => {
                   </option>
                 ))}
               </select>
-      
+
               <input
                 type="file"
                 className="admin-popup-input"
                 onChange={handleImageChange}
                 required
               />
-      
+
               <div className="admin-popup-actions">
                 <button type="submit" className="admin-popup-button submit">Submit</button>
                 <button type="button" className="admin-popup-button cancel" onClick={() => setShowPopup(false)}>Cancel</button>
@@ -103,7 +125,7 @@ const Menu = ({ category, setCategory, refreshItems }) => {
             </form>
           </div>
         </div>
-      
+
       )}
 
       <div className="admin-product-menu-list">

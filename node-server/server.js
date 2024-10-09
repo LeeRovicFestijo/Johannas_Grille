@@ -19,7 +19,7 @@ app.use('/uploads', express.static('uploads')); // Serve uploaded images statica
 const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
-  database: 'johannasdb',
+  database: 'johannasgrilledb',
   password: 'password',
   port: 5432, // Default PostgreSQL port
 });
@@ -67,7 +67,6 @@ app.post('/login', async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error' });
   }
 });
-
 
 
 // Fetch all menu items

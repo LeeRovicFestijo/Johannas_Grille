@@ -103,7 +103,6 @@ export const food_list = [
         _id: "1",
         name: "Johanna's Baby Back Ribs",
         image: menu_1,
-        price_1: 325,
         price_2: 350,
         description: "lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor lorem ipsum",
         category: "House"
