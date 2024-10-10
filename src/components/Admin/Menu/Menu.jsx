@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { menu_list } from '../../../assets/assets';
 import './Menu.css';
 
-const Menu = ({ category, setCategory, refreshItems }) => {
+const Menu = ({ category, setCategory}) => {
+  const [foodList, setFoodList] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [productName, setProductName] = useState('');
   const [price, setPrice] = useState('');
@@ -15,33 +16,40 @@ const Menu = ({ category, setCategory, refreshItems }) => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-
+  
+    // Create form data
     const formData = new FormData();
     formData.append('name', productName);
     formData.append('price', price);
     formData.append('category', selectedCategory);
     formData.append('availability', availability);
     formData.append('portion', portion);
-    formData.append('image', image);
-
+    formData.append('image', image); // Attach image file
+  
     try {
+      // Send form data to backend API
       const response = await fetch('http://localhost:3000/api/menuitems', {
         method: 'POST',
-        body: formData,
+        body: formData, // Send form data as body
       });
-
+  
       if (response.ok) {
-        const result = await response.json();
+        const result = await response.json(); // Parse the result
         console.log('New menu item added:', result);
+  
+        // Close the popup after successful submission
         setShowPopup(false);
-        refreshItems();
+  
+        // Call the refreshItems function to update the menu
+        window.location.reload();
       } else {
-        console.error('Error adding menu item');
+        console.error('Error adding menu item:', await response.text());
       }
     } catch (error) {
       console.error('Error:', error);
     }
   };
+  
 
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
@@ -129,16 +137,14 @@ const Menu = ({ category, setCategory, refreshItems }) => {
       )}
 
       <div className="admin-product-menu-list">
-        {menu_list.map((item, index) => (
-          <div
-            onClick={() => setCategory(prev => prev === item.menu_name ? "All" : item.menu_name)}
-            key={index}
-            className="admin-product-menu-item"
-          >
-            <img className={category === item.menu_name ? "active" : ""} src={item.menu_image} alt="" />
-            <p>{item.menu_name}</p>
-          </div>
-        ))}
+        {menu_list.map((item,index)=> {
+          return (
+            <div onClick={()=>setCategory(prev=>prev===item.menu_name?"All":item.menu_name)}key={index} className='explore-menu-list-item'> 
+              <img className={category===item.menu_name?"active":""}src={item.menu_image} alt=''/>
+              <p>{item.menu_name}</p>
+            </div>
+          )
+        })}
       </div>
     </div>
   );

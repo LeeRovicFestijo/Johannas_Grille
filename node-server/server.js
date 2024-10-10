@@ -130,13 +130,13 @@ app.put('/api/menuitems/:id', upload.single('image'), async (req, res) => {
 
 // Insert Menu Items
 app.post('/api/menuitems', upload.single('image'), async (req, res) => {
-  const { name, price, category } = req.body;
+  const { name, price, category, availability, portion } = req.body;
   const image_url = req.file ? `/uploads/${req.file.filename}` : null;
 
   try {
     const result = await pool.query(
-      'INSERT INTO menuitemtbl (name, price, category, image_url) VALUES ($1, $2, $3, $4) RETURNING *',
-      [name, price, category, image_url]
+      'INSERT INTO menuitemtbl (name, price, category, availability, portion, image_url) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [name, price, category, availability, portion, image_url]
     );
     res.status(201).json(result.rows[0]); // Return the newly added menu item
   } catch (err) {
