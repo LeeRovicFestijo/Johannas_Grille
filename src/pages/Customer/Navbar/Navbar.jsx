@@ -31,14 +31,14 @@ const Navbar = () => {
         <div className='navbar'>
             <img src={assets.logo} alt="" className="logo" />
             <ul className="navbar-menu">
-                <Link to='/' onClick={() => setMenu("home")} className={menu === "home" ? "active" : ""}>HOME</Link>
+                <a href='/' onClick={() => setMenu("home")} className={menu === "home" ? "active" : ""}>HOME</a>
                 <a href='#explore-menu' onClick={() => setMenu("menu")} className={menu === "menu" ? "active" : ""}>MENU</a>
                 <a href='#reservation' onClick={() => setMenu("reservation")} className={menu === "reservation" ? "active" : ""}>RESERVATION</a>
                 <a href='#footer' onClick={() => setMenu("contact us")} className={menu === "contact us" ? "active" : ""}>CONTACT US</a>
             </ul>
             <div className="navbar-right">
                 <div className="navbar-search-icon">
-                    <i onClick={handleCartClick} className='nav'>{<FiShoppingCart size={26}/>}</i>
+                    <i onClick={handleCartClick} className='nav'>{<FiShoppingCart size={26} />}</i>
                     {showAddToCart && <AddToCart />}
                     <div className="dot"></div>
                 </div>
@@ -46,7 +46,7 @@ const Navbar = () => {
                 {showLogin && <Login />}
 
                 <div className="profile-section">
-                    <FaUserCircle onClick={handleProfileClick} className='profile-icon' size={26}/> {/* Profile icon */}
+                    <FaUserCircle onClick={handleProfileClick} className='profile-icon' size={26} /> {/* Profile icon */}
                     {showProfile && <CustomerProfile />} {/* Conditionally render CustomerProfile */}
                 </div>
             </div>

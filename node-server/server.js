@@ -4,10 +4,13 @@ const bodyParser = require('body-parser');
 const { Pool } = require('pg');
 const multer = require('multer');
 const path = require('path');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 // Initialize express app
 const app = express();
 const port = 3000;
+const SECRET_KEY = process.env.SECRET_KEY || 'your-secret-key';
 
 // Middleware
 app.use(express.json());
@@ -35,6 +38,45 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
+
+app.post('/api/signup', async (req, res) => {
+  const {firstname, lastname, address, email, phonenumber, username, password} = req.body;
+
+  // Hash the password
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  try {
+      const result = await pool.query(
+          'INSERT INTO customertbl (firstname, lastname, address, email, phonenumber, username, password) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+          [firstname, lastname, address, email, phonenumber, username, hashedPassword]
+      );
+      res.status(201).json({ message: 'User registered successfully', user: result.rows[0] });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error registering user' });
+  }
+});
+
+// Login Endpoint
+app.post('/api/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+      const result = await pool.query('SELECT * FROM customertbl WHERE username = $1', [username]);
+      const user = result.rows[0];
+
+      if (user && (await bcrypt.compare(password, user.password))) {
+          const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, { expiresIn: '1h' });
+          res.json({ message: 'Login successful', token });
+      } else {
+          res.status(401).json({ message: 'Invalid username or password' });
+      }
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error logging in' });
+  }
+});
+
 
 // --- API Endpoints ---
 app.post('/login', async (req, res) => {

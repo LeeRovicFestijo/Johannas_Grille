@@ -46,7 +46,7 @@ function Header({ text }) {
 
     // If no user is logged in, redirect to login page
     if (!username || !usertype) {
-      navigate('/admin/login');
+      navigate('/admin');
     }
   }, [navigate]);
 

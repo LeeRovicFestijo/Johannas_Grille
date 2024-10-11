@@ -3,7 +3,6 @@ import { menu_list } from '../../../assets/assets';
 import './Menu.css';
 
 const Menu = ({ category, setCategory}) => {
-  const [foodList, setFoodList] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [productName, setProductName] = useState('');
   const [price, setPrice] = useState('');
