@@ -7,7 +7,7 @@ import ReservationPopup from './ReservationPopup'
 
 const ReservationEdit = (Transaction) => {
 
-    
+
     const [editData, setEditData] = useState(null);
 
     const handleEditClick = (dataItem) => {
@@ -49,13 +49,13 @@ const ReservationEdit = (Transaction) => {
                                         <td>{dataItem.branch}</td>
                                         <td>{dataItem.date}</td>
                                         <td>{dataItem.time}</td>
+                                        <td>{dataItem.amount}</td>
                                         <td>
                                             <div className="or-dt-status">
                                                 <span className={`or-dt-status-dot dot-${dataItem.status}`}></span>
                                                 <span className="or-dt-status-text">{dataItem.status}</span>
                                             </div>
                                         </td>
-                                        <td>${dataItem.amount.toFixed(2)}</td>
                                         <td className="or-dt-cell-action">
                                             <i onClick={() => handleEditClick(dataItem)}>
                                                 < VscEdit />
@@ -71,7 +71,7 @@ const ReservationEdit = (Transaction) => {
                     </div>
                 </section>
 
-                <ReservationPopup/>
+                <ReservationPopup />
                 {editData && <ReservationEdit dataItem={editData} onClose={handleClosePopup} />}
             </div>
         </main>

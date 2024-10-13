@@ -218,8 +218,6 @@ app.get('/api/categories', async (req, res) => {
   }
 });
 
-
-
 // Fetch all users
 app.get('/api/employees', async (req, res) => {
   try {
@@ -338,6 +336,46 @@ app.get('/api/reservations/:id', async (req, res) => {
     }
   } catch (err) {
     console.error('Error fetching menu item:', err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+app.post("/api/reservations", async (req, res) => {
+  const {numberofguests, reservationdate, reservationtime, branch} = req.body;
+
+  try {
+    const result = await pool.query(
+      'INSERT INTO reservationtbl (numberofguests, reservationdate, reservationtime, branch) VALUES ($1, $2, $3, $4) RETURNING *',
+      [numberofguests, reservationdate, reservationtime, branch]
+    );
+    res.status(201).json(result.rows[0]); // Return the newly added menu item
+  } catch (err) {
+    console.error('Error adding reservation:', err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+app.get('/api/customer', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM customertbl');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching customer:', err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+app.get('/api/customer/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query('SELECT * FROM customertbl WHERE customerid = $1', [id]);
+    if (result.rows.length > 0) {
+      res.json(result.rows[0]);
+    } else {
+      res.status(404).send('Customer not found');
+    }
+  } catch (err) {
+    console.error('Error fetching customer:', err.message);
     res.status(500).send('Server error');
   }
 });

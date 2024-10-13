@@ -61,7 +61,8 @@ const Carousel = ({ items, autoPlayInterval = 1000 }) => {
 
       {/* Modal for Reservation Form */}
       {isModalOpen && (
-        <ReservationForm onClose={() => setModalOpen(false)} />
+        <ReservationForm onClose={() => setModalOpen(false)}
+        />
       )}
     </div>
   );

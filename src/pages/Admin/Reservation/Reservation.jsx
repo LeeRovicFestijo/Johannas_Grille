@@ -96,7 +96,7 @@ const ReservationList = () => {
                             <span className="tra-dt-status-text">{dataItem.status}</span>
                           </div>
                         </td>
-                        <td>P{dataItem.amount.toFixed(2)}</td>
+                        <td>{dataItem.amount}</td>
                         <td className="tra-dt-cell-action">
                           <i onClick={() => handleEditClick(dataItem)}>
                             <RiEditLine size={25} />
