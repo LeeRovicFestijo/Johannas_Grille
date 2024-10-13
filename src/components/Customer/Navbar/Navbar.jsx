@@ -9,7 +9,6 @@ import { FiShoppingCart } from "react-icons/fi";
 import { FaUserCircle } from "react-icons/fa"; // For profile icon
 
 const Navbar = () => {
-
     const [menu, setMenu] = useState("home");
     const [showLogin, setShowLogin] = useState(false);
     const [showAddToCart, setShowAddToCart] = useState(false);
@@ -27,6 +26,9 @@ const Navbar = () => {
         setShowProfile(prevState => !prevState);
     };
 
+    // Check if user is logged in based on the presence of a token
+    const isLoggedIn = !!localStorage.getItem('token'); // Replace 'token' with your actual token key
+
     return (
         <div className='navbar'>
             <img src={assets.logo} alt="" className="logo" />
@@ -38,16 +40,25 @@ const Navbar = () => {
             </ul>
             <div className="navbar-right">
                 <div className="navbar-search-icon">
-                    <i onClick={handleCartClick} className='nav'>{<FiShoppingCart size={26}/>}</i>
+                    <i onClick={handleCartClick} className='nav'>{<FiShoppingCart size={26} />}</i>
                     {showAddToCart && <AddToCart />}
                     <div className="dot"></div>
                 </div>
-                <button onClick={handleLoginClick} className='login-btn'>Sign In</button>
+                
+                {/* Conditionally render the Sign In button */}
+                {!isLoggedIn && (
+                    <button onClick={handleLoginClick} className='login-btn'>Sign In</button>
+                )}
                 {showLogin && <Login />}
 
                 <div className="profile-section">
-                    <FaUserCircle onClick={handleProfileClick} className='profile-icon' size={26}/> {/* Profile icon */}
-                    {showProfile && <CustomerProfile />} {/* Conditionally render CustomerProfile */}
+                    {/* Conditionally render the profile icon and profile component */}
+                    {isLoggedIn && (
+                        <>
+                            <FaUserCircle onClick={handleProfileClick} className='profile-icon' size={26} /> {/* Profile icon */}
+                            {showProfile && <CustomerProfile />} {/* Conditionally render CustomerProfile */}
+                        </>
+                    )}
                 </div>
             </div>
         </div>

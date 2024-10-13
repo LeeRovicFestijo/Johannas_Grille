@@ -5,12 +5,10 @@ const { Pool } = require('pg');
 const multer = require('multer');
 const path = require('path');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 
 // Initialize express app
 const app = express();
 const port = 3000;
-const SECRET_KEY = process.env.SECRET_KEY || 'your-secret-key';
 
 // Middleware
 app.use(express.json());
@@ -37,6 +35,22 @@ const storage = multer.diskStorage({
   }
 });
 
+const jwt = require('jsonwebtoken');
+const SECRET_KEY = 'your-secret-key'; // Use your actual secret key
+
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (token == null) return res.sendStatus(401); // If no token is present
+
+  jwt.verify(token, SECRET_KEY, (err, user) => {
+    if (err) return res.sendStatus(403); // If token is invalid
+    req.user = user; // Save decoded user information in req.user
+    next(); // Proceed to the next middleware or route handler
+  });
+};
+
 const upload = multer({ storage });
 
 app.post('/api/signup', async (req, res) => {
@@ -62,18 +76,18 @@ app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
 
   try {
-      const result = await pool.query('SELECT * FROM customertbl WHERE username = $1', [username]);
-      const user = result.rows[0];
+    const result = await pool.query('SELECT * FROM customertbl WHERE username = $1', [username]);
+    const user = result.rows[0];
 
-      if (user && (await bcrypt.compare(password, user.password))) {
-          const token = jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, { expiresIn: '1h' });
-          res.json({ message: 'Login successful', token });
-      } else {
-          res.status(401).json({ message: 'Invalid username or password' });
-      }
+    if (user && (await bcrypt.compare(password, user.password))) {
+      const token = jwt.sign({ id: user.customerid, username: user.username }, SECRET_KEY, { expiresIn: '1h' });
+      res.json({ message: 'Login successful', token });
+    } else {
+      res.status(401).json({ message: 'Invalid username or password' });
+    }
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Error logging in' });
+    console.error('Error logging in:', error.message);
+    res.status(500).json({ message: 'Server error during login' });
   }
 });
 
@@ -355,15 +369,18 @@ app.post("/api/reservations", async (req, res) => {
   }
 });
 
-app.get('/api/customer', async (req, res) => {
+app.get('/api/customer', authenticateToken, async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM customertbl');
-    res.json(result.rows);
+    console.log('User ID from token:', req.user.id); // Log user ID for debugging
+    const result = await pool.query('SELECT * FROM customertbl WHERE customerid = $1', [req.user.id]);
+    console.log('Customer Data:', result.rows[0]); // Log customer data for debugging
+    res.json(result.rows[0]);
   } catch (err) {
     console.error('Error fetching customer:', err.message);
     res.status(500).send('Server error');
   }
 });
+
 
 app.get('/api/customer/:id', async (req, res) => {
   const { id } = req.params;

@@ -67,24 +67,22 @@ const LoginPopUp = () => {
         username,
         password,
       });
-  
-      console.log('Login response:', response); // Log the response for debugging
-  
-      setMessage(response.data.message);
-  
-      // Check if login was successful (status code 200)
+
       if (response.status === 200) {
-        // Close the popup after successful login
+        const { token } = response.data;
+
+        // Store token in localStorage for future requests
+        localStorage.setItem('token', token);
+
+        window.location.reload(); // This line will reload the page
         handleClose();
       } else {
-        console.error('Login failed with status:', response.status);
         setMessage('Login failed');
       }
     } catch (error) {
-      console.error('Error logging in:', error);
       setMessage('Error logging in');
     }
-  };  
+  };
 
   if (!isVisible) {
     return null;

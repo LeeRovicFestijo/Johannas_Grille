@@ -9,7 +9,6 @@ import { FiShoppingCart } from "react-icons/fi";
 import { FaUserCircle } from "react-icons/fa"; // For profile icon
 
 const Navbar = () => {
-
     const [menu, setMenu] = useState("home");
     const [showLogin, setShowLogin] = useState(false);
     const [showAddToCart, setShowAddToCart] = useState(false);
@@ -27,11 +26,14 @@ const Navbar = () => {
         setShowProfile(prevState => !prevState);
     };
 
+    // Check if user is logged in based on the presence of a token
+    const isLoggedIn = !!localStorage.getItem('token'); // Replace 'token' with your actual token key
+
     return (
         <div className='navbar'>
             <img src={assets.logo} alt="" className="logo" />
             <ul className="navbar-menu">
-                <a href='/' onClick={() => setMenu("home")} className={menu === "home" ? "active" : ""}>HOME</a>
+                <Link to='/' onClick={() => setMenu("home")} className={menu === "home" ? "active" : ""}>HOME</Link>
                 <a href='#explore-menu' onClick={() => setMenu("menu")} className={menu === "menu" ? "active" : ""}>MENU</a>
                 <a href='#reservation' onClick={() => setMenu("reservation")} className={menu === "reservation" ? "active" : ""}>RESERVATION</a>
                 <a href='#footer' onClick={() => setMenu("contact us")} className={menu === "contact us" ? "active" : ""}>CONTACT US</a>
@@ -42,12 +44,21 @@ const Navbar = () => {
                     {showAddToCart && <AddToCart />}
                     <div className="dot"></div>
                 </div>
-                <button onClick={handleLoginClick} className='login-btn'>Sign In</button>
+
+                {/* Conditionally render the Sign In button */}
+                {!isLoggedIn && (
+                    <button onClick={handleLoginClick} className='login-btn'>Sign In</button>
+                )}
                 {showLogin && <Login />}
 
                 <div className="profile-section">
-                    <FaUserCircle onClick={handleProfileClick} className='profile-icon' size={26} /> {/* Profile icon */}
-                    {showProfile && <CustomerProfile />} {/* Conditionally render CustomerProfile */}
+                    {/* Conditionally render the profile icon and profile component */}
+                    {isLoggedIn && (
+                        <>
+                            <FaUserCircle onClick={handleProfileClick} className='profile-icon' size={26} /> {/* Profile icon */}
+                            {showProfile && <CustomerProfile />} {/* Conditionally render CustomerProfile */}
+                        </>
+                    )}
                 </div>
             </div>
         </div>
