@@ -81,29 +81,43 @@ const Orders = () => {
               </tr>
             </thead>
             <tbody>
-              {reservation.map((dataItem) => (
-                <tr key={dataItem.id}>
-                  <td>{dataItem.customerid}</td>
-                  <td>{dataItem.numberofguests}</td>
-                  <td>{dataItem.reservationdate}</td>
-                  <td>{dataItem.reservationtime}</td>
-                  <td>{dataItem.branch}</td>
-                  <td>{dataItem.amount}</td>
-                  <td>{dataItem.paymentmethod}</td>
-                  <td>
-                    <div className="or-dt-status">
-                      <span className={`or-dt-status-dot dot-${dataItem.status}`}></span>
-                      <span className="or-dt-status-text">{dataItem.status}</span>
-                    </div>
-                  </td>
-                  <td className="or-dt-cell-action">
-                    <OrderAction
-                      onEdit={() => handleEdit(dataItem)}
-                      onDelete={() => handleDelete(dataItem)}
-                    />
-                  </td>
-                </tr>
-              ))}
+              {reservation.map((dataItem) => {
+                const formattedDate = new Date(dataItem.reservationdate).toLocaleDateString("en-US", {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                });
+
+                const formattedTime = new Date(`1970-01-01T${dataItem.reservationtime}`).toLocaleTimeString("en-US", {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: true
+                });
+
+                return (
+                  <tr key={dataItem.id}>
+                    <td>{dataItem.customerid}</td>
+                    <td>{dataItem.numberofguests}</td>
+                    <td>{formattedDate}</td>
+                    <td>{formattedTime}</td>
+                    <td>{dataItem.branch}</td>
+                    <td>{dataItem.amount}</td>
+                    <td>{dataItem.paymentmethod}</td>
+                    <td>
+                      <div className="or-dt-status">
+                        <span className={`or-dt-status-dot dot-${dataItem.status}`}></span>
+                        <span className="or-dt-status-text">{dataItem.status}</span>
+                      </div>
+                    </td>
+                    <td className="or-dt-cell-action">
+                      <OrderAction
+                        onEdit={() => handleEdit(dataItem)}
+                        onDelete={() => handleDelete(dataItem)}
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
