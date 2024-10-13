@@ -12,7 +12,7 @@ const ProfileCustomer = () => {
       try {
         const token = localStorage.getItem('token');
         console.log('Token:', token); // Log token for debugging
-
+    
         if (token) {
           const response = await axios.get('http://localhost:3000/api/customer', {
             headers: { Authorization: `Bearer ${token}` },
@@ -24,6 +24,10 @@ const ProfileCustomer = () => {
         }
       } catch (error) {
         console.error('Error fetching customer data:', error);
+        if (error.response) {
+          console.error('Server responded with:', error.response.data);
+          console.error('Status code:', error.response.status);
+        }
       }
     };
 
