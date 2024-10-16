@@ -59,7 +59,6 @@ const AddModal = ({ onClose, onSave }) => {
                             type="file"
                             className="emplo-popup-input"
                             onChange={handleImageChange}
-                            required
                         />
                         <div className="emplo-add-container">
                             <div className="form-group1">

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import './EditEmployee.css'
+import './EditEmployee.css';
+import { RxAvatar } from 'react-icons/rx'; // Default avatar icon
 
 const EditModal = ({ employeeId, onClose, onSave }) => {
   const [UpdatedempfName, setUpdatedfName] = useState('');
@@ -10,11 +11,11 @@ const EditModal = ({ employeeId, onClose, onSave }) => {
   const [updatedImage, setUpdatedImage] = useState(null); // File to upload
   const [imagePreview, setImagePreview] = useState(''); // Image URL preview
 
-  // Handle form input changes
+  // Fetch employee data
   useEffect(() => {
     const fetchEmployee = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/employees/${employeeId}`);  // Use backticks here
+        const response = await fetch(`http://localhost:3000/api/employees/${employeeId}`);
         if (response.ok) {
           const data = await response.json();
           setUpdatedfName(data.firstname);
@@ -22,7 +23,7 @@ const EditModal = ({ employeeId, onClose, onSave }) => {
           setUpdatedEmail(data.email);
           setUpdatedUsername(data.username);
           setUpdatedSelectedBranch(data.branch);
-          setImagePreview(`http://localhost:3000${data.image_url}`);
+          setImagePreview(data.image_url ? `http://localhost:3000${data.image_url}` : ''); // If image exists
         } else {
           console.error('Error fetching employee:', response.statusText);
         }
@@ -34,7 +35,7 @@ const EditModal = ({ employeeId, onClose, onSave }) => {
     fetchEmployee();
   }, [employeeId]);
 
-
+  // Handle save
   const handleSave = async (e) => {
     e.preventDefault();
 
@@ -55,18 +56,18 @@ const EditModal = ({ employeeId, onClose, onSave }) => {
       });
 
       if (response.ok) {
-        const updatedProduct = await response.json();
-        onSave(updatedProduct); // Pass updated product back to parent
-        onClose(); // Close the popup
+        const updatedEmployee = await response.json();
+        onSave(updatedEmployee); // Pass updated employee back to parent
+        onClose(); // Close the modal
       } else {
-        console.error('Error updating menu item:', response.statusText);
+        console.error('Error updating employee:', response.statusText);
       }
-
     } catch (error) {
-      console.error('Error updating menu item:', error);
+      console.error('Error updating employee:', error);
     }
   };
 
+  // Handle image change
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -86,10 +87,12 @@ const EditModal = ({ employeeId, onClose, onSave }) => {
         <form onSubmit={handleSave}>
           <div className="edit-form-left">
             <label htmlFor="image">Upload Image</label>
-            {imagePreview && (
+            {imagePreview ? (
               <div className="edit-emplo-image-preview">
                 <img src={imagePreview} alt="Preview" />
               </div>
+            ) : (
+              <RxAvatar className="edit-emplo-image-preview" size={100} /> // Default avatar icon
             )}
             <input
               id="image"
@@ -99,43 +102,43 @@ const EditModal = ({ employeeId, onClose, onSave }) => {
               onChange={handleImageChange}
             />
             <div className="edit-emplo-container">
-            <div className="form-group1">
-              <label htmlFor="firstname">First Name</label>
-              <input
-                type="text"
-                id="firstname"
-                name="firstname"
-                className="edit-emplo-info-input"
-                value={UpdatedempfName}
-                onChange={(e) => setUpdatedfName(e.target.value)}
-                required
-              />
-            </div>
-            <div className="form-group1">
-              <label htmlFor="lastname">Last Name</label>
-              <input
-                type="text"
-                id="lastname"
-                name="lastname"
-                className="edit-emplo-info-input"
-                value={UpdatedemplName}
-                onChange={(e) => setUpdatedlName(e.target.value)}
-                required
-              />
-            </div>
+              <div className="form-group1">
+                <label htmlFor="firstname">First Name</label>
+                <input
+                  type="text"
+                  id="firstname"
+                  name="firstname"
+                  className="edit-emplo-info-input"
+                  value={UpdatedempfName}
+                  onChange={(e) => setUpdatedfName(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="form-group1">
+                <label htmlFor="lastname">Last Name</label>
+                <input
+                  type="text"
+                  id="lastname"
+                  name="lastname"
+                  className="edit-emplo-info-input"
+                  value={UpdatedemplName}
+                  onChange={(e) => setUpdatedlName(e.target.value)}
+                  required
+                />
+              </div>
             </div>
           </div>
           <div className="edit-form-right">
-              <label htmlFor="username">Username</label>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                className="edit-emplo-info-input"
-                value={Updatedusername}
-                onChange={(e) => setUpdatedUsername(e.target.value)}
-                required
-              />
+            <label htmlFor="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              className="edit-emplo-info-input"
+              value={Updatedusername}
+              onChange={(e) => setUpdatedUsername(e.target.value)}
+              required
+            />
             <label htmlFor="email">Email</label>
             <input
               type="email"
@@ -157,9 +160,9 @@ const EditModal = ({ employeeId, onClose, onSave }) => {
               required
             />
             <div>
-            <button className="edit-emplo-popup-button" type="save">Save Changes</button>
-            <button className="edit-emplo-popup-button cancel" type="cancel" onClick={onClose}>Cancel</button>
-          </div>  
+              <button className="edit-emplo-popup-button" type="submit">Save Changes</button>
+              <button className="edit-emplo-popup-button cancel" type="button" onClick={onClose}>Cancel</button>
+            </div>
           </div>
         </form>
       </div>
@@ -168,4 +171,3 @@ const EditModal = ({ employeeId, onClose, onSave }) => {
 };
 
 export default EditModal;
-

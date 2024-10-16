@@ -128,7 +128,7 @@ app.post('/login', async (req, res) => {
 // Fetch all menu items
 app.get('/api/menuitems', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM menuitemtbl');
+    const result = await pool.query('SELECT * FROM menuitemtbl ORDER BY menuitemid');
     res.json(result.rows);
   } catch (err) {
     console.error('Error fetching menu items:', err.message);
