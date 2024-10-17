@@ -114,7 +114,7 @@ const AddModal = ({ onClose, onSave }) => {
                         <label>Email:</label>
                         <input
                             type="text"
-                            placeholder="Enter product price"
+                            placeholder="Enter Email"
                             className="emplo-popup-input"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
@@ -128,7 +128,7 @@ const AddModal = ({ onClose, onSave }) => {
                             className="emplo-popup-input"
                             required
                         >
-                            <option value="">Select a category</option>
+                            <option value="">Select Branch</option>
                             {branch.map((branch, index) => (
                                 <option key={index} value={branch}>
                                     {branch}
