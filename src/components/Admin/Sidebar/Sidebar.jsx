@@ -75,14 +75,6 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className="menu-item">
-              <Link to="/admin/reservation" className={`menu-link ${isActive("/admin/reservation") ? "active" : ""}`}>
-                <span className="menu-link-icon">
-                  <MdOutlineCurrencyExchange size={18} />
-                </span>
-                <span className="menu-link-text">Reservation Lists</span>
-              </Link>
-            </li>
-            <li className="menu-item">
               <Link to="/admin/inventory" className={`menu-link ${isActive("/admin/inventory") ? "active" : ""}`}>
                 <span className="menu-link-icon">
                   <CgProfile size={18} />

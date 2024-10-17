@@ -12,7 +12,6 @@ import Reservation from './pages/Employee/Reservation/Reservation'
 import BaseLayout from './pages/Admin/Dashboard/Dashboard';
 import EmployeeList from './pages/Admin/Employee/Employee';
 import Product from './pages/Admin/Product/Product';
-import ReservationList from './pages/Admin/Reservation/Reservation'
 import CustomerList from './pages/Admin/Customer/Customer'
 import Employee_Dashboard from './pages/Employee/Dashboard/Dashboard';
 import OrderHistory from './pages/Employee/OrderHistory/OrderHistory'
@@ -38,7 +37,6 @@ const App = () => {
           <Route path="/admin/dashboard" element={<ProtectedRoute> <BaseLayout /> </ProtectedRoute> } />
           <Route path='/admin/order' element={<ProtectedRoute> <Order /> </ProtectedRoute>} />
           <Route path='/admin/product' element={<ProtectedRoute> <Product /> </ProtectedRoute>} />
-          <Route path='/admin/reservation' element={<ProtectedRoute> <ReservationList /> </ProtectedRoute>} />
           <Route path='/admin/employeelist' element={<ProtectedRoute> <EmployeeList /> </ProtectedRoute>} />
           <Route path='/admin/profile' element={<ProtectedRoute> <ProfileAdmin /> </ProtectedRoute>} />
           <Route path='/admin/customer' element={<ProtectedRoute> <CustomerList /> </ProtectedRoute>} />
