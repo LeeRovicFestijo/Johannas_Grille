@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Sidebar from "../../../components/Admin/Sidebar/Sidebar";
 import { RxAvatar } from "react-icons/rx";
+import UpdateProfile from "../../../components/Admin/Profile/UpdateProfile"; // Import the popup component
 import "./Profile.css";
 
 const ProfileAdmin = () => {
@@ -10,6 +11,7 @@ const ProfileAdmin = () => {
   const [email, setEmail] = useState('');
   const [usertype, setUserType] = useState('');
   const [username, setUsername] = useState('');
+  const [showPopup, setShowPopup] = useState(false); // Popup state
 
   useEffect(() => {
     const storedImage = sessionStorage.getItem('image');
@@ -24,7 +26,14 @@ const ProfileAdmin = () => {
     setUserType(sessionStorage.getItem('usertype'));
     setUsername(sessionStorage.getItem('username'));
   }, []);
-  
+
+  const handleUpdateClick = () => {
+    setShowPopup(true); // Show the popup
+  };
+
+  const handleClosePopup = () => {
+    setShowPopup(false); // Close the popup
+  };
 
   return (
     <main>
@@ -54,20 +63,20 @@ const ProfileAdmin = () => {
             <div className="admin-form-row">
               <div className="admin-form-group">
                 <label htmlFor="first-name">First Name</label>
-                <input 
-                  type="text" 
-                  id="first-name" 
-                  value={firstname} 
-                  onChange={(e) => setFirstname(e.target.value)} 
+                <input
+                  type="text"
+                  id="first-name"
+                  value={firstname}
+                  onChange={(e) => setFirstname(e.target.value)}
                 />
               </div>
               <div className="admin-form-group">
                 <label htmlFor="last-name">Last Name</label>
-                <input 
-                  type="text" 
-                  id="last-name" 
-                  value={lastname} 
-                  onChange={(e) => setLastname(e.target.value)} 
+                <input
+                  type="text"
+                  id="last-name"
+                  value={lastname}
+                  onChange={(e) => setLastname(e.target.value)}
                 />
               </div>
             </div>
@@ -75,28 +84,44 @@ const ProfileAdmin = () => {
             <div className="admin-form-row">
               <div className="admin-form-group">
                 <label htmlFor="username">Username</label>
-                <input 
-                  type="text" 
-                  id="username" 
-                  value={username} 
-                  onChange={(e) => setUsername(e.target.value)} 
+                <input
+                  type="text"
+                  id="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                 />
               </div>
               <div className="admin-form-group">
                 <label htmlFor="email">Email Address</label>
-                <input 
-                  type="email" 
-                  id="email" 
-                  value={email} 
-                  onChange={(e) => setEmail(e.target.value)} 
+                <input
+                  type="email"
+                  id="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
             </div>
 
-            <button className="admin-update-btn">Update</button>
+            <button className="admin-update-btn" onClick={handleUpdateClick}>Update</button>
           </div>
         </div>
       </div>
+
+      {/* Render the UpdateProfile component */}
+      <UpdateProfile
+        showPopup={showPopup}
+        handleClose={handleClosePopup}
+        firstname={firstname}
+        lastname={lastname}
+        username={username}
+        email={email}
+        image={image} // Pass the current image to the popup
+        setFirstname={setFirstname}
+        setLastname={setLastname}
+        setUsername={setUsername}
+        setEmail={setEmail}
+        setImage={setImage} // Allow updating the image
+      />
     </main>
   );
 };
