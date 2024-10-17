@@ -7,9 +7,9 @@ const Menu = ({ category, setCategory}) => {
   const [productName, setProductName] = useState('');
   const [price, setPrice] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [availability, setAvailability] = useState('');
-  const [portion, setPortion] = useState('');
   const [image, setImage] = useState(null);
+
+  const availability = "Available"; 
 
   const categories = ["Appetizer", "Must", "House", "Party", "Dessert", "Drink"];
 
@@ -22,7 +22,6 @@ const Menu = ({ category, setCategory}) => {
     formData.append('price', price);
     formData.append('category', selectedCategory);
     formData.append('availability', availability);
-    formData.append('portion', portion);
     formData.append('image', image); // Attach image file
   
     try {
@@ -70,28 +69,10 @@ const Menu = ({ category, setCategory}) => {
             <form onSubmit={handleFormSubmit}>
               <input
                 type="text"
-                placeholder="Enter product name"
+                placeholder="Enter product name and portion"
                 className="admin-popup-input"
                 value={productName}
                 onChange={(e) => setProductName(e.target.value)}
-                required
-              />
-
-              <input
-                type="text"
-                placeholder="Enter product availability"
-                className="admin-popup-input"
-                value={availability}
-                onChange={(e) => setAvailability(e.target.value)}
-                required
-              />
-
-              <input
-                type="text"
-                placeholder="Enter product portion"
-                className="admin-popup-input"
-                value={portion}
-                onChange={(e) => setPortion(e.target.value)}
                 required
               />
 

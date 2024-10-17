@@ -1,68 +1,69 @@
 import React, { useState, useEffect } from "react";
 import './EditCustomer.css';
 
-const EditModal = ({ employeeId, onClose, onSave }) => {
-  const [UpdatedempfName, setUpdatedfName] = useState('');
-  const [UpdatedemplName, setUpdatedlName] = useState('');
+const EditModal = ({ customerID, onClose, onSave }) => {
+  const [UpdatedcustfName, setUpdatedfName] = useState('');
+  const [UpdatedcustlName, setUpdatedlName] = useState('');
+  const [Updatedaddress, setUpdatedAddress] = useState('');
+  const [Updatedphone, setUpdatedphone] = useState('');
   const [Updatedemail, setUpdatedEmail] = useState('');
-  const [Updatedusername, setUpdatedUsername] = useState('');
-  const [UpdatedselectedBranch, setUpdatedSelectedBranch] = useState('');
   const [updatedImage, setUpdatedImage] = useState(null); // File to upload
   const [imagePreview, setImagePreview] = useState(''); // Image URL preview
 
   // Handle form input changes
   useEffect(() => {
-    const fetchEmployee = async () => {
+    console.log('CustomerID:', customerID); // Check the customerID
+    const fetchCustomer = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/employees/${employeeId}`);  // Use backticks here
+        const response = await fetch(`http://localhost:3000/api/customer/${customerID}`);
         if (response.ok) {
           const data = await response.json();
           setUpdatedfName(data.firstname);
           setUpdatedlName(data.lastname);
+          setUpdatedAddress(data.address);
+          setUpdatedphone(data.phonenumber);
           setUpdatedEmail(data.email);
-          setUpdatedUsername(data.username);
-          setUpdatedSelectedBranch(data.branch);
           setImagePreview(`http://localhost:3000${data.image_url}`);
         } else {
-          console.error('Error fetching employee:', response.statusText);
+          console.error('Error fetching customer:', response.statusText);
         }
       } catch (error) {
-        console.error('Error fetching employee details:', error);
+        console.error('Error fetching customer details:', error);
       }
     };
-
-    fetchEmployee();
-  }, [employeeId]);
+  
+    fetchCustomer();
+  }, [customerID]);  
 
   const handleSave = async (e) => {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append('firstname', UpdatedempfName);
-    formData.append('lastname', UpdatedemplName);
+    formData.append('firstname', UpdatedcustfName);
+    formData.append('lastname', UpdatedcustlName);
+    formData.append('address', Updatedaddress);
+    formData.append('phonenumber', Updatedphone);
     formData.append('email', Updatedemail);
-    formData.append('username', Updatedusername);
-    formData.append('branch', UpdatedselectedBranch);
     if (updatedImage) {
       formData.append('image', updatedImage);
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/api/employees/${employeeId}`, {
+      const response = await fetch(`http://localhost:3000/api/customer/${customerID}`, {
         method: 'PUT',
         body: formData,
       });
 
       if (response.ok) {
-        const updatedProduct = await response.json();
-        onSave(updatedProduct); // Pass updated product back to parent
+        const updatedCustomer = await response.json();
+        onSave(updatedCustomer); // Pass updated customer back to parent
         onClose(); // Close the popup
       } else {
-        console.error('Error updating menu item:', response.statusText);
+        console.error('Error updating customer:', response.statusText);
       }
 
     } catch (error) {
-      console.error('Error updating menu item:', error);
+      console.error('Error updating customer:', error);
     }
   };
 
@@ -105,7 +106,7 @@ const EditModal = ({ employeeId, onClose, onSave }) => {
                   id="firstname"
                   name="firstname"
                   className="edit-customer-info-input"
-                  value={UpdatedempfName}
+                  value={UpdatedcustfName}
                   onChange={(e) => setUpdatedfName(e.target.value)}
                   required
                 />
@@ -117,7 +118,7 @@ const EditModal = ({ employeeId, onClose, onSave }) => {
                   id="lastname"
                   name="lastname"
                   className="edit-customer-info-input"
-                  value={UpdatedemplName}
+                  value={UpdatedcustlName}
                   onChange={(e) => setUpdatedlName(e.target.value)}
                   required
                 />
@@ -125,14 +126,14 @@ const EditModal = ({ employeeId, onClose, onSave }) => {
             </div>
           </div>
           <div className="edit-form-right">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="username">Address</label>
             <input
               type="text"
-              id="username"
-              name="username"
+              id="address"
+              name="address"
               className="edit-customer-info-input"
-              value={Updatedusername}
-              onChange={(e) => setUpdatedUsername(e.target.value)}
+              value={Updatedaddress}
+              onChange={(e) => setUpdatedAddress(e.target.value)}
               required
             />
             <label htmlFor="email">Email</label>
@@ -145,14 +146,14 @@ const EditModal = ({ employeeId, onClose, onSave }) => {
               onChange={(e) => setUpdatedEmail(e.target.value)}
               required
             />
-            <label htmlFor="branch">Branch</label>
+            <label htmlFor="branch">Phone Number</label>
             <input
               type="text"
-              id="branch"
-              name="branch"
+              id="phonenumber"
+              name="phonenumber"
               className="edit-customer-info-input"
-              value={UpdatedselectedBranch}
-              onChange={(e) => setUpdatedSelectedBranch(e.target.value)}
+              value={Updatedphone}
+              onChange={(e) => setUpdatedphone(e.target.value)}
               required
             />
             <div>

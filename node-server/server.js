@@ -186,13 +186,13 @@ app.put('/api/menuitems/:id', upload.single('image'), async (req, res) => {
 
 // Insert Menu Items
 app.post('/api/menuitems', upload.single('image'), async (req, res) => {
-  const { name, price, category, availability, portion } = req.body;
+  const { name, price, category, availability } = req.body;
   const image_url = req.file ? `/uploads/${req.file.filename}` : null;
 
   try {
     const result = await pool.query(
-      'INSERT INTO menuitemtbl (name, price, category, availability, portion, image_url) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-      [name, price, category, availability, portion, image_url]
+      'INSERT INTO menuitemtbl (name, price, category, availability, image_url) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+      [name, price, category, availability, image_url]
     );
     res.status(201).json(result.rows[0]); // Return the newly added menu item
   } catch (err) {
@@ -378,6 +378,72 @@ app.get('/api/customer', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+
+app.get('/api/customer/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query('SELECT * FROM customertbl WHERE customerid = $1', [id]);
+    if (result.rows.length > 0) {
+      res.json(result.rows[0]);
+    } else {
+      res.status(404).send('Customer not found');
+    }
+  } catch (err) {
+    console.error('Error fetching customer details:', err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+
+app.put('/api/customer/:id', upload.single('image'), async (req, res) => {
+  const { id } = req.params;
+  const { firstname, lastname, address, email, phonenumber } = req.body;
+  const image_url = req.file ? `/uploads/${req.file.filename}` : null;
+
+  try {
+    let query = 'UPDATE customertbl SET firstname = $1, lastname = $2, address = $3, email = $4, phonenumber = $5';
+    let values = [firstname, lastname, address, email, phonenumber];
+
+    if (image_url) {
+      query += ', image_url = $6 WHERE customerid = $7 RETURNING *';
+      values.push(image_url, id);
+    } else {
+      query += ' WHERE customerid = $6 RETURNING *';
+      values.push(id);
+    }
+
+    const result = await pool.query(query, values);
+    if (result.rows.length > 0) {
+      res.json(result.rows[0]); // Return the updated item
+    } else {
+      res.status(404).send('Customer not found');
+    }
+  } catch (err) {
+    console.error('Error updating customer details:', err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+app.delete("/api/customer/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query(
+      `DELETE FROM customertbl WHERE customerid = $1 RETURNING *`,
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Customer not found" });
+    }
+
+    res.json({ message: "Customer deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting customer:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 
 // Start the server
 app.listen(port, () => {

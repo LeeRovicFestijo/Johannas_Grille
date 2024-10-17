@@ -28,7 +28,7 @@ const FoodDisplay = ({ category }) => {
 
   return (
     <div className='food-display' id='food-display'>
-      <h2>Top dishes near you</h2>
+      <h2>Menu</h2>
       <div className="food-display-list">
         {foodList.map((item) => {
           // Check if the item category matches and if the name has already been displayed

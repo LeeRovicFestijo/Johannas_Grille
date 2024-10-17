@@ -3,30 +3,19 @@ import Sidebar from "../../../components/Admin/Sidebar/Sidebar";
 import "./Customer.css";
 import { MdDeleteOutline } from "react-icons/md";
 import { RiEditLine } from "react-icons/ri";
-import EditCustomer from '../../../components/Admin/Customer/EditCustomer';
+import EditModal from '../../../components/Admin/Customer/EditCustomer'; // Correct import
 
 
 const CustomerList = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [customer, setCustomer] = useState([]);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [customers, setCustomer] = useState([]);
 
-  const fetchCustomer = async () => {
-    try {
-      const token = localStorage.getItem('token'); // Retrieve the token from localStorage or wherever it's stored
-      const response = await fetch('http://localhost:3000/api/customer', {
-        headers: {
-          Authorization: `Bearer ${token}` // Add the token to the request
-        }
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setCustomer(data);
-      } else {
-        console.error('Error fetching customer data:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error fetching customer data:', error);
-    }
+  const fetchCustomer = () => {
+    fetch("http://localhost:3000/api/customer")
+      .then((response) => response.json())
+      .then((data) => setCustomer(data))
+      .catch((error) => console.error("Error fetching customer data:", error));
   };
 
   useEffect(() => {
@@ -38,12 +27,25 @@ const CustomerList = () => {
   };
 
   const handleUpdate = () => {
-    fetchEmployees(); // Refresh the menu items list
+    fetchCustomer(); // Refresh the customers list
   };
 
-  const handleEditClick = () => {
+  const handleEditClick = (customer) => {
+    console.log('Selected customer ID:', customer.customerid);
     setIsEditModalOpen(true);
-    setSelectedEmployee();  // Pass the employee's ID here
+    setSelectedCustomer(customer.customerid);
+  };
+
+  const handleDelete = (customerID) => {
+    if (!window.confirm("Are you sure you want to delete this employee?")) {
+      return;
+    }
+
+    fetch(`http://localhost:3000/api/customer/${customerID}`, {
+      method: "DELETE",
+    })
+      .then((response) => response.ok && setCustomer((prev) => prev.filter((e) => e.customerid !== customerID)))
+      .catch((error) => console.error("Error deleting Customer:", error));
   };
 
   return (
@@ -67,21 +69,21 @@ const CustomerList = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {customer?.map((dataItem) => (
-                    <tr key={dataItem.id}>
-                      <td>{dataItem.customerid}</td>
-                      <td>{dataItem.firstname}</td>
-                      <td>{dataItem.lastname}</td>
-                      <td>{dataItem.address}</td>
-                      <td>{dataItem.phonenumber}</td>
-                      <td>{dataItem.email}</td>
+                  {customers?.map((customer) => (
+                    <tr key={customer.customerid}>
+                      <td>{customer.customerid}</td>
+                      <td>{customer.firstname}</td>
+                      <td>{customer.lastname}</td>
+                      <td>{customer.address}</td>
+                      <td>{customer.phonenumber}</td>
+                      <td>{customer.email}</td>
                       <td className="or-dt-cell-action">
                         <div className="edit-delete-container">
                           <div className="edit-btn">
-                            <button className="item-btn-cart" onClick={() => handleEditClick()} >
+                            <button className="item-btn-cart" onClick={() => handleEditClick(customer)}>
                               <RiEditLine size={25} />
                             </button>
-                            <button className="item-btn-cart">
+                            <button onClick={() => handleDelete(customer.customerid)} className="item-btn-cart">
                               <MdDeleteOutline size={25} />
                             </button>
                           </div>
@@ -94,8 +96,9 @@ const CustomerList = () => {
             </div>
           </section>
         </div>
-        {isEditModalOpen && (
-          <EditCustomer
+        {isEditModalOpen && selectedCustomer && (
+          <EditModal
+            customerID={selectedCustomer}
             onClose={handleCloseModal}
             onSave={handleUpdate}
           />
