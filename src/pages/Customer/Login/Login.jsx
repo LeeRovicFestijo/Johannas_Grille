@@ -32,6 +32,17 @@ const LoginPopUp = () => {
 
   const handleSignUp = async () => {
     try {
+      // Debug: Log the data being sent to the API
+      console.log('Sign-up data:', {
+        firstname: firstName,
+        lastname: lastName,
+        address,
+        email,
+        phonenumber: phoneNumber,
+        username,
+        password,
+      });
+
       const response = await axios.post('http://localhost:3000/api/signup', {
         firstname: firstName,
         lastname: lastName,
@@ -47,7 +58,7 @@ const LoginPopUp = () => {
       setMessage(response.data.message);
   
       // Check if the response was successful
-      if (response.status === 200 || response.status === 201) { // Check for both 200 and 201 status codes
+      if (response.status === 200 || response.status === 201) { 
         // Switch to login form after successful sign-up
         setCurrState("Login");
         resetForm();  // Clear form data after successful sign-up
@@ -56,8 +67,13 @@ const LoginPopUp = () => {
         setMessage('Unexpected status code, could not switch to login.');
       }
     } catch (error) {
-      console.error('Sign-up error:', error);
-      setMessage('Error signing up');
+      if (error.response) {
+        console.error('Error response from server:', error.response.data);
+        setMessage(error.response.data.message || 'Error signing up');
+      } else {
+        console.error('Error message:', error.message);
+        setMessage('Error signing up');
+      }
     }
   };  
 
@@ -74,13 +90,19 @@ const LoginPopUp = () => {
         // Store token in localStorage for future requests
         localStorage.setItem('token', token);
 
-        window.location.reload(); // This line will reload the page
+        window.location.reload(); // Reload the page
         handleClose();
       } else {
         setMessage('Login failed');
       }
     } catch (error) {
-      setMessage('Error logging in');
+      if (error.response) {
+        console.error('Error response from server:', error.response.data);
+        setMessage(error.response.data.message || 'Error logging in');
+      } else {
+        console.error('Error message:', error.message);
+        setMessage('Error logging in');
+      }
     }
   };
 
@@ -118,7 +140,7 @@ const LoginPopUp = () => {
                 </div>
                 <input type="text" placeholder='Address' required value={address} onChange={(e) => setAddress(e.target.value)} />
                 <input type="email" placeholder='Email' required value={email} onChange={(e) => setEmail(e.target.value)} />
-                <input type="number" placeholder='Phone Number' required value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+                <input type="tel" placeholder='Phone Number' required value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
               </div>  
               <button className="login-popup-button" onClick={handleSignUp}>
                 Sign Up

@@ -12,15 +12,20 @@ const CustomerList = () => {
 
   const fetchCustomer = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/customer');
+      const token = localStorage.getItem('token'); // Retrieve the token from localStorage or wherever it's stored
+      const response = await fetch('http://localhost:3000/api/customer', {
+        headers: {
+          Authorization: `Bearer ${token}` // Add the token to the request
+        }
+      });
       if (response.ok) {
         const data = await response.json();
         setCustomer(data);
       } else {
-        console.error('Error fetching menu items:', response.statusText);
+        console.error('Error fetching customer data:', response.statusText);
       }
     } catch (error) {
-      console.error('Error fetching menu items:', error);
+      console.error('Error fetching customer data:', error);
     }
   };
 

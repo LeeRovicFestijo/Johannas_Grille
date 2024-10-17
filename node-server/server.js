@@ -22,7 +22,7 @@ const pool = new Pool({
   host: 'localhost',
   database: 'johannasgrilledb',
   password: 'password',
-  port: 5432, // Default PostgreSQL port
+  port: 5433, // Default PostgreSQL port
 });
 
 // Multer storage for handling image uploads
@@ -66,8 +66,8 @@ app.post('/api/signup', async (req, res) => {
       );
       res.status(201).json({ message: 'User registered successfully', user: result.rows[0] });
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Error registering user' });
+      console.error('Error details:', error);  // Add this to log the full error
+      res.status(500).json({ message: 'Error registering user', error: error.message });  // Return error message
   }
 });
 
@@ -369,30 +369,12 @@ app.post("/api/reservations", async (req, res) => {
   }
 });
 
-app.get('/api/customer', authenticateToken, async (req, res) => {
+app.get('/api/customer', async (req, res) => {
   try {
-    console.log('User ID from token:', req.user.id); // Log user ID for debugging
-    const result = await pool.query('SELECT * FROM customertbl WHERE customerid = $1', [req.user.id]);
-    console.log('Customer Data:', result.rows[0]); // Log customer data for debugging
-    res.json(result.rows[0]);
+    const result = await pool.query('SELECT * FROM customertbl ORDER BY customerid ASC');
+    res.json(result.rows);
   } catch (err) {
-    console.error('Error fetching customer:', err.message);
-    res.status(500).send('Server error');
-  }
-});
-
-
-app.get('/api/customer/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await pool.query('SELECT * FROM customertbl WHERE customerid = $1', [id]);
-    if (result.rows.length > 0) {
-      res.json(result.rows[0]);
-    } else {
-      res.status(404).send('Customer not found');
-    }
-  } catch (err) {
-    console.error('Error fetching customer:', err.message);
+    console.error('Error fetching menu items:', err.message);
     res.status(500).send('Server error');
   }
 });

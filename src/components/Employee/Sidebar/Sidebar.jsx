@@ -41,6 +41,14 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className="em-menu-item">
+              <Link to="/employee/order" className={`em-menu-link ${isActive("/employee/order") ? "active" : ""}`}>
+                <span className="em-menu-link-icon">
+                  <PiDiceFiveLight size={18} />
+                </span>
+                <span className="em-menu-link-text">Orders</span>
+              </Link>
+            </li>
+            <li className="em-menu-item">
               <Link to="/employee/orderhistory" className={`em-menu-link ${isActive("/employee/orderhistory") ? "active" : ""}`}>
                 <span className="em-menu-link-icon">
                   <AiOutlineHistory size={20} />

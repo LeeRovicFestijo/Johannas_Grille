@@ -22,7 +22,7 @@ import ProfileAdmin from './pages/Admin/Profile/Profile';
 import ProtectedRoute from './components/Admin/PrivateRoute';
 import Inventory from './pages/Admin/Inventory/Inventory';
 import ProfileEmployee from './pages/Employee/Profile/Profile';
-
+import OrderCart from './pages/Employee/Order/Order';
 const App = () => {
   return (
     <>
@@ -47,6 +47,7 @@ const App = () => {
           <Route path='/employee/orderhistory' element={<ProtectedRoute> <OrderHistory /> </ProtectedRoute>} />
           <Route path='/employee/statistics' element={<ProtectedRoute> <Statistics /> </ProtectedRoute>} />
           <Route path='/employee/product' element={<ProtectedRoute> <ProductList /> </ProtectedRoute>} />
+          <Route path='/employee/order' element={<ProtectedRoute> <OrderCart /> </ProtectedRoute>} />
           <Route path='/employee/reservation' element={<ProtectedRoute> <Reservation /> </ProtectedRoute>} />
           <Route path='/employee/profile' element={<ProtectedRoute> <ProfileEmployee /> </ProtectedRoute>} />
         </Routes>
