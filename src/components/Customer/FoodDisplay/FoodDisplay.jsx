@@ -21,10 +21,7 @@ const FoodDisplay = ({ category }) => {
       };
 
       fetchData();
-    }, []);
-
-  // Use a Set to track displayed names
-  const displayedNames = new Set();
+    }, []);   
 
   return (
     <div className='food-display' id='food-display'>
@@ -32,8 +29,7 @@ const FoodDisplay = ({ category }) => {
       <div className="food-display-list">
         {foodList.map((item) => {
           // Check if the item category matches and if the name has already been displayed
-          if ((category === "All" || category === item.category) && !displayedNames.has(item.name)) {
-            displayedNames.add(item.name); // Add the name to the Set
+          if ((category === "All" || category === item.category)) {
 
             return (
               <FoodItem 
