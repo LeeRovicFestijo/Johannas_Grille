@@ -85,7 +85,7 @@ const EditModal = ({ employeeId, onClose, onSave }) => {
       <div className="edit-emplo-content">
         <h2>Edit Employee</h2>
         <form onSubmit={handleSave}>
-          <div className="edit-form-left">
+          <div className="edit-form-left-emp">
             <label htmlFor="image">Upload Image</label>
             {imagePreview ? (
               <div className="edit-emplo-image-preview">
@@ -98,7 +98,7 @@ const EditModal = ({ employeeId, onClose, onSave }) => {
               id="image"
               type="file"
               accept="image/*"
-              className="emplo-popup-input"
+              className="emplo-popup-input-image"
               onChange={handleImageChange}
             />
             <div className="edit-emplo-container">
@@ -128,7 +128,7 @@ const EditModal = ({ employeeId, onClose, onSave }) => {
               </div>
             </div>
           </div>
-          <div className="edit-form-right">
+          <div className="edit-form-right-emp">
             <label htmlFor="username">Username</label>
             <input
               type="text"
@@ -159,7 +159,7 @@ const EditModal = ({ employeeId, onClose, onSave }) => {
               onChange={(e) => setUpdatedSelectedBranch(e.target.value)}
               required
             />
-            <div>
+            <div className="edit-button-emp">
               <button className="edit-emplo-popup-button" type="submit">Save Changes</button>
               <button className="edit-emplo-popup-button cancel" type="button" onClick={onClose}>Cancel</button>
             </div>

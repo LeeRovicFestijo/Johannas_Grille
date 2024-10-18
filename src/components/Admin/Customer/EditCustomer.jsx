@@ -84,20 +84,15 @@ const EditModal = ({ customerID, onClose, onSave }) => {
       <div className="edit-customer-content">
         <h2>Edit Customer</h2>
         <form onSubmit={handleSave}>
-          <div className="edit-form-left">
-            <label htmlFor="image">Upload Image</label>
+          <div className="edit-form-left-cust">
+            <label>Upload Image</label>
             {imagePreview && (
               <div className="edit-customer-image-preview">
                 <img src={imagePreview} alt="Preview" />
               </div>
             )}
-            <input
-              id="image"
-              type="file"
-              accept="image/*"
-              className="customer-popup-input"
-              onChange={handleImageChange}
-            />
+            <input id="image" type="file" accept="image/*" onChange={handleImageChange}/>
+
             <div className="edit-customer-container">
               <div className="form-group1">
                 <label htmlFor="firstname">First Name</label>
@@ -125,7 +120,7 @@ const EditModal = ({ customerID, onClose, onSave }) => {
               </div>
             </div>
           </div>
-          <div className="edit-form-right">
+          <div className="edit-form-right-cust">
             <label htmlFor="username">Address</label>
             <input
               type="text"
