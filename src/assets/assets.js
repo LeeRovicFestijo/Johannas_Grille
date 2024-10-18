@@ -96,6 +96,11 @@ export const menu_list = [
         menu_name: "Drink",
         menu_image: cat_6
     },
+
+    {
+        menu_name: "Add",
+        menu_image: cat_6
+    },
 ]
 
 export const food_list = [
