@@ -54,19 +54,7 @@ const CustomerList = () => {
     setIsEditModalOpen(true);
     setSelectedCustomer(customer.customerid);
   };
-
-  const handleDelete = (customerID) => {
-    if (!window.confirm("Are you sure you want to delete this employee?")) {
-      return;
-    }
-
-    fetch(`http://localhost:3000/api/customer/${customerID}`, {
-      method: "DELETE",
-    })
-      .then((response) => response.ok && setCustomer((prev) => prev.filter((e) => e.customerid !== customerID)))
-      .catch((error) => console.error("Error deleting Customer:", error));
-  };
-
+  
   return (
     <main className="page-wrapper">
       <Sidebar />

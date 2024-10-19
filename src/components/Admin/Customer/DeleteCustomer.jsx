@@ -16,7 +16,7 @@ const DeleteCustomerPopup = ({ customerID, onClose, onDelete }) => {
       }
 
       const data = await response.json();
-      console.log('Product deleted:', data);
+      console.log('Customer deleted:', data);
 
       onDelete(); // Call the parent delete handler to reload data
       onClose();  // Close the popup after successful deletion
@@ -30,7 +30,6 @@ const DeleteCustomerPopup = ({ customerID, onClose, onDelete }) => {
   return (
     <div className="delete-customer-popup">
       <div className="delete-customer-popup-inner">
-        <button className="delete-customer-close-btn" onClick={onClose}>Close</button>
         <h3>Are you sure you want to delete this item?</h3>
         <div className="delete-customer-popup-buttons">
           <button className="delete-customer-confirm-btn" onClick={handleDelete}>Delete</button>

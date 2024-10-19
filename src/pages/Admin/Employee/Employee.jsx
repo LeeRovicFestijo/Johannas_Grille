@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../../components/Admin/Sidebar/Sidebar";
-import EditModal from "../../../components/Admin/Employee/EditEmployee";
 import AddModal from "../../../components/Admin/Employee/AddEmployee";
+import EditModal from "../../../components/Admin/Employee/EditEmployee";
+import DeleteModal from "../../../components/Admin/Employee/DeleteEmployee";
 import { RiEditLine } from "react-icons/ri";
 import { MdDeleteOutline } from "react-icons/md";
 import "./Employee.css";
@@ -16,9 +17,10 @@ const TABLE_HEADS = [
   "Action",
 ];
 
-const EmployeeList = (id) => {
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+const EmployeeList = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [employees, setEmployees] = useState([]);
 
@@ -42,15 +44,20 @@ const EmployeeList = (id) => {
     setSelectedEmployee(employee.userid);  // Pass the employee's ID here
   };
 
-  const handleUpdate = () => {
-    fetchEmployees(); // Refresh the menu items list
+  const handleDeleteClick = (employee) => {
+    setSelectedEmployee(employee.userid);  // Set the selected employee ID correctly
+    setShowDeletePopup(true);              // Open the delete popup
   };
-
 
   const handleCloseModal = () => {
     setSelectedEmployee(null);
     setIsEditModalOpen(false);
     setIsAddModalOpen(false);
+    setShowDeletePopup(false);  // Close the delete popup
+  };
+
+  const handleDeleteEmployee = () => {
+    fetchEmployees(); // Refresh the employees list after deletion
   };
 
   const handleSaveNewEmployee = (formData) => {
@@ -64,18 +71,6 @@ const EmployeeList = (id) => {
         handleCloseModal();
       })
       .catch((error) => console.error("Error adding employee:", error));
-  };
-
-  const handleDelete = (employeeId) => {
-    if (!window.confirm("Are you sure you want to delete this employee?")) {
-      return;
-    }
-
-    fetch(`http://localhost:3000/api/employees/${employeeId}`, {
-      method: "DELETE",
-    })
-      .then((response) => response.ok && setEmployees((prev) => prev.filter((e) => e.userid !== employeeId)))
-      .catch((error) => console.error("Error deleting employee:", error));
   };
 
   return (
@@ -112,7 +107,7 @@ const EmployeeList = (id) => {
                         <i onClick={() => handleEditClick(employee)}>
                           <RiEditLine size={25} />
                         </i>
-                        <i onClick={() => handleDelete(employee.userid)}>
+                        <i onClick={() => handleDeleteClick(employee)}>
                           <MdDeleteOutline size={25} />
                         </i>
                       </td>
@@ -128,7 +123,7 @@ const EmployeeList = (id) => {
           <EditModal
             employeeId={selectedEmployee}  // Pass employeeId properly
             onClose={handleCloseModal}
-            onSave={handleUpdate}
+            onSave={fetchEmployees}
           />
         )}
 
@@ -138,6 +133,15 @@ const EmployeeList = (id) => {
             onSave={handleSaveNewEmployee} // Pass the save handler
           />
         )}
+
+        {showDeletePopup && selectedEmployee && (
+          <DeleteModal
+            employeeId={selectedEmployee} 
+            onClose={handleCloseModal} 
+            onDelete={handleDeleteEmployee} // Call the delete handler here
+          />
+        )}
+
       </div>
     </main>
   );
