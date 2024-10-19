@@ -4,12 +4,25 @@ import "./Customer.css";
 import { MdDeleteOutline } from "react-icons/md";
 import { RiEditLine } from "react-icons/ri";
 import EditModal from '../../../components/Admin/Customer/EditCustomer'; // Correct import
-
+import DeleteCustomerPopup from '../../../components/Admin/Customer/DeleteCustomer';
 
 const CustomerList = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [customers, setCustomer] = useState([]);
+  const [customer, setCustomers] = useState([]);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/menuitems'); // Adjust this to your API URL
+      const data = await response.json();
+      setCustomers(data); // Update state with fetched data
+      window.location.reload();
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
   const fetchCustomer = () => {
     fetch("http://localhost:3000/api/customer")
@@ -22,8 +35,14 @@ const CustomerList = () => {
     fetchCustomer();
   }, []);
 
-  const handleCloseModal = () => {
+  const handleDeleteClick = (customer) => {
+    setSelectedCustomer(customer.customerid);  // Set the selected customer ID
+    setShowDeletePopup(true);                  // Open the delete popup
+  };
+
+  const handleClosePopup = () => {
     setIsEditModalOpen(false);
+    setShowDeletePopup(false);
   };
 
   const handleUpdate = () => {
@@ -83,7 +102,7 @@ const CustomerList = () => {
                             <button className="item-btn-cart" onClick={() => handleEditClick(customer)}>
                               <RiEditLine size={25} />
                             </button>
-                            <button onClick={() => handleDelete(customer.customerid)} className="item-btn-cart">
+                            <button className="item-btn-cart" onClick={() => handleDeleteClick(customer)}>
                               <MdDeleteOutline size={25} />
                             </button>
                           </div>
@@ -96,12 +115,13 @@ const CustomerList = () => {
             </div>
           </section>
         </div>
+
         {isEditModalOpen && selectedCustomer && (
-          <EditModal
-            customerID={selectedCustomer}
-            onClose={handleCloseModal}
-            onSave={handleUpdate}
-          />
+          <EditModal customerID={selectedCustomer} onClose={handleClosePopup} onSave={handleUpdate} />
+        )}
+
+        {showDeletePopup && selectedCustomer && (
+          <DeleteCustomerPopup customerID={selectedCustomer} onClose={handleClosePopup} onDelete={fetchCustomer} />
         )}
       </div>
     </main>
