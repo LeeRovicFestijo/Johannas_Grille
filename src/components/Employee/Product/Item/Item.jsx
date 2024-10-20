@@ -1,18 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Item.css';
 import EditPopup from './EditPopup';
 import DeletePopup from './DeletePopup';
-// Importing the FaRegEdit (edit icon with pencil inside a square) from react-icons
+// Importing the icons for edit and delete
 import { MdDeleteOutline } from "react-icons/md";
 import { RiEditLine } from "react-icons/ri";
 
-
-const FoodItem = ({ id, name, price, description, image }) => {
+const FoodItem = ({ id, name, price, description, image, category }) => {
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [foodName, setFoodName] = useState(name);
   const [foodPrice, setFoodPrice] = useState(price);
   const [foodImage, setFoodImage] = useState(image);
+  const [foodCategory, setFoodCategory] = useState(category);
+  const [foodItems, setFoodItems] = useState([]);
+  const [menuItems, setMenuItems] = useState([]);
+
+  // Mock fetchData function to simulate fetching updated data from the server
+  
+  const fetchData = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/menuem-items'); // Adjust this to your API URL
+      const data = await response.json();
+      setFoodItems(data); // Update state with fetched data
+      window.location.reload()
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  // Triggering fetchData when the component mounts
+  const fetchMenuItems = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/menuem-items');
+      if (response.ok) {
+        const data = await response.json();
+        setMenuItems(data);
+      } else {
+        console.error('Error fetching menu em-items:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching menu em-items:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchMenuItems();
+  }, []);
 
   const handleEditClick = () => {
     setShowEditPopup(true);
@@ -27,9 +61,8 @@ const FoodItem = ({ id, name, price, description, image }) => {
     setShowDeletePopup(false);
   };
 
-  const handleDelete = () => {
-    console.log(`Deleted ${foodName}`);
-    setShowDeletePopup(false);
+  const handleUpdate = () => {
+    fetchMenuItems(); // Refresh the menu em-items list
   };
 
   const handleSave = (updatedData) => {
@@ -38,6 +71,7 @@ const FoodItem = ({ id, name, price, description, image }) => {
     if (updatedData.updatedImage) {
       setFoodImage(URL.createObjectURL(updatedData.updatedImage));
     }
+    fetchData(); // Reload data after saving
   };
 
   return (
@@ -47,12 +81,12 @@ const FoodItem = ({ id, name, price, description, image }) => {
       </div>
       <div className="em-item-food-card-info">
         <div className="em-item-food-card-name-rating">
-          <p>{name}</p>
+          <p>{foodName}</p>
         </div>
       </div>
-      <div className="em-edit-delete-container">
-        <div className="em-edit-btn">
-          {/* Edit Icon Button using FaRegEdit */}
+      <div className="edit-delete-container">
+        <div className="edit-btn">
+          {/* Edit Icon Button */}
           <button className="em-item-btn-cart" onClick={handleEditClick}>
             <RiEditLine size={25} />
           </button>
@@ -64,23 +98,11 @@ const FoodItem = ({ id, name, price, description, image }) => {
       </div>
 
       {showEditPopup && (
-        <EditPopup
-          name={foodName}
-          price={foodPrice}
-          image={foodImage}
-          onClose={handleClosePopup}
-          onSave={handleSave}
-        />
+        <EditPopup productId={id} onClose={handleClosePopup} onSave={handleSave} onUpdate={handleUpdate}/>
       )}
 
       {showDeletePopup && (
-        <DeletePopup
-          name={foodName}
-          price={foodPrice}
-          image={foodImage}
-          onClose={handleClosePopup}
-          onDelete={handleDelete}
-        />
+        <DeletePopup productId={id} onClose={handleClosePopup} onDelete={fetchData} />
       )}
     </div>
   );
