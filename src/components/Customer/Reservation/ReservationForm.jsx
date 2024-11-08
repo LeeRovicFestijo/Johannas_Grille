@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import './ReservationForm.css';
+import CustomerReservationPayment from '../../../components/Customer/Reservation/CustomerReservationPayment'
+import { IoIosCloseCircleOutline } from "react-icons/io";
 
 // Main ReservationForm Component
 const ReservationForm = ({ onClose }) => {
@@ -141,12 +143,12 @@ const ReservationForm = ({ onClose }) => {
 const TermsPopup = ({ onClose }) => (
   <div className="terms-modal-overlay">
     <div className="terms-modal-content">
-      <button className="terms-close-button" onClick={onClose}>Close</button>
+      <button className="terms-close-button" onClick={onClose}><IoIosCloseCircleOutline size={33}/></button>
       <h2>Terms and Conditions</h2>
       <ol>
         <li>
           <strong>Introduction</strong>
-          <p>Welcome to [Your Restaurant Name]. We strive to provide our guests with exceptional dining experiences. By making a reservation or purchasing food and beverages from our establishment, you agree to abide by the following terms and conditions regarding our No Return and No Refund policy. Please read these terms carefully.</p><br />
+          <p>Welcome to Johannas Grille. We strive to provide our guests with exceptional dining experiences. By making a reservation or purchasing food and beverages from our establishment, you agree to abide by the following terms and conditions regarding our No Return and No Refund policy. Please read these terms carefully.</p><br />
         </li>
         <li>
           <strong>No Return Policy</strong>
@@ -154,7 +156,7 @@ const TermsPopup = ({ onClose }) => (
           <ul style={{ listStyleType: 'disc', paddingLeft: '20px' }}>
             <li>Dine-in meals</li>
             <li>Take-out orders</li>
-            <li>Catering services</li><br />
+            <br />
           </ul>
         </li>
         <li>
@@ -180,16 +182,16 @@ const TermsPopup = ({ onClose }) => (
         </li>
         <li>
           <strong>Acceptance of Terms</strong>
-          <p>By placing an order or making a reservation at [Your Restaurant Name], you acknowledge that you have read and understood these Terms and Conditions and agree to abide by our No Return and No Refund policy. If you do not agree with these terms, please refrain from placing an order.</p><br />
+          <p>By placing an order or making a reservation at Johannas Grille, you acknowledge that you have read and understood these Terms and Conditions and agree to abide by our No Return and No Refund policy. If you do not agree with these terms, please refrain from placing an order.</p><br />
         </li>
         <li>
           <strong>Contact Us</strong>
           <p>If you have any questions or concerns regarding these Terms and Conditions, please contact us at:</p>
           <div className="contact-info">
             <ul style={{ listStyleType: 'disc', paddingLeft: '20px' }}>
-              <li><strong>Email:</strong> [Your Email Address]</li>
-              <li><strong>Phone:</strong> [Your Phone Number]</li>
-              <li><strong>Address:</strong> [Your Restaurant Address]</li>
+              <li><strong>Email:</strong> johannasgrille@yahoo.com</li>
+              <li><strong>Phone:</strong> (043)727-1304 / (043)403-5484 / 09532159027</li>
+              <li><strong>Address:</strong> Villa Florentina Subd., Manghinao Proper Bauan, Batangas</li>
             </ul>
           </div>
         </li>
@@ -199,126 +201,182 @@ const TermsPopup = ({ onClose }) => (
 );
 
 // Menu Popup Component
-// Menu Popup Component with Categories
 const MenuPopupForm = ({ reservationDetails, onClose }) => {
   const menuItems = {
-    'Menu A': [
-      {
-        name: 'Babyback Ribs',
-        image: '/src/assets/01.jpg',
-        details: 'Babyback Ribs slices',
-        price: "P 500.00",
-      },
-      {
-        name: 'Pizza Combo',
-        image: '/src/assets/02.jpg',
-        details: 'Includes pizza, fries, soda, and ice cream',
-        price: "P 600.00",
-      },
+    'Menu A - P500.00': [
+      { name: 'Babyback Ribs', image: '/src/assets/02.jpg', price: 500.00 },
+      { name: 'Special Pancit Canton', image: '/src/assets/02.jpg', price: 500.00 },
+      { name: 'Chopsuey', image: '/src/assets/02.jpg', price: 500.00 },
+      { name: 'Buttered vegetable with quail egg', image: '/src/assets/02.jpg', price: 500.00 },
+      { name: 'Pork Caldereta', image: '/src/assets/02.jpg', price: 500.00 },
+      { name: 'Hunnys Fried Chicken', image: '/src/assets/02.jpg', price: 500.00 },
+      { name: 'Italian Chicken', image: '/src/assets/02.jpg', price: 500.00 },
+      { name: 'Shanghai Rolls', image: '/src/assets/02.jpg', price: 500.00 },
+      { name: 'Buttered Fishfillet', image: '/src/assets/02.jpg', price: 500.00 },
+      { name: 'Blueberry Cheesecake Minis', image: '/src/assets/02.jpg', price: 500.00 },
+      { name: 'Special Turon Rolls', image: '/src/assets/02.jpg', price: 500.00 },
+      { name: 'Regular Iced Tea', image: '/src/assets/02.jpg', price: 500.00 },
+      { name: 'Steamed Rice', image: '/src/assets/02.jpg', price: 500.00 },
     ],
-    'Menu B': [
-      {
-        name: 'Burger Combo',
-        image: '/src/assets/03.jpg',
-        details: 'Includes burger, fries, salad, and a drink',
-        price: "P 700.00",
-      },
-      {
-        name: 'Steak Meal',
-        image: '/src/assets/04.jpg',
-        details: 'Includes steak, mashed potatoes, and a drink',
-        price: "P 800.00",
-      },
+    'Menu B - P600.00': [
+      { name: 'Babyback Ribs', image: '/src/assets/02.jpg', price: 600.00 },
+      { name: 'Special Pancit Canton', image: '/src/assets/02.jpg', price: 600.00 },
+      { name: 'Chopsuey', image: '/src/assets/02.jpg', price: 600.00 },
+      { name: 'Buttered vegetable with quail egg', image: '/src/assets/02.jpg', price: 600.00 },
+      { name: 'Honey Garlic Chicken', image: '/src/assets/02.jpg', price: 600.00 },
+      { name: 'Sweet Chili Garlic(Clums/Mussels)', image: '/src/assets/02.jpg', price: 600.00 },
+      { name: 'Italian Chicken', image: '/src/assets/02.jpg', price: 600.00 },
+      { name: 'Beef Caldereta', image: '/src/assets/02.jpg', price: 600.00 },
+      { name: 'Salisbury Steak', image: '/src/assets/02.jpg', price: 600.00 },
+      { name: 'Lengua', image: '/src/assets/02.jpg', price: 600.00 },
+      { name: 'Spaghetti Bolognese', image: '/src/assets/02.jpg', price: 600.00 },
+      { name: 'Seafood Pasta', image: '/src/assets/02.jpg', price: 600.00 },
+      { name: 'Cheesy Sausage Penne', image: '/src/assets/02.jpg', price: 600.00 },
+      { name: 'Blueberry Cheesecake Minis', image: '/src/assets/02.jpg', price: 600.00 },
+      { name: 'Turon Rolls', image: '/src/assets/02.jpg', price: 600.00 },
+      { name: 'Buko Pandan', image: '/src/assets/02.jpg', price: 600.00 },
+      { name: 'Bottomless Iced Tea', image: '/src/assets/02.jpg', price: 600.00 },
+      { name: 'Canned Juice', image: '/src/assets/02.jpg', price: 600.00 },
+      { name: 'Bottomless Soda', image: '/src/assets/02.jpg', price: 600.00 },
+      { name: 'Steamed Rice', image: '/src/assets/02.jpg', price: 600.00 },
     ],
-    'Menu C': [
-      {
-        name: 'Burger Combo',
-        image: '/src/assets/03.jpg',
-        details: 'Includes burger, fries, salad, and a drink',
-        price: "P 700.00",
-      },
-      {
-        name: 'Steak Meal',
-        image: '/src/assets/04.jpg',
-        details: 'Includes steak, mashed potatoes, and a drink',
-        price: "P 800.00",
-      },
+    'Menu C - P700.00': [
+      { name: 'Babyback Ribs', image: '/src/assets/02.jpg', price: 700.00 },
+      { name: 'Special Pancit Canton', image: '/src/assets/02.jpg', price: 700.00 },
+      { name: 'Chopsuey', image: '/src/assets/02.jpg', price: 700.00 },
+      { name: 'Buttered vegetable with quail egg', image: '/src/assets/02.jpg', price: 700.00 },
+      { name: 'Honey Garlic Chicken', image: '/src/assets/02.jpg', price: 700.00 },
+      { name: 'Sweet Chili Garlic(Clums/Mussels)', image: '/src/assets/02.jpg', price: 700.00 },
+      { name: 'Italian Chicken', image: '/src/assets/02.jpg', price: 700.00 },
+      { name: 'Grilled Salmon Steak', image: '/src/assets/02.jpg', price: 700.00 },
+      { name: 'Grilled Tanigue Steak', image: '/src/assets/02.jpg', price: 700.00 },
+      { name: 'Beef Caldereta', image: '/src/assets/02.jpg', price: 700.00 },
+      { name: 'Salisbury Steak', image: '/src/assets/02.jpg', price: 700.00 },
+      { name: 'Lengua', image: '/src/assets/02.jpg', price: 700.00 },
+      { name: 'Callos', image: '/src/assets/02.jpg', price: 700.00 },
+      { name: 'Spaghetti Bolognese', image: '/src/assets/02.jpg', price: 700.00 },
+      { name: 'Seafood Pasta', image: '/src/assets/02.jpg', price: 700.00 },
+      { name: 'Cheesy Sausage Penne', image: '/src/assets/02.jpg', price: 700.00 },
+      { name: 'Blueberry Cheesecake Minis', image: '/src/assets/02.jpg', price: 700.00 },
+      { name: 'Turon Rolls', image: '/src/assets/02.jpg', price: 700.00 },
+      { name: 'Buko Pandan', image: '/src/assets/02.jpg', price: 700.00 },
+      { name: 'Fruit Salad', image: '/src/assets/02.jpg', price: 700.00 },
+      { name: 'Bottomless Iced Tea', image: '/src/assets/02.jpg', price: 700.00 },
+      { name: 'Canned Juice', image: '/src/assets/02.jpg', price: 700.00 },
+      { name: 'Bottomless Soda', image: '/src/assets/02.jpg', price: 700.00 },
+      { name: 'Steamed Rice', image: '/src/assets/02.jpg', price: 700.00 },
     ],
-    'Menu D': [
-      {
-        name: 'Burger Combo',
-        image: '/src/assets/03.jpg',
-        details: 'Includes burger, fries, salad, and a drink',
-        price: "P 700.00",
-      },
-      {
-        name: 'Steak Meal',
-        image: '/src/assets/04.jpg',
-        details: 'Includes steak, mashed potatoes, and a drink',
-        price: "P 800.00",
-      },
+    'Menu D - P800.00': [
+      { name: 'Seafood Paella Fried Rice', image: '/src/assets/02.jpg', price: 800.00 },
+      { name: 'Babyback Ribs', image: '/src/assets/02.jpg', price: 800.00 },
+      { name: 'Callos', image: '/src/assets/02.jpg', price: 800.00 },
+      { name: 'Lengua', image: '/src/assets/02.jpg', price: 800.00 },
+      { name: 'Salisbury Steak', image: '/src/assets/02.jpg', price: 800.00 },
+      { name: 'Beef Caldereta', image: '/src/assets/02.jpg', price: 800.00 },
+      { name: 'Calderetang Kambing', image: '/src/assets/02.jpg', price: 800.00 },
+      { name: 'Grilled Salmon Steak', image: '/src/assets/02.jpg', price: 800.00 },
+      { name: 'Honey Garlic Chicken', image: '/src/assets/02.jpg', price: 800.00 },
+      { name: 'Italian Chicken', image: '/src/assets/02.jpg', price: 800.00 },
+      { name: 'Lechon Kawali', image: '/src/assets/02.jpg', price: 800.00 },
+      { name: 'Spaghetti Bolognese', image: '/src/assets/02.jpg', price: 800.00 },
+      { name: 'Seafood Pasta', image: '/src/assets/02.jpg', price: 800.00 },
+      { name: 'Cheesy Sausage Penne', image: '/src/assets/02.jpg', price: 800.00 },
+      { name: 'Blueberry Cheesecake Minis', image: '/src/assets/02.jpg', price: 800.00 },
+      { name: 'Turon Rolls', image: '/src/assets/02.jpg', price: 800.00 },
+      { name: 'Buko Pandan', image: '/src/assets/02.jpg', price: 800.00 },
+      { name: 'Fruit Salad', image: '/src/assets/02.jpg', price: 800.00 },
+      { name: 'Bottomless Iced Tea', image: '/src/assets/02.jpg', price: 800.00 },
+      { name: 'Canned Juice', image: '/src/assets/02.jpg', price: 800.00 },
+      { name: 'Bottomless Soda', image: '/src/assets/02.jpg', price: 800.00 },
+      { name: 'Steamed Rice', image: '/src/assets/02.jpg', price: 800.00 },
     ],
   };
 
   const [selectedItems, setSelectedItems] = useState({});
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isPaymentOpen, setIsPaymentOpen] = useState(false);
 
-  const handleItemSelection = (name, increment) => {
+  const handleItemSelection = (name, price, increment) => {
     setSelectedItems((prev) => {
-      const currentQty = prev[name] || 0;
-      const newQty = Math.max(currentQty + increment, 0); // Prevent negative quantity
-      return { ...prev, [name]: newQty };
+      const currentQty = prev[name]?.qty || 0;
+      const newQty = Math.max(currentQty + increment, 0);
+      return { ...prev, [name]: { qty: newQty, price } };
     });
   };
 
   const handleConfirmSelection = () => {
-    setIsConfirmOpen(true); // Open the confirmation popup
+    setIsConfirmOpen(true);
+  };
+
+  const handleConfirmPayment = () => {
+    setIsPaymentOpen(true);
   };
 
   const handleFinalSubmit = () => {
     console.log("Selected Items:", selectedItems);
-    onClose(); // Close the form after confirmation
+    onClose();
+  };
+
+  const ConfirmPopup = ({ selectedItems, onConfirm, onCancel }) => {
+    const totalAmount = Object.values(selectedItems).reduce((total, { qty, price }) => {
+      return total + qty * price;
+    }, 0);
+
+    return (
+      <div className="confirm-popup-overlay">
+        <div className="confirm-popup-content">
+          <h2>Confirm Your Selection</h2>
+          <ul>
+            {Object.entries(selectedItems).map(([item, { qty, price }]) => (
+              <li key={item}>
+                {item}: {qty}
+              </li>
+            ))}
+          </ul>
+          <h3>Total Amount: P{totalAmount.toFixed(2)}</h3>
+          <div className="popup-buttons">
+            <button onClick={handleConfirmPayment}>Confirm</button>
+            <button onClick={onCancel}>Cancel</button>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
-    <div className="res-popup">
-      <div className="res-popup-content">
-        <button className="res-popup-close" onClick={onClose}>Close</button>
+    <div className="menu-popup">
+      <div className="menu-popup-content">
+        <button className="menu-popup-close" onClick={onClose}><IoIosCloseCircleOutline size={33}/></button>
         <h2>Select Your Package</h2>
 
-        {/* Iterate over the categories */}
-        {Object.keys(menuItems).map((category) => (
-          <div key={category}>
-            <h3>{category}</h3>
-            <div className="res-grid">
-              {menuItems[category].map((item, index) => (
-                <div key={index} className="res-item">
-                  <img src={item.image} alt={item.name} className="res-item-image" />
-                  <div className="res-item-details">
-                    <h3>{item.name}</h3>
-                    <p>{item.details}</p>
-                    <div className="res-price-container">
-                      <span className="res-price">{item.price}</span>
-                    </div>
-                    <div className="res-quantity">
-                      <button
-                        className="res-quantity-button"
-                        onClick={() => handleItemSelection(item.name, -1)}
-                      >-</button>
-                      <span>{selectedItems[item.name] || 0}</span>
-                      <button
-                        className="res-quantity-button"
-                        onClick={() => handleItemSelection(item.name, 1)}
-                      >+</button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+     {Object.keys(menuItems).map((category) => (
+  <div key={category} className="menu-grid-container">
+    <h3>{category}</h3>
+    <div className="menu-grid">
+      {menuItems[category].map((item, index) => (
+        <div key={index} className="menu-item">
+          <img src={item.image} alt={item.name} className="menu-item-image" />
+          <div className="menu-item-details">
+            <h3>{item.name}</h3>
+            <div className="menu-quantity">
+              <button
+                className="menu-quantity-button"
+                onClick={() => handleItemSelection(item.name, item.price, -1)}
+              >-</button>
+              <span>{selectedItems[item.name]?.qty || 0}</span>
+              <button
+                className="menu-quantity-button"
+                onClick={() => handleItemSelection(item.name, item.price, 1)}
+              >+</button>
             </div>
           </div>
-        ))}
+        </div>
+      ))}
+    </div>
+  </div>
+))}
 
-        <button onClick={handleConfirmSelection} className="res-confirm-menu">
+        <button onClick={handleConfirmSelection} className="confirm-menu">
           Confirm Selection
         </button>
 
@@ -329,33 +387,21 @@ const MenuPopupForm = ({ reservationDetails, onClose }) => {
             onCancel={() => setIsConfirmOpen(false)}
           />
         )}
+
+        {isPaymentOpen && (
+          <CustomerReservationPayment
+          reservationDetails={reservationDetails}
+          selectedItems={selectedItems}
+          onConfirm={() => setIsPaymentOpen(false)}  // This closes the payment popup, but doesn't affect the parent modal
+          onPaymentComplete={() => onClose()}      // This should close the parent modal after successful payment
+          onClose={onClose} // Pass onClose down here to handle the close action properly
+        />
+
+        )}
+
       </div>
     </div>
   );
 };
-
-const ConfirmPopup = ({ selectedItems, onConfirm, onCancel }) => (
-  <div className="confirm-modal-overlay">
-    <div className="confirm-modal-content">
-      <h2>Confirm Your Selection</h2>
-      <p>Are you sure you want to confirm the following items?</p>
-      <ul>
-        {Object.entries(selectedItems).map(([name, quantity]) => (
-          quantity > 0 && (
-            <li key={name}>{name}: {quantity}</li>
-          )
-        ))}
-      </ul>
-      <div className="confirm-buttons">
-        <button className="confirm-button" onClick={onConfirm}>
-          Yes, Confirm
-        </button>
-        <button className="cancel-button" onClick={onCancel}>
-          No, Go Back
-        </button>
-      </div>
-    </div>
-  </div>
-);
 
 export default ReservationForm;
