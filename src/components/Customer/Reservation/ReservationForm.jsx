@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import './ReservationForm.css';
 import CustomerReservationPayment from '../../../components/Customer/Reservation/CustomerReservationPayment'
+import CustomerReservationMenu from '../../../components/Customer/Reservation/CustomerReservationMenu'
 import { IoIosCloseCircleOutline } from "react-icons/io";
+
 
 // Main ReservationForm Component
 const ReservationForm = ({ onClose }) => {
@@ -133,7 +135,7 @@ const ReservationForm = ({ onClose }) => {
           </div>
         </div>
       ) : (
-        <MenuPopupForm reservationDetails={reservationDetails} onClose={onClose} />
+        <CustomerReservationMenu reservationDetails={reservationDetails} onClose={onClose} />
       )}
     </>
   );
@@ -143,7 +145,7 @@ const ReservationForm = ({ onClose }) => {
 const TermsPopup = ({ onClose }) => (
   <div className="terms-modal-overlay">
     <div className="terms-modal-content">
-      <button className="terms-close-button" onClick={onClose}><IoIosCloseCircleOutline size={33}/></button>
+      <button className="terms-close-button" onClick={onClose}>Close</button>
       <h2>Terms and Conditions</h2>
       <ol>
         <li>
@@ -335,8 +337,8 @@ const MenuPopupForm = ({ reservationDetails, onClose }) => {
           </ul>
           <h3>Total Amount: P{totalAmount.toFixed(2)}</h3>
           <div className="popup-buttons">
-            <button onClick={handleConfirmPayment}>Confirm</button>
-            <button onClick={onCancel}>Cancel</button>
+            <button className="confirm" onClick={handleConfirmPayment}>Confirm</button>
+            <button className="cancel" onClick={onCancel}>Cancel</button>
           </div>
         </div>
       </div>

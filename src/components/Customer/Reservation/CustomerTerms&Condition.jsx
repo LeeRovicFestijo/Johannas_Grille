@@ -1,4 +1,5 @@
 import React from 'react'
+import './CustomerTermsCondition.css'
 
 const CustomerTermsCondition = ({ onClose }) => (
     <div className="terms-modal-overlay">
