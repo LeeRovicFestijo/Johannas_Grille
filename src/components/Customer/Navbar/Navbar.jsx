@@ -6,7 +6,7 @@ import AddToCart from '../../../pages/Customer/Cart/Cart';
 import Login from '../../../pages/Customer/Login/Login';
 import CustomerProfile from '../../../pages/Customer/CustomerProfile/CustomerProfile'; // Import CustomerProfile
 import { FiShoppingCart } from "react-icons/fi";
-import { FaUserCircle } from "react-icons/fa"; // For profile icon
+import { MdOutlineAccountCircle } from "react-icons/md";
 
 const Navbar = () => {
     const [menu, setMenu] = useState("home");
@@ -55,7 +55,7 @@ const Navbar = () => {
                     {/* Conditionally render the profile icon and profile component */}
                     {isLoggedIn && (
                         <>
-                            <FaUserCircle onClick={handleProfileClick} className='profile-icon' size={26} /> {/* Profile icon */}
+                            <MdOutlineAccountCircle onClick={handleProfileClick} className='profile-icon' size={31} /> {/* Profile icon */}
                             {showProfile && <CustomerProfile />} {/* Conditionally render CustomerProfile */}
                         </>
                     )}
