@@ -1,5 +1,5 @@
 import React from 'react';
-import './DeletePopup.css';
+import './AdminDelProduct.css';
 
 const DeletePopup = ({ productId, onClose, onDelete }) => {
   const handleDelete = async () => {

@@ -1,4 +1,4 @@
-.menu-popup {
+.cust-res-menu-popup {
   position: fixed;
   top: 0;
   left: 0;
@@ -11,7 +11,7 @@
   z-index: 1000;
 }
 
-.menu-popup-content {
+.cust-res-menu-popup-content {
   background-color: white;
   padding: 20px;
   border-radius: 10px;
@@ -22,7 +22,7 @@
   max-height: 90vh;
 }
 
-.menu-popup-close {
+.cust-res-menu-popup-close {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -34,14 +34,14 @@
 
 
 /* Ensure the menu grid is horizontally scrollable */
-.menu-grid-container {
+.cust-res-menu-grid-container {
   width: 100%;  /* Full width of the container */
   overflow-x: auto;  /* Enables horizontal scroll */
   padding-bottom: 20px;  /* Padding to make it look better */
 }
 
 /* For horizontal scrolling on Menu B, C, and D */
-.menu-grid {
+.cust-res-menu-grid {
   display: flex;
   flex-direction: row;  /* Arrange items horizontally */
   gap: 20px;  /* Space between items */
@@ -51,11 +51,11 @@
   scrollbar-width: none;  /* Hides scrollbar in Firefox */
 }
 
-.menu-grid::-webkit-scrollbar {
+.cust-res-menu-grid::-webkit-scrollbar {
   display: none;  /* Hides scrollbar in Webkit-based browsers like Chrome and Safari */
 }
 
-.menu-item {
+.cust-res-menu-item {
   width: 220px;  /* Adjust width as needed */
   background-color: #f8f8f8;
   padding: 10px;
@@ -65,25 +65,25 @@
   flex-shrink: 0;  /* Prevents items from shrinking */
 }
 
-.menu-item img {
+.cust-res-menu-item img {
   width: 100%;
   height: auto;
   border-radius: 4px;
 }
 
-.menu-item-details h3 {
+.cust-res-menu-item-details h3 {
   font-size: 16px;
   margin: 10px 0;
 }
 
-.menu-quantity {
+.cust-res-menu-quantity {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
 }
 
-.menu-quantity-button {
+.cust-res-menu-quantity-button {
   padding: 5px 10px;
   font-size: 16px;
   cursor: pointer;
@@ -93,7 +93,7 @@
   border-radius: 4px;
 }
 
-.menu-quantity-button:hover {
+.cust-res-menu-quantity-button:hover {
   background-color: #0056b3;
 }
 
@@ -116,12 +116,12 @@
 
 
 
-.menu-quantity-button {
+.cust-res-menu-quantity-button {
   padding: 8px;
   margin: 0 4px;
 }
 
-.menu-item-image {
+.cust-res-menu-item-image {
   width: 100%;
   height: auto;
   max-height: 150px;
@@ -130,13 +130,13 @@
 }
 
 
-.menu-price-container {
+.cust-res-menu-price-container {
   display: flex;
   justify-content: flex-end; /* Aligns price to the right */
   margin-top: 10px; /* Adds space above the price */
 }
 
-.menu-price {
+.cust-res-menu-price {
   font-weight: bold;
   color: green; /* Change the color as needed */
   font-size: 18px; /* Increase font size for better visibility */

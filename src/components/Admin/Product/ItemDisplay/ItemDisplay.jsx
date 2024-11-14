@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './ItemDisplay.css';
-import Item from '../Item/Item';
+import MenuDisplay from '../MenuDisplay/MenuDisplay';
 
 const ItemDisplay = ({ category, items}) => {
   const [foodList, setFoodList] = useState([]);
@@ -32,7 +32,7 @@ const ItemDisplay = ({ category, items}) => {
           if ((category === "All" || category === item.category)) {
 
             return (
-              <Item
+              <MenuDisplay
                 key={item.menuitemid} // Use a unique key
                 id={item.menuitemid} 
                 name={item.name}

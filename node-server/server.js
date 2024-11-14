@@ -22,7 +22,7 @@ const pool = new Pool({
   host: 'localhost',
   database: 'johannasgrilledb',
   password: 'password',
-  port: 5432, // Default PostgreSQL port
+  port: 5433, // Default PostgreSQL port
 });
 
 // Multer storage for handling image uploads
@@ -110,12 +110,12 @@ app.post('/login', async (req, res) => {
     }
 
     // Send back firstname, lastname, usertype, email, and image_url
-    res.json({
-      success: true,
-      firstname: user.firstname,
-      lastname: user.lastname,
-      usertype: user.usertype,
-      email: user.email,
+    res.json({ 
+      success: true, 
+      firstname: user.firstname, 
+      lastname: user.lastname, 
+      usertype: user.usertype, 
+      email: user.email, 
       image: user.image_url // Add image_url here
     });   
   } catch (err) {
@@ -135,7 +135,6 @@ app.get('/api/menuitems', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
-
 
 // Fetch a single menu item by ID
 app.get('/api/menuitems/:id', async (req, res) => {
@@ -201,46 +200,6 @@ app.post('/api/menuitems', upload.single('image'), async (req, res) => {
     res.status(500).send('Server error');
   }
 });
-
-app.post('/api/reservations/create', async (req, res) => {
-  const { reservationDetails, selectedItems } = req.body;
-
-  try {
-      // Insert reservation data
-      const result = await pool.query(
-          `INSERT INTO reservationtbl (numberofguests, reservationdate, reservationtime, branch, amount)
-           VALUES ($1, $2, $3, $4, $5) RETURNING reservationid`,
-          [
-              reservationDetails.numberofguests,
-              reservationDetails.reservationdate,
-              reservationDetails.reservationtime,
-              reservationDetails.branch,
-              reservationDetails.totalAmount,
-          ]
-      );
-
-      const reservationid = result.rows[0].reservationid;
-
-      // Insert selected items into reservationitemtbl
-      for (const category in selectedItems) {
-          for (const itemName in selectedItems[category]) {
-              const item = selectedItems[category][itemName];
-              await pool.query(
-                  `INSERT INTO reservationitemtbl (reservationid, menuitemid, qty)
-                   VALUES ($1, $2, $3)`,
-                  [reservationid, item.id, item.qty]
-              );
-          }
-      }
-
-      res.json({ success: true, message: 'Reservation confirmed', reservationid });
-  } catch (err) {
-      console.error('Error creating reservation:', err);
-      res.status(500).send('Server Error');
-  }
-});
-
-
 
 // delete menu items
 
@@ -410,18 +369,6 @@ app.post("/api/reservations", async (req, res) => {
   }
 });
 
-// Sample Express route for fetching menu items
-app.get('/api/menu-items', async (req, res) => {
-  try {
-      const result = await pool.query('SELECT * FROM reservationmenutbl');
-      res.json(result.rows);
-  } catch (error) {
-      console.error('Error fetching menu items:', error);
-      res.status(500).send('Server Error');
-  }
-});
-
-
 app.get('/api/customer', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM customertbl ORDER BY customerid ASC');
@@ -497,51 +444,65 @@ app.delete("/api/customer/:id", async (req, res) => {
   }
 });
 
-// API endpoint to get all menu items
-app.get('/api/menuitems', async (req, res) => {
+app.post('/api/orders', async (req, res) => {
+  const { orderid, items, total } = req.body;
+
   try {
-    const result = await pool.query('SELECT * FROM menuitemtbl');
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
+      // Insert into orderstbl
+      const orderResult = await new Promise((resolve, reject) => {
+          db.query('INSERT INTO orderstbl (orderid, total) VALUES (?, ?)', [orderid, total], (error, results) => {
+              if (error) return reject(error);
+              resolve(results);
+          });
+      });
+
+      // Insert into orderitemtbl for each item
+      for (const item of items) {
+          await new Promise((resolve, reject) => {
+              db.query('INSERT INTO orderitemtbl (orderid, item_name, price) VALUES (?, ?, ?)', [orderid, item.name, item.price], (error, results) => {
+                  if (error) return reject(error);
+                  resolve(results);
+              });
+          });
+      }
+
+      res.status(201).json({ message: 'Order created successfully', orderid });
+  } catch (error) {
+      console.error('Error inserting order:', error);
+      res.status(500).json({ message: 'Internal server error' });
   }
 });
 
-// API endpoint to handle reservation confirmations
-app.post('/api/reservations', async (req, res) => {
-  const { reservationDetails, selectedItems, totalAmount } = req.body;
+// POST endpoint to add items to an order
+app.post('/api/orderitems', async (req, res) => {
+  const { orderid, menuitemid, quantity, price } = req.body;
 
   try {
-    // Insert reservation details into the reservation table (you may need to create it if it doesn't exist)
+    // Insert into orderitemtbl
     const result = await pool.query(
-      `INSERT INTO reservationtbl (numberofguests, reservationdate, reservationtime, branch)
-       VALUES ($1, $2, $3, $4) RETURNING reservationid`,
-      [
-        reservationDetails.numberofguests,
-        reservationDetails.reservationdate,
-        reservationDetails.reservationtime,
-        reservationDetails.branch,
-      ]
+      'INSERT INTO orderitemtbl (orderid, menuitemid, quantity, price) VALUES ($1, $2, $3, $4) RETURNING *',
+      [orderid, menuitemid, quantity, price]
     );
-    const reservationid = result.rows[0].reservationid;
 
-    // Insert each selected item into a reservations_items table (if you need a relationship for tracking items per reservation)
-    for (const category in selectedItems) {
-      for (const itemName in selectedItems[category]) {
-        const item = selectedItems[category][itemName];
-        await pool.query(
-          `INSERT INTO reservations_items (reservationid, item_name, qty, price)
-           VALUES ($1, $2, $3, $4)`,
-          [reservationid, itemName, item.qty, item.price]
-        );
-      }
-    }
-
-    res.json({ success: true, message: 'Reservation confirmed', reservationid });
+    res.status(201).json(result.rows[0]); // Return the newly added order item
   } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
+    console.error('Error adding order item:', err.message, err.stack);
+    res.status(500).send('Server error');
+  }
+});
+
+app.get('/api/orderitems/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query('SELECT * FROM orderitemtbl WHERE orderitemid = $1', [id]);
+    if (result.rows.length > 0) {
+      res.json(result.rows[0]);
+    } else {
+      res.status(404).send('Order not found');
+    }
+  } catch (err) {
+    console.error('Error fetching customer details:', err.message);
+    res.status(500).send('Server error');
   }
 });
 
@@ -549,3 +510,4 @@ app.post('/api/reservations', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
+

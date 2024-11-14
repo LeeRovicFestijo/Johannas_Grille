@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import './Item.css';
-import EditPopup from './EditPopup';
-import DeletePopup from './DeletePopup';
+import './MenuDisplay.css';
+import EditPopup from '../MenuFunction/AdminEditProduct';
+import DeletePopup from '../MenuFunction/AdminDelProduct';
 // Importing the icons for edit and delete
 import { MdDeleteOutline } from "react-icons/md";
 import { RiEditLine } from "react-icons/ri";
 
-const FoodItem = ({ id, name, price, description, image, category }) => {
+const MenuDisplay = ({ id, name, price, description, image, category }) => {
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [foodName, setFoodName] = useState(name);
@@ -108,4 +108,4 @@ const FoodItem = ({ id, name, price, description, image, category }) => {
   );
 };
 
-export default FoodItem;
+export default MenuDisplay;

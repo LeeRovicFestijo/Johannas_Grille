@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './EditPopup.css';
+import './AdminEditProduct.css';
 
 const EditPopup = ({ productId, onClose, onSave }) => {
   const [updatedName, setUpdatedName] = useState('');

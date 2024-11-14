@@ -1,8 +1,8 @@
 // import { AreaCards, AreaCharts, AreaTable, AreaTop } from "../../../components";
-import AreaTop from "../../../components/Admin/AreaTop/AreaTop";
-import AreaCards from "../../../components/Admin/AreaCards/AreaCards";
-import AreaCharts from "../../../components/Admin/AreaCharts/AreaCharts";
-import AreaTable from "../../../components/Admin/AreaTable/AreaTable";
+import AreaTop from "../../../components/Admin/Dashboard/AreaTop/AreaTop";
+import AreaCards from "../../../components/Admin/Dashboard/AreaCards/AreaCards";
+import AreaCharts from "../../../components/Admin/Dashboard/AreaCharts/AreaCharts";
+import AreaTable from "../../../components/Admin/Dashboard/AreaTable/AreaTable";
 import Header from "../../../components/Admin/Header/Header";
 import Sidebar from "../../../components/Admin/Sidebar/Sidebar";
 import './Dashboard.css'

@@ -8,10 +8,10 @@ import ConfirmOrder from './pages/Customer/Receipt/Receipt';
 import ProfileCustomer from './pages/Customer/CustomerProfile/CustomerInfo'
 import Admin_LoginPopUp from './pages/Admin/Login/Login';
 import Order from './pages/Admin/Orders/Order'
-import ReservationMenu from './pages/Employee/Reservation/Reservation'
+import ReservationMenu from './pages/Admin/Reservation/Reservation'
 import BaseLayout from './pages/Admin/Dashboard/Dashboard';
 import EmployeeList from './pages/Admin/Employee/Employee';
-import Reservation from './pages/Admin/Reservation/Reservation'
+import Reservation from './pages/Employee/Reservation/Reservation'
 import Product from './pages/Admin/Product/Product';
 import CustomerList from './pages/Admin/Customer/Customer'
 import Employee_Dashboard from './pages/Employee/Dashboard/Dashboard';

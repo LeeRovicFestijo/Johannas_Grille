@@ -16,7 +16,7 @@ import { assets } from '../../../assets/assets'
   import { CgProfile } from "react-icons/cg";
 
 import "./Sidebar.css";
-import { SidebarContext } from "../context/SidebarContext";
+import { SidebarContext } from "../Dashboard/context/SidebarContext";
 
 const Sidebar = () => {
   const { isSidebarOpen, closeSidebar } = useContext(SidebarContext);

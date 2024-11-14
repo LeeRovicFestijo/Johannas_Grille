@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { menu_list } from '../../../assets/assets';
-import './Menu.css';
+import { menu_list } from '../../../../assets/assets';
+import './AdminAddProduct.css';
 
 const Menu = ({ category, setCategory }) => {
   const [showPopup, setShowPopup] = useState(false);

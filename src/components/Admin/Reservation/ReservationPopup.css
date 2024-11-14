@@ -1,0 +1,103 @@
+.tra-action-icons {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .tra-action-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: black; /* Customize the color */
+    font-size: 1.2rem;
+  }
+  
+  .tra-action-button:hover {
+    color: #0056b3; /* Hover effect */
+  }
+  
+  .tra-delete-button {
+    color: black; /* Red color for delete */
+  }
+  
+  .tra-delete-button:hover {
+    color: #b52a36; /* Hover effect for delete */
+  }
+  
+  .tra-action-icons {
+    display: flex;
+    gap: 10px; /* Space between edit and delete buttons */
+  }
+  
+  .tra-action-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+  }
+  
+  .tra-action-button:hover {
+    opacity: 0.8; /* Slight transparency on hover */
+  }
+  
+  .tra-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .tra-modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 500px;
+    width: 100%;
+  }
+  
+  .tra-modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .tra-save-btn {
+    background-color: green;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .tra-cancel-btn {
+    background-color: red;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .forms label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+    text-align: left;
+    width: 100%;
+  }
+  .forms input, select{
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+  }

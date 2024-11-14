@@ -1,7 +1,7 @@
 // import { AreaCards, AreaCharts, AreaTable, AreaTop } from "../../../components";
 import React, { useState, useEffect } from 'react'
-import ItemDisplay from "../../../components/Admin/ItemDisplay/ItemDisplay";
-import Menu from "../../../components/Admin/Menu/Menu";
+import ItemDisplay from "../../../components/Admin/Product/ItemDisplay/ItemDisplay";
+import Menu from "../../../components/Admin/Product/MenuFunction/AdminAddProduct";
 import Sidebar from "../../../components/Admin/Sidebar/Sidebar";
 import './Product.css'
 
