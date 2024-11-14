@@ -8,9 +8,10 @@ import ConfirmOrder from './pages/Customer/Receipt/Receipt';
 import ProfileCustomer from './pages/Customer/CustomerProfile/CustomerInfo'
 import Admin_LoginPopUp from './pages/Admin/Login/Login';
 import Order from './pages/Admin/Orders/Order'
-import Reservation from './pages/Employee/Reservation/Reservation'
+import ReservationMenu from './pages/Employee/Reservation/Reservation'
 import BaseLayout from './pages/Admin/Dashboard/Dashboard';
 import EmployeeList from './pages/Admin/Employee/Employee';
+import Reservation from './pages/Admin/Reservation/Reservation'
 import Product from './pages/Admin/Product/Product';
 import CustomerList from './pages/Admin/Customer/Customer'
 import Employee_Dashboard from './pages/Employee/Dashboard/Dashboard';
@@ -36,6 +37,7 @@ const App = () => {
           <Route path='/admin/login' element={ <Admin_LoginPopUp />} />
           <Route path="/admin/dashboard" element={<ProtectedRoute> <BaseLayout /> </ProtectedRoute> } />
           <Route path='/admin/order' element={<ProtectedRoute> <Order /> </ProtectedRoute>} />
+          <Route path='/admin/reservationmenu' element={<ProtectedRoute> <ReservationMenu/> </ProtectedRoute>} />
           <Route path='/admin/product' element={<ProtectedRoute> <Product /> </ProtectedRoute>} />
           <Route path='/admin/employeelist' element={<ProtectedRoute> <EmployeeList /> </ProtectedRoute>} />
           <Route path='/admin/profile' element={<ProtectedRoute> <ProfileAdmin /> </ProtectedRoute>} />

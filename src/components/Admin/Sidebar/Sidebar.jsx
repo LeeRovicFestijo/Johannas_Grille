@@ -83,6 +83,14 @@ const Sidebar = () => {
               </Link>
             </li>
             <li className="menu-item">
+              <Link to="/admin/reservationmenu" className={`menu-link ${isActive("/admin/reservationmenu") ? "active" : ""}`}>
+                <span className="menu-link-icon">
+                  <MdOutlineShoppingBag size={20} />
+                </span>
+                <span className="menu-link-text">Reservation</span>
+              </Link>
+            </li>
+            <li className="menu-item">
               <Link to="/admin/product" className={`menu-link ${isActive("/admin/product") ? "active" : ""}`}>
                 <span className="menu-link-icon">
                   <MdOutlineShoppingBag size={20} />
@@ -119,7 +127,7 @@ const Sidebar = () => {
         <div className="sidebar-menu em-sidebar-menu2">
           <ul className="menu-list">
             <li className="menu-item">
-              <div className="menu-link"> 
+              <div className="menu-link">
                 <span className="menu-link-text">Branch: Batangas City</span>
               </div>
             </li>

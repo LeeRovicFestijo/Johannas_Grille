@@ -1,7 +1,7 @@
 import React from 'react';
 import './CustomerReservationReceipt.css';
 import { IoIosCloseCircleOutline } from "react-icons/io";
-import { IoHourglassOutline } from "react-icons/io5";
+import { FaRegCheckCircle } from "react-icons/fa";
 
 const CustomerReservationReceipt = ({ onClose }) => {
   return (
@@ -13,10 +13,10 @@ const CustomerReservationReceipt = ({ onClose }) => {
         </button>
 
         <div className="receipt-status">
-          <span className="checkmark"><IoHourglassOutline/></span>
+          <span className="checkmark"><FaRegCheckCircle/></span>
         </div>
 
-        <p>Your reservation at Johannas Grille is pending</p>
+        <p>Your reservation at Johannas Grille is accepted</p>
         <p>Sat 12th Aug 3:00 PM</p>
         <p className="receipt-branch">Branch: Bauan Batangas</p>
 
