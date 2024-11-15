@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './ItemDisplay.css';
 import Item from '../Item/Item';
 
-const ItemDisplay = ({ category, items }) => {
+const ItemDisplay = ({ category, items, orderId }) => {
     const [cartItems, setCartItems] = useState([]);
 
     const addToCart = (item) => {
@@ -39,6 +39,7 @@ const ItemDisplay = ({ category, items }) => {
                         return (
                             <Item
                                 key={item.menuitemid} // Use a unique key
+                                orderId={orderId}
                                 id={item.menuitemid}
                                 name={item.name}
                                 price={item.price}

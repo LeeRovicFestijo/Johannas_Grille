@@ -444,67 +444,66 @@ app.delete("/api/customer/:id", async (req, res) => {
   }
 });
 
-app.post('/api/orders', async (req, res) => {
-  const { orderid, items, total } = req.body;
+app.get('/api/order/:orderId', async (req, res) => {
+  const { orderId } = req.params; // Ensure the variable is named correctly
 
   try {
-      // Insert into orderstbl
-      const orderResult = await new Promise((resolve, reject) => {
-          db.query('INSERT INTO orderstbl (orderid, total) VALUES (?, ?)', [orderid, total], (error, results) => {
-              if (error) return reject(error);
-              resolve(results);
-          });
-      });
-
-      // Insert into orderitemtbl for each item
-      for (const item of items) {
-          await new Promise((resolve, reject) => {
-              db.query('INSERT INTO orderitemtbl (orderid, item_name, price) VALUES (?, ?, ?)', [orderid, item.name, item.price], (error, results) => {
-                  if (error) return reject(error);
-                  resolve(results);
-              });
-          });
-      }
-
-      res.status(201).json({ message: 'Order created successfully', orderid });
+    const result = await pool.query(
+      `SELECT oi.*, m.name, m.price
+       FROM orderitemtbl oi
+       JOIN menuitemtbl m ON oi.menuitemid = m.menuitemid
+       WHERE oi.orderid = $1`, // Use correct parameter
+      [orderId] // Make sure the orderId is passed as a parameter
+    );
+    res.status(200).json(result.rows);
   } catch (error) {
-      console.error('Error inserting order:', error);
-      res.status(500).json({ message: 'Internal server error' });
+    console.error('Error fetching order items:', error.message, error.stack);
+    res.status(500).json({ error: 'Failed to fetch order items' });
   }
 });
+
 
 // POST endpoint to add items to an order
 app.post('/api/orderitems', async (req, res) => {
-  const { orderid, menuitemid, quantity, price } = req.body;
+  const { menuitemid, orderid } = req.body;
 
   try {
-    // Insert into orderitemtbl
-    const result = await pool.query(
-      'INSERT INTO orderitemtbl (orderid, menuitemid, quantity, price) VALUES ($1, $2, $3, $4) RETURNING *',
-      [orderid, menuitemid, quantity, price]
+    // Check if the orderid already exists in orderstbl
+    const existingOrder = await pool.query(
+      'SELECT * FROM orderstbl WHERE orderid = $1',
+      [orderid]
     );
 
-    res.status(201).json(result.rows[0]); // Return the newly added order item
-  } catch (err) {
-    console.error('Error adding order item:', err.message, err.stack);
-    res.status(500).send('Server error');
+    let order;
+
+    // If the orderid doesn't exist, insert it
+    if (existingOrder.rows.length === 0) {
+      order = await pool.query(
+        'INSERT INTO orderstbl (orderid) VALUES ($1) RETURNING *',
+        [orderid]
+      );
+    } else {
+      order = existingOrder;
+    }
+
+    // Insert into orderitemtbl (regardless of whether orderid was new or existing)
+    const result = await pool.query(
+      'INSERT INTO orderitemtbl (orderid, menuitemid) VALUES ($1, $2) RETURNING *',  // Correct column name
+      [orderid, menuitemid]
+    );
+
+    // Respond with both the order and order item information
+    res.status(201).json({
+      order: order.rows[0], // Whether new or existing, return the order details
+      result: result.rows[0], // Newly inserted order item
+    });
+  } catch (error) {
+    console.error('Error adding order item:', error);
+    res.status(500).json({ error: 'Failed to add order item' });
   }
 });
 
-app.get('/api/orderitems/:id', async (req, res) => {
-  const { id } = req.params;
-  try {
-    const result = await pool.query('SELECT * FROM orderitemtbl WHERE orderitemid = $1', [id]);
-    if (result.rows.length > 0) {
-      res.json(result.rows[0]);
-    } else {
-      res.status(404).send('Order not found');
-    }
-  } catch (err) {
-    console.error('Error fetching customer details:', err.message);
-    res.status(500).send('Server error');
-  }
-});
+
 
 // Start the server
 app.listen(port, () => {

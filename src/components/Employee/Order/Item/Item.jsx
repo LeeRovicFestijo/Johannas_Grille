@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './Item.css';
 import { IoMdAddCircleOutline } from "react-icons/io";
 
-const FoodItem = ({ id, name, price, description, image, category, onAddToOrder }) => {
+const FoodItem = ({ id, name, price, description, image, category, onAddToOrder, orderId }) => {
   const [menuItems, setMenuItems] = useState([]);
   const [currentOrderId, setCurrentOrderId] = useState(localStorage.getItem('currentOrderId'));
   const [loading, setLoading] = useState(false);
@@ -12,45 +12,24 @@ const FoodItem = ({ id, name, price, description, image, category, onAddToOrder 
   const handleAddToOrder = async () => {
     setLoading(true);
     setError(null);
+  
+    const requestBody = {
+      orderid: orderId, // Pass null if no orderId
+      menuitemid: id,
+      quantity: 1,
+      price: price,
+    };
+  
+    // Log the JSON body to the console
+    console.log('Request Body:', JSON.stringify(requestBody));
+  
     try {
-      let orderId = currentOrderId;
-
-      // Step 1: Check if there's an existing order ID
-      if (!orderId) {
-        const orderResponse = await fetch('http://localhost:3000/api/orders', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            // Include any required fields for creating a new order
-          }),
-        });
-
-        if (!orderResponse.ok) {
-          throw new Error('Failed to create order');
-        }
-
-        const orderData = await orderResponse.json();
-        orderId = orderData.orderid; // Assuming the order ID is returned in the response
-        setCurrentOrderId(orderId);
-        localStorage.setItem('currentOrderId', orderId); // Persist order ID in localStorage
-      }
-
-      // Step 2: Add the item to the current order
       const itemResponse = await fetch('http://localhost:3000/api/orderitems', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          orderid: orderId,
-          menuitemid: id,
-          quantity: 1,
-          price: price,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody),
       });
-
+  
       if (itemResponse.ok) {
         const itemData = await itemResponse.json();
         console.log('Item added to order:', itemData);
