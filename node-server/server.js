@@ -449,7 +449,7 @@ app.get('/api/order/:orderId', async (req, res) => {
 
   try {
     const result = await pool.query(
-      `SELECT oi.*, m.name, m.price
+      `SELECT oi.*, m.name, m.price, m.image_url
        FROM orderitemtbl oi
        JOIN menuitemtbl m ON oi.menuitemid = m.menuitemid
        WHERE oi.orderid = $1`, // Use correct parameter

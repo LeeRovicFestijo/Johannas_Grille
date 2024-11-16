@@ -1,8 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
-import { CgProfile } from "react-icons/cg";
 import { useNavigate } from 'react-router-dom';
 import './HeaderProfile.css'; // Import the CSS
+import { FaUser } from 'react-icons/fa'; // Import an icon from react-icons (or any other icon library)
 
 function ProfileHeader({ text }) {
   const [image, setImage] = useState('');
@@ -65,7 +64,7 @@ function ProfileHeader({ text }) {
             {image ? (
               <img src={image} alt="Profile" className="employee-img" />
             ) : (
-              <CgProfile size={100} />
+              <FaUser Circle className="placeholder-icon" /> // Display the icon if image is null
             )}
           </i>
           {isDropdownOpen && (

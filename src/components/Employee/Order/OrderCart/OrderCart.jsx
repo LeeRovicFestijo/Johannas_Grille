@@ -81,7 +81,7 @@ const OrderCart = ({ category, setCategory, orderId }) => {
                 <div className="order-id">
                     <h6>Order ID: {orderId}</h6>
                 </div>
-                <div className="flex flex-col px-4 py-4 mt-6 font-semibold bg-white border-t border-b border-zinc-400">
+                <div className="">
                     {orderItems.length > 0 ? (
                         orderItems.map((item) => (
                             <OrderItem key={item.orderitemid} item={item} order={orderId} />
@@ -89,6 +89,12 @@ const OrderCart = ({ category, setCategory, orderId }) => {
                     ) : (
                         <div>No items in your order.</div>
                     )}
+                </div>
+                <div className="em-order-tax">
+
+                </div>
+                <div className="em-order-placeorder">
+                    <button>Place Order</button>
                 </div>
             </div>
         </div>

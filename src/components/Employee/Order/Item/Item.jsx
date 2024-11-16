@@ -7,7 +7,6 @@ const FoodItem = ({ id, name, price, description, image, category, onAddToOrder,
   const [currentOrderId, setCurrentOrderId] = useState(localStorage.getItem('currentOrderId'));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
   // Function to handle adding items to the order
   const handleAddToOrder = async () => {
     setLoading(true);
@@ -72,23 +71,23 @@ const FoodItem = ({ id, name, price, description, image, category, onAddToOrder,
 
   return (
     <div className="emp-menu-container">
-      <div className="em-item-food-card">
-        <div className="em-item-food-card-img-container">
+      <div className="emp-item-food-card">
+        <div className="emp-item-food-card-img-container">
           <img
-            className="em-item-food-card-image object-contain w-full rounded-3xl aspect-[1.13]"
-            src={`http://localhost:3000/${image}`}
+            className="emp-item-food-card-image object-contain w-full rounded-3xl aspect-[1.13]"
+            src={image}
             alt={name}
             loading="lazy"
           />
         </div>
-        <div className="em-item-food-card-info">
-          <div className="em-item-food-card-name-rating">
-            <h3 className="product-name">{name}</h3>
-            <p className="product-price">₱{price}</p>
+        <div className="emp-item-food-card-info">
+          <div className="emp-item-food-card-name-rating">
+            <h3 className="emp-product-name">{name}</h3>
+            <p className="emp-product-price">₱{price}</p>
           </div>
         </div>
-        <div className="edit-delete-container">
-          <button onClick={handleAddToOrder} className="em-item-btn-cart add-button" disabled={loading}>
+        <div className="emp-edit-delete-container">
+          <button onClick={handleAddToOrder} className="emp-item-btn-cart add-button" disabled={loading}>
             <IoMdAddCircleOutline size={25} />
           </button>
         </div>
