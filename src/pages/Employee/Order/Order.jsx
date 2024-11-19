@@ -5,21 +5,22 @@ import ItemDisplay from '../../../components/Employee/Order/ItemDisplay/ItemDisp
 import OrderCart from '../../../components/Employee/Order/OrderCart/OrderCart';
 import './Order.css';
 
-let orderCounter = 1000; // Static counter to track order IDs
+const generateOrderId = () => {
+  return Math.floor(10000 + Math.random() * 90000); // Generates a 5-digit random number (10000-99999)
+};
 
 const EmployeeOrder = () => {
   const [category, setCategory] = useState("All");
-  const [orderId, setOrderId] = useState(orderCounter); // Start order ID at 1021
+  const [orderId, setOrderId] = useState(generateOrderId()); // Initialize with a 5-digit random number
 
   const createNewOrder = () => {
-    orderCounter += 1; // Increment order counter
-    setOrderId(orderCounter); // Set new order ID
+    setOrderId(generateOrderId()); // Generate a new 5-digit random order ID
   };
 
   // Update orderId when category changes
   useEffect(() => {
-    createNewOrder(); // Call the function to create a new order whenever category changes
-  }, [category]); // Depend on category to trigger effect
+    createNewOrder(); // Generate a new order ID when category changes
+  }, [category]);
 
   return (
     <div>
@@ -31,6 +32,6 @@ const EmployeeOrder = () => {
       </div>
     </div>
   );
-}
+};
 
 export default EmployeeOrder;

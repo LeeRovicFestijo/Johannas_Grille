@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import './UpdateProfile.css';
+import './AdminUpdatePopup.css';
 
-const UpdateProfile = ({ showPopup, handleClose, username, email, image, setUsername, setEmail, setImage }) => {
+const AdminUpdatePopup = ({ showPopup, handleClose, username, email, image, setUsername, setEmail, setImage }) => {
   const [imagePreview, setImagePreview] = useState(image); // Initialize with the current image
 
   const handleSubmit = (e) => {
@@ -26,13 +26,13 @@ const UpdateProfile = ({ showPopup, handleClose, username, email, image, setUser
   if (!showPopup) return null;
 
   return (
-    <div className="popup-overlay">
-      <div className="popup-content">
+    <div className="admin-popup-overlay">
+      <div className="admin-popup-content">
         <h2>Update Profile</h2>
         <form onSubmit={handleSubmit}>
 
           {/* Username Field */}
-          <div className="form-group">
+          <div className="admin-form-group">
             <label htmlFor="popup-username">Username</label>
             <input
               type="text"
@@ -43,7 +43,7 @@ const UpdateProfile = ({ showPopup, handleClose, username, email, image, setUser
           </div>
 
           {/* Email Address Field */}
-          <div className="form-group">
+          <div className="admin-form-group">
             <label htmlFor="popup-email">Email Address</label>
             <input
               type="email"
@@ -54,7 +54,7 @@ const UpdateProfile = ({ showPopup, handleClose, username, email, image, setUser
           </div>
 
           {/* Profile Image Field */}
-          <div className="form-group">
+          <div className="admin-form-group">
             <label htmlFor="popup-image">Profile Image</label>
             <input
               type="file"
@@ -63,16 +63,16 @@ const UpdateProfile = ({ showPopup, handleClose, username, email, image, setUser
               onChange={handleImageChange}
             />
             {imagePreview && (
-              <div className="image-preview">
+              <div className="admin-image-preview">
                 <img src={imagePreview} alt="Profile Preview" />
               </div>
             )}
           </div>
 
           {/* Popup Buttons */}
-          <div className="popup-buttons">
-            <button type="submit" className="popup-update-btn">Save</button>
-            <button type="button" className="popup-close-btn" onClick={handleClose}>Cancel</button>
+          <div className="admin-popup-buttons">
+            <button type="submit" className="admin-popup-update-btn">Save</button>
+            <button type="button" className="admin-popup-close-btn" onClick={handleClose}>Cancel</button>
           </div>
         </form>
       </div>
@@ -80,4 +80,4 @@ const UpdateProfile = ({ showPopup, handleClose, username, email, image, setUser
   );
 };
 
-export default UpdateProfile;
+export default AdminUpdatePopup;

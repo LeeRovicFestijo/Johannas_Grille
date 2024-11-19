@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import Sidebar from "../Sidebar/Sidebar";
 import { VscEdit } from "react-icons/vsc";
 import { MdDeleteOutline } from "react-icons/md";
-import ReservationPopup from './ReservationPopup'
 
 const ReservationEdit = (Transaction) => {
 
@@ -71,8 +70,6 @@ const ReservationEdit = (Transaction) => {
                     </div>
                 </section>
 
-                <ReservationPopup />
-                {editData && <ReservationEdit dataItem={editData} onClose={handleClosePopup} />}
             </div>
         </main>
     );
