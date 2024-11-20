@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../../components/Admin/Sidebar/Sidebar";
 import AdminReservationMenuCategory from "../../../components/Admin/Reservation/AdminReservationMenuCategory/AdminReservationMenuCategory";
+import AdminReservationMenuList from "../../../components/Admin/Reservation/AdminReservationMenuList/AdminReservationMenuList";
 import "./Reservation.css";
 
 const ReservationMenu = () => {
@@ -10,6 +11,7 @@ const ReservationMenu = () => {
       <Sidebar />
       <div className="content-wrapper">
         <AdminReservationMenuCategory />
+        <AdminReservationMenuList />
       </div>
     </main>
   );

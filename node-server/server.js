@@ -220,6 +220,15 @@ app.delete('/api/products/:id', async (req, res) => {
   }
 });
 
+app.get('/api/reservationmenuitems', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM reservationmenutbl ORDER BY menuitemid');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching menu items:', err.message);
+    res.status(500).send('Server error');
+  }
+});
 
 // Fetch distinct categories
 app.get('/api/categories', async (req, res) => {
