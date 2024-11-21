@@ -9,7 +9,8 @@ import ReservationForm from "../../../components/Customer/Reservation/Reservatio
 
 const Carousel = ({ items, autoPlayInterval = 1000 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isModalOpen, setModalOpen] = useState(false); // State to control modal visibility
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [reservationId, setReservationId] = useState(null); // State for reservation ID
 
   const prevSlide = () => {
     const newIndex = currentIndex === 0 ? items.length - 1 : currentIndex - 1;
@@ -29,6 +30,14 @@ const Carousel = ({ items, autoPlayInterval = 1000 }) => {
 
     return () => clearInterval(autoPlay); // Cleanup the interval on component unmount
   }, [currentIndex, autoPlayInterval]);
+
+  const handleReserveNow = () => {
+    const uniqueId = `${Math.floor(10000 + Math.random() * 90000)}`;
+ // Combine timestamp and random number
+    setReservationId(uniqueId);
+    setModalOpen(true);
+  };
+
 
   return (
     <div className="carousel-container" id="reservation">
@@ -54,14 +63,16 @@ const Carousel = ({ items, autoPlayInterval = 1000 }) => {
 
       {/* Reserve Now Button */}
       <div className="reserve-button-container">
-        <button className="reserve-now-button" onClick={() => setModalOpen(true)}>
+        <button className="reserve-now-button" onClick={handleReserveNow}>
           Reserve Event Now!
         </button>
       </div>
 
       {/* Modal for Reservation Form */}
       {isModalOpen && (
-        <ReservationForm onClose={() => setModalOpen(false)}
+        <ReservationForm
+          reservationId={reservationId}
+          onClose={() => setModalOpen(false)}
         />
       )}
     </div>

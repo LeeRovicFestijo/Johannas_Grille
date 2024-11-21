@@ -65,21 +65,38 @@ const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId })
     };
 
     const handleFinalSubmit = async () => {
-        // Calculate total amount
-        const totalAmount = Object.values(selectedItems).reduce((total, menu) => {
-            return total + Object.values(menu).reduce((menuTotal, { qty, price }) => {
-                return menuTotal + qty * price;
-            }, 0);
-        }, 0);
+        // Prepare the data to be sent to the backend
+        const itemsToSend = [];
 
-        // Include totalAmount in reservationDetails
-        const updatedReservationDetails = { ...reservationDetails, totalAmount };
+        // Loop through the selectedItems and extract item details (id, qty)
+        let totalAmount = 0; // Variable to store the total amount
+
+        Object.keys(selectedItems).forEach((category) => {
+            Object.values(selectedItems[category]).forEach(({ id, qty }) => {
+                if (qty > 0) { // Only send items that have a quantity greater than 0
+                    itemsToSend.push({ reservationId, itemId: id, qty });
+
+                    // Calculate the total amount for this item
+                    const item = menuItems[category].find(item => item.id === id);
+                    if (item) {
+                        totalAmount += item.price * qty;
+                    }
+                }
+            });
+        });
+
+        // Include reservationId and totalAmount in reservationDetails
+        const updatedReservationDetails = {
+            ...reservationDetails,
+            reservationId,
+            totalAmount,
+        };
 
         try {
-            const response = await fetch('http://localhost:3000/api/reservations/create', {
+            const response = await fetch('http://localhost:3000/api/reservations/items', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ reservationDetails: updatedReservationDetails, selectedItems }),
+                body: JSON.stringify({ reservationDetails: updatedReservationDetails, items: itemsToSend }),
             });
 
             if (!response.ok) {
@@ -88,14 +105,15 @@ const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId })
             }
 
             const data = await response.json();
-            console.log('Reservation created:', data);
+            console.log('Reservation items submitted:', data);
 
             setIsPaymentOpen(true);
 
         } catch (error) {
-            console.error('Error submitting reservation:', error);
+            console.error('Error submitting reservation items:', error);
         }
     };
+
 
 
     const ConfirmPopup = ({ selectedItems, onConfirm, onCancel }) => {
@@ -173,6 +191,7 @@ const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId })
                     <CustomerReservationPayment
                         reservationDetails={reservationDetails}
                         selectedItems={selectedItems}
+                        reservationId={reservationId}
                         onConfirm={() => setIsPaymentOpen(false)}
                         onPaymentComplete={() => onClose()}
                         onClose={onClose}

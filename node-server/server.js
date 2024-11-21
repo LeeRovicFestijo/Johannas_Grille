@@ -201,6 +201,82 @@ app.post('/api/menuitems', upload.single('image'), async (req, res) => {
   }
 });
 
+app.post('/api/reservations/create', async (req, res) => {
+  const { reservationDetails, selectedItems } = req.body;
+
+  console.log('Request body:', req.body); // Debugging: Check request structure
+
+  try {
+    // Check if reservationDetails and reservationId exist
+    if (!reservationDetails || !reservationDetails.reservationId) {
+      return res.status(400).json({ error: 'Reservation ID is missing' });
+    }
+
+    // Insert reservation data
+    const result = await pool.query(
+      `INSERT INTO reservationtbl (reservationid, numberofguests, reservationdate, reservationtime, branch, amount)
+       VALUES ($1, $2, $3, $4, $5, $6) RETURNING reservationid`,
+      [
+        reservationDetails.reservationId,
+        reservationDetails.numberofguests,
+        reservationDetails.reservationdate,
+        reservationDetails.reservationtime,
+        reservationDetails.branch,
+        reservationDetails.totalAmount,
+      ]
+    );
+
+    // Get the reservationid from the query result
+    const reservationId = result.rows[0].reservationid;
+
+    // Send a successful response with the reservationId
+    res.json({ success: true, message: 'Reservation confirmed', reservationId });
+  } catch (err) {
+    console.error('Error creating reservation:', err);
+    res.status(500).send('Server Error');
+  }
+});
+
+// Endpoint to handle reservation items (without creating a reservation in reservationtbl)
+app.post('/api/reservations/items', async (req, res) => {
+  const { reservationDetails, items } = req.body;
+
+  try {
+      // Insert selected items into reservation_item table
+      for (const { reservationId, itemId, qty } of items) {
+          await pool.query(
+              `INSERT INTO reservationitemtbl (reservationid, menuitemid, qty)
+               VALUES ($1, $2, $3)`,
+              [reservationId, itemId, qty]
+          );
+      }
+
+      res.json({ success: true, message: 'Items confirmed' });
+  } catch (err) {
+      console.error('Error inserting reservation items:', err);
+      res.status(500).send('Error inserting reservation items');
+  }
+});
+
+app.post('/api/reservations/payment', async (req, res) => {
+  const { reservationId, referenceCode } = req.body;
+
+  try {
+      // Update the reservationtbl with the GCash payment details
+      await pool.query(
+          `UPDATE reservationtbl
+           SET referencecode = $1
+           WHERE reservationid = $2`,
+          [referenceCode, reservationId]
+      );
+
+      res.json({ success: true, message: 'Payment details confirmed' });
+  } catch (err) {
+      console.error('Error inserting payment details:', err);
+      res.status(500).send('Error inserting payment details');
+  }
+});
+
 // delete menu items
 
 app.delete('/api/products/:id', async (req, res) => {
@@ -217,6 +293,17 @@ app.delete('/api/products/:id', async (req, res) => {
   } catch (err) {
     console.error('Error deleting product:', err.message);
     res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Fetch distinct categories
+app.get('/api/categories', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT DISTINCT category FROM menuitemtbl');
+    res.json(result.rows.map(row => row.category));
+  } catch (err) {
+    console.error('Error fetching categories:', err.message);
+    res.status(500).send('Server error');
   }
 });
 
@@ -363,6 +450,7 @@ app.get('/api/reservations/:id', async (req, res) => {
   }
 });
 
+
 app.post("/api/reservations", async (req, res) => {
   const {numberofguests, reservationdate, reservationtime, branch} = req.body;
 
@@ -377,6 +465,17 @@ app.post("/api/reservations", async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+
+app.get('/api/menu-items', async (req, res) => {
+  try {
+      const result = await pool.query('SELECT * FROM reservationmenutbl');
+      res.json(result.rows);
+  } catch (error) {
+      console.error('Error fetching menu items:', error);
+      res.status(500).send('Server Error');
+  }
+});
+
 
 app.get('/api/customer', async (req, res) => {
   try {
@@ -512,6 +611,103 @@ app.post('/api/orderitems', async (req, res) => {
   }
 });
 
+app.post('/api/reservations', async (req, res) => {
+  const { reservationDetails, selectedItems, totalAmount } = req.body;
+
+  try {
+    // Insert reservation details into the reservation table (you may need to create it if it doesn't exist)
+    const result = await pool.query(
+      `INSERT INTO reservationtbl (numberofguests, reservationdate, reservationtime, branch)
+       VALUES ($1, $2, $3, $4) RETURNING reservationid`,
+      [
+        reservationDetails.numberofguests,
+        reservationDetails.reservationdate,
+        reservationDetails.reservationtime,
+        reservationDetails.branch,
+      ]
+    );
+    const reservationid = result.rows[0].reservationid;
+
+    // Insert each selected item into a reservations_items table (if you need a relationship for tracking items per reservation)
+    for (const category in selectedItems) {
+      for (const itemName in selectedItems[category]) {
+        const item = selectedItems[category][itemName];
+        await pool.query(
+          `INSERT INTO reservations_items (reservationid, item_name, qty, price)
+           VALUES ($1, $2, $3, $4)`,
+          [reservationid, itemName, item.qty, item.price]
+        );
+      }
+    }
+
+    res.json({ success: true, message: 'Reservation confirmed', reservationid });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// GET endpoint to fetch menu items
+app.get('/api/menu-items', (req, res) => {
+  res.json(menuItems);
+});
+
+// POST endpoint to create a reservation
+app.post('/api/reservations/create', (req, res) => {
+  const { reservationDetails, selectedItems } = req.body;
+
+  // Here, you can save reservation details to a database
+  // For now, we will just log it and send a success response
+
+  console.log("Reservation Details:", reservationDetails);
+  console.log("Selected Items:", selectedItems);
+
+  // Sending a response with reservation ID and status
+  res.json({
+    reservationId: Math.floor(Math.random() * 10000),
+    status: "Reservation Created Successfully"
+  });
+});
+
+app.post('/api/reservations/receipt', async (req, res) => {
+  const { reservationId } = req.body;
+
+  if (!reservationId) {
+    return res.status(400).json({ success: false, message: "Reservation ID is required" });
+  }
+
+  try {
+    const result = await pool.query(
+      `SELECT
+        reservationtbl.branch,
+        reservationtbl.reservationdate,
+        reservationtbl.reservationtime,
+        reservationtbl.numberofguests,
+        reservationmenutbl.item_name,
+        reservationitemtbl.qty,
+        reservationmenutbl.package_price,
+        (reservationitemtbl.qty * reservationmenutbl.package_price) AS total_cost
+      FROM
+        reservationtbl
+      JOIN
+        reservationitemtbl ON reservationtbl.reservationid = reservationitemtbl.reservationid
+      JOIN
+        reservationmenutbl ON reservationitemtbl.menuitemid = reservationmenutbl.menuitemid
+      WHERE
+        reservationtbl.reservationid = $1`,
+      [reservationId]
+    );
+
+    if (result.rows.length > 0) {
+      return res.json({ success: true, reservations: result.rows });
+    } else {
+      return res.status(404).json({ success: false, message: "Reservation not found" });
+    }
+  } catch (error) {
+    console.error("Error fetching reservation:", error);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+});
 
 
 // Start the server
