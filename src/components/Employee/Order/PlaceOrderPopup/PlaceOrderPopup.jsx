@@ -12,7 +12,7 @@ const PlaceOrderPopup = ({ orderItems, orderType, onCancel, onConfirm }) => {
         <div className="place-order-popup">
             <div className="place-order-popup-inner">
                 <h2>Confirm Your Order</h2>
-                <ul className="order-items-list">
+                <ul className="order-items-list ">
                     {orderItems.map((item) => (
                         <li key={item.orderitemid}>
                             {item.name} - Quantity: {item.quantity} - 

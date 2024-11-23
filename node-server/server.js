@@ -5,6 +5,7 @@ const { Pool } = require('pg');
 const multer = require('multer');
 const path = require('path');
 const bcrypt = require('bcryptjs');
+require('dotenv').config();
 
 // Initialize express app
 const app = express();
@@ -18,11 +19,11 @@ app.use('/uploads', express.static('uploads')); // Serve uploaded images statica
 
 // PostgreSQL connection
 const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'johannasgrilledb',
-  password: 'password',
-  port: 5433, // Default PostgreSQL port
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_DATABASE,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT || 5433, // Default to 5433 if not specified
 });
 
 // Multer storage for handling image uploads
