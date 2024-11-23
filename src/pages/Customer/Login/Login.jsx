@@ -43,7 +43,7 @@ const LoginPopUp = () => {
         password,
       });
 
-      const response = await axios.post('http://localhost:3000/api/signup', {
+      const response = await axios.post('https://johannas-grille.onrender.com/api/signup', {
         firstname: firstName,
         lastname: lastName,
         address,
@@ -79,7 +79,7 @@ const LoginPopUp = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/api/login', {
+      const response = await axios.post('https://johannas-grille.onrender.com/api/login', {
         username,
         password,
       });

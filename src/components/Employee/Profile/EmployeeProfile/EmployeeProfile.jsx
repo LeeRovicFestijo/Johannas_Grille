@@ -17,7 +17,7 @@ const EmployeeProfile = () => {
         console.log('Image URL:', storedImage); // Log the image URL for debugging
 
         // Prepend base URL if necessary
-        const baseURL = 'http://localhost:3000';
+        const baseURL = 'https://johannas-grille.onrender.com';
         setImage(storedImage ? `${baseURL}${storedImage}` : '');
         setFirstname(sessionStorage.getItem('firstname'));
         setLastname(sessionStorage.getItem('lastname'));
