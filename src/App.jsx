@@ -20,7 +20,8 @@ import Statistics from './pages/Employee/Statistics/Statistics'
 import ProductList from './pages/Employee/Product/Product'
 import ProfileAdmin from './pages/Admin/Profile/Profile';
 import ProtectedRoute from './components/Admin/PrivateRoute';
-import Inventory from './pages/Admin/Inventory/Inventory';
+// import Inventory from './pages/Admin/Inventory/Inventory';
+import Inventory from './pages/Admin/Inventory/Inventory'
 import ProfileEmployee from './pages/Employee/Profile/Profile';
 import EmployeeOrder from './pages/Employee/Order/Order';
 const App = () => {
@@ -42,6 +43,7 @@ const App = () => {
           <Route path='/admin/employeelist' element={<ProtectedRoute> <EmployeeList /> </ProtectedRoute>} />
           <Route path='/admin/profile' element={<ProtectedRoute> <ProfileAdmin /> </ProtectedRoute>} />
           <Route path='/admin/customer' element={<ProtectedRoute> <CustomerList /> </ProtectedRoute>} />
+          {/* <Route path='/admin/inventory' element={<ProtectedRoute> <Inventory /> </ProtectedRoute>} /> */}
           <Route path='/admin/inventory' element={<ProtectedRoute> <Inventory /> </ProtectedRoute>} />
           <Route path='/employee/dashboard' element={<ProtectedRoute> <Employee_Dashboard /> </ProtectedRoute>} />
           <Route path='/employee/orderhistory' element={<ProtectedRoute> <OrderHistory /> </ProtectedRoute>} />

@@ -74,6 +74,14 @@ const Sidebar = () => {
                 <span className="menu-link-text">Order History</span>
               </Link>
             </li>
+            {/* <li className="menu-item">
+              <Link to="/admin/inventory" className={`menu-link ${isActive("/admin/inventory") ? "active" : ""}`}>
+                <span className="menu-link-icon">
+                  <CgProfile size={18} />
+                </span>
+                <span className="menu-link-text">Inventory</span>
+              </Link>
+            </li> */}
             <li className="menu-item">
               <Link to="/admin/inventory" className={`menu-link ${isActive("/admin/inventory") ? "active" : ""}`}>
                 <span className="menu-link-icon">

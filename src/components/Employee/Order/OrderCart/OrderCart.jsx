@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { menu_list } from '../../../../assets/assets';
 import OrderItem from '../OrderItem';
+import PlaceOrderPopup from '../PlaceOrderPopup/PlaceOrderPopup';
 import './OrderCart.css';
 
 const OrderCart = ({ category, setCategory, orderId }) => {
     const [orderItems, setOrderItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [showPlaceOrderPopup, setShowPlaceOrderPopup] = useState(false);
+    const [orderType, setOrderType] = useState('Dine In'); // Default to "Dine In"
 
     useEffect(() => {
         const fetchOrderItems = async () => {
@@ -15,6 +18,7 @@ const OrderCart = ({ category, setCategory, orderId }) => {
                 const response = await fetch(`http://localhost:3000/api/order/${orderId}`);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const data = await response.json();
+
                 setOrderItems(data);
             } catch (error) {
                 console.error('Error fetching order items:', error);
@@ -24,10 +28,8 @@ const OrderCart = ({ category, setCategory, orderId }) => {
             }
         };
 
-        if (orderId) {
-            fetchOrderItems();
-        }
-    }); // Dependency array added to refetch when orderId changes
+        fetchOrderItems();
+    }); // Dependency array ensures this runs when `orderId` changes
 
     const handleAddToOrder = async (menuItemId) => {
         try {
@@ -37,8 +39,7 @@ const OrderCart = ({ category, setCategory, orderId }) => {
                 body: JSON.stringify({
                     orderid: orderId,
                     menuitemid: menuItemId,
-                    quantity: 1, // Assuming default quantity is 1, adjust as needed
-                    // You can add other fields like price if necessary
+                    quantity: 1,
                 }),
             });
 
@@ -47,10 +48,34 @@ const OrderCart = ({ category, setCategory, orderId }) => {
             }
 
             const itemData = await response.json();
-            setOrderItems(prevItems => [...prevItems, itemData]);
+            setOrderItems((prevItems) => [...prevItems, itemData]);
         } catch (error) {
             console.error('Error adding item to order:', error);
             setError(error.message);
+        }
+    };
+
+    const handlePlaceOrder = () => {
+        setShowPlaceOrderPopup(true);
+    };
+
+    const handleConfirmOrder = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/confirm-order/${orderId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ orderType }),
+            });
+
+            if (!response.ok) throw new Error('Order confirmation failed.');
+
+            const result = await response.json();
+            alert(`Order placed successfully! Order ID: ${result.orderId}`);
+            setShowPlaceOrderPopup(false);
+            setOrderItems([]); // Clear the cart after placing the order
+        } catch (error) {
+            console.error('Error confirming order:', error);
+            alert('Failed to place order.');
         }
     };
 
@@ -61,14 +86,14 @@ const OrderCart = ({ category, setCategory, orderId }) => {
                 {menu_list.map((item, index) => (
                     <div
                         onClick={() => {
-                            setCategory(prev => prev === item.menu_name ? "All" : item.menu_name);
+                            setCategory((prev) => (prev === item.menu_name ? 'All' : item.menu_name));
                             handleAddToOrder(item.id);
                         }}
                         key={index}
-                        className='emp-explore-menu-list-item'
+                        className="emp-explore-menu-list-item"
                     >
                         <img
-                            className={category === item.menu_name ? "active" : ""}
+                            className={category === item.menu_name ? 'active' : ''}
                             src={item.menu_image}
                             alt={item.menu_name}
                         />
@@ -81,7 +106,29 @@ const OrderCart = ({ category, setCategory, orderId }) => {
                 <div className="order-id">
                     <h6>Order ID: {orderId}</h6>
                 </div>
-                <div className="">
+                <div className="order-type">
+                    <label>
+                        <input
+                            type="radio"
+                            name="orderType"
+                            value="Dine In"
+                            checked={orderType === 'Dine In'}
+                            onChange={(e) => setOrderType(e.target.value)}
+                        />
+                        Dine In
+                    </label>
+                    <label>
+                        <input
+                            type="radio"
+                            name="orderType"
+                            value="Takeout"
+                            checked={orderType === 'Takeout'}
+                            onChange={(e) => setOrderType(e.target.value)}
+                        />
+                        Takeout
+                    </label>
+                </div>
+                <div>
                     {orderItems.length > 0 ? (
                         orderItems.map((item) => (
                             <OrderItem key={item.orderitemid} item={item} order={orderId} />
@@ -90,13 +137,18 @@ const OrderCart = ({ category, setCategory, orderId }) => {
                         <div>No items in your order.</div>
                     )}
                 </div>
-                <div className="em-order-tax">
-
-                </div>
                 <div className="em-order-placeorder">
-                    <button>Place Order</button>
+                    <button onClick={handlePlaceOrder}>Place Order</button>
                 </div>
             </div>
+            {showPlaceOrderPopup && (
+                <PlaceOrderPopup
+                    orderItems={orderItems}
+                    orderType={orderType} // Passing orderType to PlaceOrderPopup
+                    onCancel={() => setShowPlaceOrderPopup(false)}
+                    onConfirm={handleConfirmOrder}
+                />
+            )}
         </div>
     );
 };

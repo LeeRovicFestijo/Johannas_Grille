@@ -105,19 +105,19 @@ export const menu_list = [
 
 export const res_list = [
     {
-        menu_name: "Package A",
+        menu_name: "Menu A",
         menu_image: cat_1
     },
     {
-        menu_name: "Package B",
+        menu_name: "Menu B",
         menu_image: cat_2
     },
     {
-        menu_name: "Package C",
+        menu_name: "Menu C",
         menu_image: cat_3
     },
     {
-        menu_name: "Package D",
+        menu_name: "Menu D",
         menu_image: cat_4
     },
 ]

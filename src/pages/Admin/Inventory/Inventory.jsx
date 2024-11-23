@@ -1,82 +1,37 @@
-import React, { useState, useEffect } from "react";
-import Sidebar from "../../../components/Admin/Sidebar/Sidebar";
-import "./Inventory.css";
-import { MdDeleteOutline } from "react-icons/md";
-import { RiEditLine } from "react-icons/ri";
-
-const TABLE_HEADS = [
-  "MenuItemID",
-  "Name",
-  "Quantity",
-  "ConsumedOfBranch",
-  "EndingInventory",
-  "Remarks",
-  "Date",
-  "Action",
-];
+import React, { useState, useEffect } from 'react'
+import InventoryFetch from '../../../components/Admin/Inventory/InventoryFetch/InventoryFetch';
+import InventoryCategory from '../../../components/Admin/Inventory/InventoryFunction/InventoryCategory';
+import Sidebar from '../../../components/Admin/Sidebar/Sidebar'
+import './Inventory.css'
 
 const Inventory = () => {
+  const [category, setCategory] = useState('All');
+  const [items, setItems] = useState([]);
 
-  const [inventory, setInventory] = useState([]);
+  // Fetch the items from the backend
+  const fetchItems = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/menuitems');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      setItems(data); // Update items state
+    } catch (error) {
+      console.error('Error fetching menu items:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchInventory = async () => {
-      try {
-        const response = await fetch("http://localhost:3000/api/inventory");
-        const data = await response.json();
-        setInventory(data);
-      } catch (error) {
-        console.error("Error fetching inventory:", error);
-      }
-    };
-    fetchInventory();
+    fetchItems(); // Fetch items when component mounts
   }, []);
+
   return (
-    <main className="page-wrapper">
+    <main >
       <Sidebar />
       <div className="content-wrapper">
-        <div>
-          <h1>Inventory</h1>
-          <section className="or-content-area-table">
-            <div className="or-data-table-diagram">
-            <table>
-                <thead>
-                  <tr>
-                    {TABLE_HEADS?.map((th, index) => (
-                      <th key={index}>{th}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {inventory?.map((dataItem) => (
-                    <tr key={dataItem.id}>
-                    
-                      <td>{dataItem.menuitid}</td>
-                      <td>{dataItem.name}</td>
-                      <td>{dataItem.quantity}</td>
-                      <td>{dataItem.cob}</td>
-                      <td>{dataItem.endinv}</td>
-                      <td>{dataItem.remarks}</td>
-                      <td>{dataItem.date}</td>
-                      <td className="or-dt-cell-action">
-                        <div className="edit-delete-container">
-                          <div className="edit-btn">
-                            <button className="item-btn-cart">
-                              <RiEditLine size={25} />
-                            </button>
-                            <button className="item-btn-cart">
-                              <MdDeleteOutline size={25} />
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
-        </div>
+        <InventoryCategory category={category} setCategory={setCategory} refreshItems={fetchItems} />
+        <InventoryFetch category={category} items={items} />
       </div>
     </main>
   );

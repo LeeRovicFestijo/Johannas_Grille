@@ -116,7 +116,8 @@ app.post('/login', async (req, res) => {
       lastname: user.lastname, 
       usertype: user.usertype, 
       email: user.email, 
-      image: user.image_url // Add image_url here
+      image: user.image_url,
+      branch: user.branch // Add image_url here
     });   
   } catch (err) {
     console.error('Error during login:', err);
@@ -709,6 +710,115 @@ app.post('/api/reservations/receipt', async (req, res) => {
   }
 });
 
+app.get('/api/inventory', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT
+        i.inventoryid,
+        i.quantity,
+        i.branch,
+        m.menuitemid,
+        m.name,
+        m.image_url,
+        m.category
+      FROM
+        inventorytbl i
+      JOIN menuitemtbl m ON i.menuitemid = m.menuitemid
+      ORDER BY i.inventoryid ASC
+      `);
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error inventory menu items:', err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+app.put('/api/inventory/:id', async (req, res) => {
+  const { id } = req.params;  // Inventory ID from the route
+  const { quantity } = req.body; // Updated quantity from the request body
+
+  if (!quantity || isNaN(quantity)) {
+    return res.status(400).json({ error: 'Invalid quantity value' });
+  }
+
+  try {
+    // Update query
+    const result = await pool.query(
+      'UPDATE inventorytbl SET quantity = $1 WHERE inventoryid = $2 RETURNING *',
+      [quantity, id]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Inventory item not found' });
+    }
+
+    // Return the updated row
+    res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error updating inventory:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+app.post('/api/send-inventory', async (req, res) => {
+  console.log('Request body:', req.body); // Log incoming request
+  const { productId, invid, quantityToSend, branch } = req.body;
+
+  if (!productId || !invid || !quantityToSend || !branch) {
+    return res.status(400).json({ error: 'Missing required fields.' });
+  }
+
+  try {
+    // Determine the destination branch
+    const destinationBranch = branch === 'Bauan' ? 'Batangas' : 'Bauan';
+
+    // Begin transaction
+    const client = await pool.connect();
+    await client.query('BEGIN');
+
+    // Subtract quantity from the current branch
+    const subtractQuery = `
+      UPDATE inventorytbl
+      SET quantity = quantity - $1
+      WHERE inventoryid = $2 AND branch = $3 AND quantity >= $1
+      RETURNING inventoryid, quantity;
+    `;
+    const subtractResult = await client.query(subtractQuery, [quantityToSend, invid, branch]);
+
+    if (subtractResult.rowCount === 0) {
+      throw new Error('Insufficient quantity or invalid inventory ID.');
+    }
+
+    // Add quantity to the destination branch
+    const addQuery = `
+      UPDATE inventorytbl
+      SET quantity = quantity + $1
+      WHERE menuitemid = $2 AND branch = $3
+      RETURNING menuitemid, quantity;
+    `;
+    const addResult = await client.query(addQuery, [quantityToSend, productId, destinationBranch]);
+
+    // If the destination branch entry doesn't exist, insert a new record
+    if (addResult.rowCount === 0) {
+      const insertQuery = `
+        INSERT INTO inventorytbl (menuitemid, quantity, branch)
+        SELECT $1, $2, $3
+        FROM inventorytbl
+        WHERE inventoryid = $4
+        RETURNING inventoryid, quantity;
+      `;
+      await client.query(insertQuery, [productId, quantityToSend, destinationBranch, invid]);
+    }
+
+    // Commit the transaction
+    await client.query('COMMIT');
+    res.status(200).json({ message: 'Inventory successfully transferred.' });
+  } catch (error) {
+    console.error('Error transferring inventory:', error.message);
+    res.status(500).json({ error: 'An error occurred while transferring inventory.' });
+  } finally {
+  }
+});
 
 // Start the server
 app.listen(port, () => {

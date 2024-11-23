@@ -29,6 +29,7 @@ const Admin_LoginPopUp = () => {
           sessionStorage.setItem('usertype', data.usertype);
           sessionStorage.setItem('token', data.token);
           sessionStorage.setItem('image', data.image);
+          sessionStorage.setItem('branch', data.branch);
 
   
           if (data.usertype === 'Admin') {
@@ -50,7 +51,6 @@ const Admin_LoginPopUp = () => {
     }
   };
   
-
 
   return (
     <div className='admin-login-popup'>
