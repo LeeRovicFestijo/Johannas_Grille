@@ -38,7 +38,7 @@ function ProfileHeader({ text }) {
     console.log('Image URL:', storedImage); // Log the image URL for debugging
 
     // Prepend base URL if necessary
-    const baseURL = 'https://johannas-grille.onrender.com';
+    const baseURL = 'https://localhost';
     setImage(storedImage ? `${baseURL}${storedImage}` : '');
     const username = sessionStorage.getItem('username');
     const usertype = sessionStorage.getItem('usertype');

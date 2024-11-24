@@ -39,7 +39,7 @@ const ReservationForm = ({ reservationId, onClose }) => {
     };
 
     try {
-      const response = await fetch('https://johannas-grille.onrender.com/api/reservations/create', {
+      const response = await fetch('https://localhost/api/reservations/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

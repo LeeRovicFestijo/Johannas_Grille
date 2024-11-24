@@ -18,12 +18,20 @@ app.use(bodyParser.json());
 app.use('/uploads', express.static('uploads')); // Serve uploaded images statically
 
 // PostgreSQL connection
+// const pool = new Pool({
+//   user: process.env.DB_USER,
+//   host: process.env.DB_HOST,
+//   database: process.env.DB_DATABASE,
+//   password: process.env.DB_PASSWORD,
+//   port: process.env.DB_PORT || 5433, // Default to 5433 if not specified
+// });
+
 const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_DATABASE,
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT || 5433, // Default to 5433 if not specified
+  user: 'postgres',
+  host: 'localhost',
+  database: 'johannasgrilledb',
+  password: 'password',
+  port: 5432, // Default PostgreSQL port
 });
 
 // Multer storage for handling image uploads

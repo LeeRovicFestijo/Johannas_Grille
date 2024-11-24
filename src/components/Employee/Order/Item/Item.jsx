@@ -23,7 +23,7 @@ const FoodItem = ({ id, name, price, description, image, category, onAddToOrder,
     console.log('Request Body:', JSON.stringify(requestBody));
   
     try {
-      const itemResponse = await fetch('https://johannas-grille.onrender.com/api/orderitems', {
+      const itemResponse = await fetch('https://localhost/api/orderitems', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody),
@@ -50,7 +50,7 @@ const FoodItem = ({ id, name, price, description, image, category, onAddToOrder,
   const fetchMenuItems = async () => {
     setLoading(true);
     try {
-      const response = await fetch('https://johannas-grille.onrender.com/api/menuitems');
+      const response = await fetch('https://localhost/api/menuitems');
       if (response.ok) {
         const data = await response.json();
         setMenuItems(data);

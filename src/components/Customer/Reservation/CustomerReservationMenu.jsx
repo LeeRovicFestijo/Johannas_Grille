@@ -13,7 +13,7 @@ const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId })
     useEffect(() => {
         const fetchMenuItems = async () => {
             try {
-                const response = await fetch('https://johannas-grille.onrender.com/api/menu-items');
+                const response = await fetch('https://localhost/api/menu-items');
                 const data = await response.json();
 
                 // Organize data by menu category
@@ -93,7 +93,7 @@ const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId })
         };
 
         try {
-            const response = await fetch('https://johannas-grille.onrender.com/api/reservations/items', {
+            const response = await fetch('https://localhost/api/reservations/items', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ reservationDetails: updatedReservationDetails, items: itemsToSend }),

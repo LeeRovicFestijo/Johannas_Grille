@@ -15,7 +15,7 @@ const ProfileCustomer = () => {
         console.log('Token:', token); // Log token for debugging
 
         if (token) {
-          const response = await axios.get('https://johannas-grille.onrender.com/api/customer', {
+          const response = await axios.get('https://localhost/api/customer', {
             headers: { Authorization: `Bearer ${token}` },
           });
           console.log('Response data:', response.data); // Log response for debugging

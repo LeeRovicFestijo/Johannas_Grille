@@ -10,7 +10,7 @@ const Orders = () => {
 
 
   const fetchReservation = () => {
-    fetch("https://johannas-grille.onrender.com/api/reservations")
+    fetch("https://localhost/api/reservations")
       .then((response) => response.json())
       .then((data) => setReservation(data))
       .catch((error) => console.error("Error fetching employee data:", error));

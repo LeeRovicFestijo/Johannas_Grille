@@ -9,7 +9,7 @@ const Admin_LoginPopUp = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('https://johannas-grille.onrender.com/login', {
+      const response = await fetch('https://localhost/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
