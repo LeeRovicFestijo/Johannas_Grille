@@ -1,51 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../../../components/Admin/Sidebar/Sidebar";
 import "./Order.css";
 import { MdDeleteOutline } from "react-icons/md";
 import { RiEditLine } from "react-icons/ri";
 import OrderEdit from "../../../components/Admin/Order/OrderEdit";
-import OrderDelete from "../../../components/Admin/Order/OrderDel"; // Import delete modal
+import OrderDelete from "../../../components/Admin/Order/OrderDel";
 
-const TABLE_HEADS = ["Products", "Order ID", "Date", "Customer name", "Status", "Amount", "Action"];
-const TABLE_DATA = [
-  { id: 100, name: "Iphone 13 Pro", order_id: 11232, date: "Jun 29,2022", customer: "Afaq Karim", status: "delivered", amount: 400 },
-  { id: 101, name: "Macbook Pro", order_id: 11232, date: "Jun 29,2022", customer: "Afaq Karim", status: "pending", amount: 288 },
-  { id: 102, name: "Apple Watch", order_id: 11232, date: "Jun 29,2022", customer: "Afaq Karim", status: "canceled", amount: 500 },
-  { id: 103, name: "Microsoft Book", order_id: 11232, date: "Jun 29,2022", customer: "Afaq Karim", status: "delivered", amount: 100 },
-  { id: 104, name: "Apple Pen", order_id: 11232, date: "Jun 29,2022", customer: "Afaq Karim", status: "delivered", amount: 60 },
-  { id: 105, name: "Airpods", order_id: 11232, date: "Jun 29,2022", customer: "Afaq Karim", status: "delivered", amount: 80 },
+const TABLE_HEADS = [
+  "OrderID",
+  "CustomerID",
+  "OrderType",
+  "Date",
+  "Status",
+  "Total Amount",
+  "Time",
+  "Action",
 ];
 
 const Orders = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [orders, setOrders] = useState([]);
 
-  // Open edit modal
-  const handleEditClick = (order) => {
-    setSelectedOrder(order);
-    setIsEditModalOpen(true);
+  const fetchOrders = () => {
+    fetch("http://localhost:3000/api/orders")
+      .then((response) => response.json())
+      .then((data) => setOrders(data))
+      .catch((error) => console.error("Error fetching order data:", error));
   };
 
-  // Open delete modal
-  const handleDeleteClick = (order) => {
-    setSelectedOrder(order);
-    setIsDeleteModalOpen(true);
-  };
-
-  // Handle closing modals
-  const handleCloseModal = () => {
-    setIsEditModalOpen(false);
-    setIsDeleteModalOpen(false);
-    setSelectedOrder(null);
-  };
-
-  // Handle delete action
-  const handleDeleteOrder = (orderId) => {
-    // Logic to delete the order
-    console.log("Order deleted:", orderId);
-    handleCloseModal();
-  };
+  useEffect(() => {
+    fetchOrders();
+  }, []);
 
   return (
     <main className="page-wrapper">
@@ -67,33 +54,49 @@ const Orders = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {TABLE_DATA?.map((dataItem) => (
-                    <tr key={dataItem.id}>
-                      <td>{dataItem.name}</td>
-                      <td>{dataItem.order_id}</td>
-                      <td>{dataItem.date}</td>
-                      <td>{dataItem.customer}</td>
-                      <td>
-                        <div className="or-dt-status">
-                          <span className={`or-dt-status-dot dot-${dataItem.status}`}></span>
-                          <span className="or-dt-status-text">{dataItem.status}</span>
-                        </div>
-                      </td>
-                      <td>${dataItem.amount.toFixed(2)}</td>
-                      <td className="or-dt-cell-action">
-                        <div className="edit-delete-container">
-                          <div className="edit-btn">
-                            <button className="item-btn-cart" onClick={() => handleEditClick(dataItem)}>
-                              <RiEditLine size={25} />
-                            </button>
-                            <button className="item-btn-cart" onClick={() => handleDeleteClick(dataItem)}>
-                              <MdDeleteOutline size={25} />
-                            </button>
+                  {orders?.map((dataItem) => {
+                    // Format the date and time
+                    const formattedDate = new Date(dataItem.date).toLocaleDateString("en-US", {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    });
+
+                    const formattedTime = new Date(`1970-01-01T${dataItem.time}`).toLocaleTimeString("en-US", {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: true
+                    });
+
+                    return (
+                      <tr key={dataItem.orderid}>
+                        <td>{dataItem.orderid}</td>
+                        <td>{dataItem.customerid}</td>
+                        <td>{dataItem.ordertype}</td>
+                        <td>{formattedDate}</td>
+                        <td>
+                          <div className="or-dt-status">
+                            <span className={`or-dt-status-dot dot-${dataItem.status}`}></span>
+                            <span className="or-dt-status-text">{dataItem.status}</span>
                           </div>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                        </td>
+                        <td>P{dataItem.totalamount}</td>
+                        <td>{formattedTime}</td>
+                        <td className="or-dt-cell-action">
+                          <div className="edit-delete-container">
+                            <div className="edit-btn">
+                              <button className="item-btn-cart">
+                                <RiEditLine size={25} />
+                              </button>
+                              <button className="item-btn-cart">
+                                <MdDeleteOutline size={25} />
+                              </button>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -106,7 +109,7 @@ const Orders = () => {
             selectedOrder={selectedOrder}
             setSelectedOrder={setSelectedOrder}
             handleFormSubmit={() => console.log("Order updated")}
-            handleCloseModal={handleCloseModal}
+            handleCloseModal={() => setIsEditModalOpen(false)}
           />
         )}
 
@@ -114,8 +117,8 @@ const Orders = () => {
         {isDeleteModalOpen && (
           <OrderDelete
             selectedOrder={selectedOrder}
-            handleCloseModal={handleCloseModal}
-            handleDeleteOrder={handleDeleteOrder}
+            handleCloseModal={() => setIsDeleteModalOpen(false)}
+            handleDeleteOrder={(orderId) => console.log("Order deleted:", orderId)}
           />
         )}
       </div>

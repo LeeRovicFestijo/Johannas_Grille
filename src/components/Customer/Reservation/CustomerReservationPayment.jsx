@@ -9,23 +9,28 @@ const CustomerReservationPayment = ({ reservationId, onClose }) => {
   const [isReceiptVisible, setIsReceiptVisible] = useState(false);
 
   const handleConfirmReceipt = async () => {
+    console.log('Sending payment details:', { reservationId, referenceCode });
+  
     try {
-      const response = await fetch('https://localhost/api/reservations/payment', {
+      const response = await fetch('http://localhost:3000/api/reservations/payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ reservationId, referenceCode }),
       });
-
+  
+      const data = await response.json();
+  
       if (response.ok) {
         setIsReceiptVisible(true); // Show receipt after successful payment
       } else {
-        const data = await response.json();
         console.error('Payment error:', data.message);
       }
     } catch (error) {
       console.error('Error during payment:', error);
     }
   };
+  
+  
 
   return (
     <div className="payment-popup">

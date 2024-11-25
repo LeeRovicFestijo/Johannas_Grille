@@ -26,7 +26,7 @@ const AdminReservationMenuCategory = ({ category, setCategory }) => {
 
     try {
       // Send form data to backend API
-      const response = await fetch('https://localhost/api/menuitems', {
+      const response = await fetch('http://localhost:3000/api/menuitems', {
         method: 'POST',
         body: formData, // Send form data as body
       });

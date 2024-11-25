@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {Route, Routes } from 'react-router-dom';
 import Home from './pages/Customer/Home/Home';
 import Cart from './pages/Customer/ItemPopup/ItemPopup';
-import AddToCart from './pages/Customer/Cart/Cart';
+import AddToCart from './pages/Customer/Product/Cart';
 import LoginPopUp from './pages/Customer/Login/Login';
 import ConfirmOrder from './pages/Customer/Receipt/Receipt';
 import ProfileCustomer from './pages/Customer/CustomerProfile/CustomerInfo'

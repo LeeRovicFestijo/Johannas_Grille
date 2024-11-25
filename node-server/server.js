@@ -63,46 +63,88 @@ const authenticateToken = (req, res, next) => {
 const upload = multer({ storage });
 
 app.post('/api/signup', async (req, res) => {
-  const {firstname, lastname, address, email, phonenumber, username, password} = req.body;
-
-  // Hash the password
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const { firstname, lastname, address, email, phonenumber, username, password } = req.body;
 
   try {
-      const result = await pool.query(
-          'INSERT INTO customertbl (firstname, lastname, address, email, phonenumber, username, password) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
-          [firstname, lastname, address, email, phonenumber, username, hashedPassword]
-      );
-      res.status(201).json({ message: 'User registered successfully', user: result.rows[0] });
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const result = await pool.query(
+      'INSERT INTO customertbl (firstname, lastname, address, email, phonenumber, username, password) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+      [firstname, lastname, address, email, phonenumber, username, hashedPassword]
+    );
+
+    res.status(201).json({ message: 'User registered successfully', user: result.rows[0] });
   } catch (error) {
-      console.error('Error details:', error);  // Add this to log the full error
-      res.status(500).json({ message: 'Error registering user', error: error.message });  // Return error message
+    console.error('Error during signup:', error.message);
+    res.status(500).json({ message: 'Error registering user', error: error.message });
   }
 });
 
-// Login Endpoint
-app.post('/api/login', async (req, res) => {
+app.post('/api/customer/login', async (req, res) => {
   const { username, password } = req.body;
 
   try {
     const result = await pool.query('SELECT * FROM customertbl WHERE username = $1', [username]);
     const user = result.rows[0];
 
-    if (user && (await bcrypt.compare(password, user.password))) {
-      const token = jwt.sign({ id: user.customerid, username: user.username }, SECRET_KEY, { expiresIn: '1h' });
-      res.json({ message: 'Login successful', token });
-    } else {
-      res.status(401).json({ message: 'Invalid username or password' });
+    if (!user) {
+      return res.status(401).json({ success: false, message: 'Invalid username or password' });
     }
+
+    // Compare hashed password
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatch) {
+      return res.status(401).json({ success: false, message: 'Invalid username or password' });
+    }
+
+    const token = jwt.sign({ id: user.customerid, username: user.username }, SECRET_KEY, { expiresIn: '1h' });
+    res.json({ 
+      success: true, 
+      message: 'Login successful', 
+      token,
+      firstname: user.firstname, 
+      lastname: user.lastname, 
+      email: user.email, 
+      image: user.image_url,
+    });
   } catch (error) {
-    console.error('Error logging in:', error.message);
-    res.status(500).json({ message: 'Server error during login' });
+    console.error('Error during login:', error.message);
+    res.status(500).json({ success: false, message: 'Server error during login' });
+  }
+});
+
+app.get('/api/customer/info', async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+
+    const decoded = jwt.verify(token, SECRET_KEY);
+    const result = await pool.query('SELECT firstname, lastname, email, username, image_url FROM customertbl WHERE customerid = $1', [decoded.id]);
+
+    const user = result.rows[0];
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    res.json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    console.error('Error fetching customer info:', error.message);
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({ success: false, message: 'Invalid token' });
+    }
+    res.status(500).json({ success: false, message: 'Server error' });
   }
 });
 
 
 // --- API Endpoints ---
-app.post('/login', async (req, res) => {
+app.post('/user/login', async (req, res) => {
   const { username, password } = req.body;
 
   try {
@@ -271,21 +313,32 @@ app.post('/api/reservations/items', async (req, res) => {
 app.post('/api/reservations/payment', async (req, res) => {
   const { reservationId, referenceCode } = req.body;
 
-  try {
-      // Update the reservationtbl with the GCash payment details
-      await pool.query(
-          `UPDATE reservationtbl
-           SET referencecode = $1
-           WHERE reservationid = $2`,
-          [referenceCode, reservationId]
-      );
+  if (!reservationId || !referenceCode) {
+    return res.status(400).json({ success: false, message: 'Missing reservationId or referenceCode' });
+  }
 
-      res.json({ success: true, message: 'Payment details confirmed' });
+  try {
+    // Update the reservationtbl with the GCash payment details
+    const result = await pool.query(
+      `UPDATE reservationtbl
+       SET referencecode = $1
+       WHERE reservationid = $2`,
+      [referenceCode, reservationId]
+    );
+
+    if (result.rowCount === 0) {
+      // No rows were updated
+      return res.status(404).json({ success: false, message: 'Reservation not found' });
+    }
+
+    res.json({ success: true, message: 'Payment details confirmed' });
   } catch (err) {
-      console.error('Error inserting payment details:', err);
-      res.status(500).send('Error inserting payment details');
+    console.error('Error inserting payment details:', err);
+    res.status(500).json({ success: false, message: 'Error inserting payment details' });
   }
 });
+
+
 
 // delete menu items
 
@@ -559,6 +612,16 @@ app.delete("/api/customer/:id", async (req, res) => {
   } catch (error) {
     console.error("Error deleting customer:", error);
     res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.get('/api/orders', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM orderstbl');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching menu items:', err.message);
+    res.status(500).send('Server error');
   }
 });
 

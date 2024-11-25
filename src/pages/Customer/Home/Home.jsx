@@ -1,28 +1,35 @@
-import React, { useState } from 'react'
-import './Home.css'
-import Header from '../../../components/Customer/Header/Header'
-import ExploreMenu from '../../../components/Customer/ExploreMenu/ExploreMenu'
-import FoodDisplay from '../../../components/Customer/FoodDisplay/FoodDisplay'
-import Navbar from '../../../components/Customer/Navbar/Navbar'
-import Footer from '../../../components/Customer/Footer/Footer'
-import Carousel from '../../../components/Customer/Reservation/Carousel'
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import './Home.css';
+import Header from '../../../components/Customer/Header/Header';
+import Product from '../Product/Product';
+import Navbar from '../../../components/Customer/Navbar/Navbar';
+import Footer from '../../../components/Customer/Footer/Footer';
+import Carousel from '../../../components/Customer/Reservation/Carousel';
+import LoginPopUp from '../../Customer/Login/Login';
 
 const Home = () => {
-  const [showLogin, setShowLogin] = useState(false)
-  const [showAddToCart, setShowAddToCart] = useState(false)
-    const [category,setCategory] = useState("All");
+  const [showLogin, setShowLogin] = useState(false);
+  const [orderId, setOrderId] = useState('');
+
+  // Generate a single 5-digit orderId on mount
+  useEffect(() => {
+    const generateOrderId = () => Math.floor(10000 + Math.random() * 90000).toString();
+    setOrderId(generateOrderId());
+  }, []);
 
   return (
     <div>
-      <Navbar setShowLogin={setShowLogin} />
+      
+      {/* Pass the same orderId to Navbar and Product */}
+      <Navbar setShowLogin={setShowLogin} orderId={orderId} />
       {showLogin && <LoginPopUp setShowLogin={setShowLogin} />}
-      <Header/>
-      <ExploreMenu category={category} setCategory={setCategory}/>
-      <FoodDisplay category={category}/>
+      <Header />
+      <Product orderId={orderId} />
       <Carousel />
-      <Footer/>
+      <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

@@ -115,14 +115,14 @@
     cursor: pointer;
   }
 
-  .addtocart-item-details .quantity {
+  /* .addtocart-item-details .quantity {
     color: black;
   }
 
   .count {
     margin: 0 10px;
     font-size: 16px;
-  }
+  } */
 
   .summary-item {
     display: flex;

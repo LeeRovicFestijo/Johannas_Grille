@@ -39,7 +39,7 @@ const ReservationForm = ({ reservationId, onClose }) => {
     };
 
     try {
-      const response = await fetch('https://localhost/api/reservations/create', {
+      const response = await fetch('http://localhost:3000/api/reservations/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -68,7 +68,8 @@ const ReservationForm = ({ reservationId, onClose }) => {
       {!isSubmitted ? (
         <div className="res-modal-overlay">
           <div className="res-modal-content modern">
-            <h2 className="res-title modern">{reservationId} Make a Reservation</h2>
+            <h1>{reservationId}</h1>
+            <h2 className="res-title modern"> Make a Reservation</h2>
             <form onSubmit={handleFormSubmit}>
               <div className="res-form-grid modern">
                 <div className="res-form-group">

@@ -32,8 +32,7 @@ const LoginPopUp = () => {
 
   const handleSignUp = async () => {
     try {
-      // Debug: Log the data being sent to the API
-      console.log('Sign-up data:', {
+      const response = await axios.post('http://localhost:3000/api/signup', {
         firstname: firstName,
         lastname: lastName,
         address,
@@ -42,67 +41,29 @@ const LoginPopUp = () => {
         username,
         password,
       });
-
-      const response = await axios.post('https://localhost/api/signup', {
-        firstname: firstName,
-        lastname: lastName,
-        address,
-        email,
-        phonenumber: phoneNumber,
-        username,
-        password,
-      });
-  
-      console.log('Response from server:', response); // Log the response for debugging
   
       setMessage(response.data.message);
-  
-      // Check if the response was successful
-      if (response.status === 200 || response.status === 201) { 
-        // Switch to login form after successful sign-up
+      if (response.status === 201) {
         setCurrState("Login");
-        resetForm();  // Clear form data after successful sign-up
-      } else {
-        console.error('Unexpected status code:', response.status);
-        setMessage('Unexpected status code, could not switch to login.');
+        resetForm();
       }
     } catch (error) {
-      if (error.response) {
-        console.error('Error response from server:', error.response.data);
-        setMessage(error.response.data.message || 'Error signing up');
-      } else {
-        console.error('Error message:', error.message);
-        setMessage('Error signing up');
-      }
+      setMessage(error.response?.data?.message || 'Error signing up');
     }
-  };  
-
+  };
+  
   const handleLogin = async () => {
     try {
-      const response = await axios.post('https://localhost/api/login', {
-        username,
-        password,
-      });
-
+      const response = await axios.post('http://localhost:3000/api/customer/login', { username, password });
+  
       if (response.status === 200) {
-        const { token } = response.data;
-
-        // Store token in localStorage for future requests
-        localStorage.setItem('token', token);
-
-        window.location.reload(); // Reload the page
-        handleClose();
+        localStorage.setItem('token', response.data.token);
+        window.location.reload();
       } else {
         setMessage('Login failed');
       }
     } catch (error) {
-      if (error.response) {
-        console.error('Error response from server:', error.response.data);
-        setMessage(error.response.data.message || 'Error logging in');
-      } else {
-        console.error('Error message:', error.message);
-        setMessage('Error logging in');
-      }
+      setMessage(error.response?.data?.message || 'Error logging in');
     }
   };
 

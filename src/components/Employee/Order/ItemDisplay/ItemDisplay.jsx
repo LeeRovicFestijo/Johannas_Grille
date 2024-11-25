@@ -14,7 +14,7 @@ const ItemDisplay = ({ category, items, orderId }) => {
         // Fetch data from the API
         const fetchData = async () => {
             try {
-                const response = await fetch('https://localhost/api/menuitems'); // Adjust the port accordingly
+                const response = await fetch('http://localhost:3000/api/menuitems'); // Adjust the port accordingly
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
@@ -43,7 +43,7 @@ const ItemDisplay = ({ category, items, orderId }) => {
                                 id={item.menuitemid}
                                 name={item.name}
                                 price={item.price}
-                                image={`https://localhost${item.image_url}`}// Use the correct field for the image URL
+                                image={`http://localhost:3000${item.image_url}`}// Use the correct field for the image URL
                             />
                         );
                     }

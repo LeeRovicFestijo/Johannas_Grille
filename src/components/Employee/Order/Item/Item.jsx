@@ -7,7 +7,6 @@ const FoodItem = ({ id, name, price, description, image, category, onAddToOrder,
   const [currentOrderId, setCurrentOrderId] = useState(localStorage.getItem('currentOrderId'));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  // Function to handle adding items to the order
   const handleAddToOrder = async () => {
     setLoading(true);
     setError(null);
@@ -23,7 +22,7 @@ const FoodItem = ({ id, name, price, description, image, category, onAddToOrder,
     console.log('Request Body:', JSON.stringify(requestBody));
   
     try {
-      const itemResponse = await fetch('https://localhost/api/orderitems', {
+      const itemResponse = await fetch('http://localhost:3000/api/orderitems', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody),
@@ -50,7 +49,7 @@ const FoodItem = ({ id, name, price, description, image, category, onAddToOrder,
   const fetchMenuItems = async () => {
     setLoading(true);
     try {
-      const response = await fetch('https://localhost/api/menuitems');
+      const response = await fetch('http://localhost:3000/api/menuitems');
       if (response.ok) {
         const data = await response.json();
         setMenuItems(data);

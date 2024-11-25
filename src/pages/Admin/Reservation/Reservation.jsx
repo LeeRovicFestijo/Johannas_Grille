@@ -11,7 +11,7 @@ const ReservationMenu = () => {
   // Fetch the items from the backend
   const fetchItems = async () => {
     try {
-      const response = await fetch('https://localhost/api/menuitems');
+      const response = await fetch('http://localhost:3000/api/menuitems');
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }

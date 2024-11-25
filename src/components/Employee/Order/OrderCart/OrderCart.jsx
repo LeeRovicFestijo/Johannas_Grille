@@ -15,7 +15,7 @@ const OrderCart = ({ category, setCategory, orderId }) => {
         const fetchOrderItems = async () => {
             if (!orderId) return;
             try {
-                const response = await fetch(`https://localhost/api/order/${orderId}`);
+                const response = await fetch(`http://localhost:3000/api/order/${orderId}`);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 const data = await response.json();
 
@@ -33,7 +33,7 @@ const OrderCart = ({ category, setCategory, orderId }) => {
 
     const handleAddToOrder = async (menuItemId) => {
         try {
-            const response = await fetch('https://localhost/api/orderitems', {
+            const response = await fetch('http://localhost:3000/api/orderitems', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -61,7 +61,7 @@ const OrderCart = ({ category, setCategory, orderId }) => {
 
     const handleConfirmOrder = async () => {
         try {
-            const response = await fetch(`https://localhost/api/confirm-order/${orderId}`, {
+            const response = await fetch(`http://localhost:3000/api/confirm-order/${orderId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ orderType }),
@@ -132,6 +132,7 @@ const OrderCart = ({ category, setCategory, orderId }) => {
                     {orderItems.length > 0 ? (
                         orderItems.map((item) => (
                             <OrderItem key={item.orderitemid} item={item} order={orderId} />
+                            
                         ))
                     ) : (
                         <div>No items in your order.</div>

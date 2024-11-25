@@ -38,7 +38,7 @@ function ProfileHeader({ text }) {
     console.log('Image URL:', storedImage); // Log the image URL for debugging
 
     // Prepend base URL if necessary
-    const baseURL = 'https://localhost';
+    const baseURL = 'http://localhost:3000';
     setImage(storedImage ? `${baseURL}${storedImage}` : '');
     const username = sessionStorage.getItem('username');
     const usertype = sessionStorage.getItem('usertype');

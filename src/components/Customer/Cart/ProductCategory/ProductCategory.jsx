@@ -1,8 +1,8 @@
 import React from 'react'
-import './ExploreMenu.css'
-import { menu_list } from '../../../assets/assets'
+import './ProductCategory.css'
+import { menu_list } from '../../../../assets/assets'
 
-const ExploreMenu = ({category,setCategory}) => {
+const ProductCategory = ({category,setCategory}) => {
   return (
     <div className="explore-menu" id="explore-menu">
       <p className="explore-menu-text">{/*Lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor lorem ipsum dolor*/}</p>
@@ -21,4 +21,4 @@ const ExploreMenu = ({category,setCategory}) => {
   )
 }
 
-export default ExploreMenu
+export default ProductCategory

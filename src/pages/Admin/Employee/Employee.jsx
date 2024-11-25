@@ -25,7 +25,7 @@ const EmployeeList = () => {
   const [employees, setEmployees] = useState([]);
 
   const fetchEmployees = () => {
-    fetch("https://localhost/api/employees")
+    fetch("http://localhost:3000/api/employees")
       .then((response) => response.json())
       .then((data) => setEmployees(data))
       .catch((error) => console.error("Error fetching employee data:", error));
@@ -61,7 +61,7 @@ const EmployeeList = () => {
   };
 
   const handleSaveNewEmployee = (formData) => {
-    fetch("https://localhost/api/employeeadd", {
+    fetch("http://localhost:3000/api/employeeadd", {
       method: "POST",
       body: formData,
     })
