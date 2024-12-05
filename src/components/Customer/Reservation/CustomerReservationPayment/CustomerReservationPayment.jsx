@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './CustomerReservationPayment.css';
 import { IoIosCloseCircleOutline } from "react-icons/io";
-import CustomerReservationReceipt from './CustomerReservationReceipt';
+import CustomerReservationReceipt from '../CustomerReservationReceipt/CustomerReservationReceipt';
 
 const CustomerReservationPayment = ({ reservationId, onClose }) => {
   const [gcashNumber, setGcashNumber] = useState('');

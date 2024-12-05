@@ -38,7 +38,7 @@ const ProductDisplay = ({ category, orderId}) => {
                 id={item.menuitemid} 
                 name={item.name} 
                 image={`http://localhost:3000${item.image_url}`}// Use the correct field for the image URL
-                prices={item.price}
+                price={item.price}
               />
             );
           }

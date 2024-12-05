@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './ProductCard.css';
 
-const FoodItem = ({ id, name, prices, image, onAddToOrder, orderId }) => {
+const FoodItem = ({ id, name, price, image, onAddToOrder, orderId }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [menuItems, setMenuItems] = useState([]);
@@ -74,7 +74,7 @@ const FoodItem = ({ id, name, prices, image, onAddToOrder, orderId }) => {
       <div className="food-card-info">
         <div className="food-card-name-rating">
           <h4>{name}</h4>
-          <p>₱{prices}</p>
+          <p>₱{price}</p>
         </div>
         <button 
           className="btn-cart" 

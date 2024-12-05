@@ -5,7 +5,7 @@ import Header from '../../../components/Customer/Header/Header';
 import Product from '../Product/Product';
 import Navbar from '../../../components/Customer/Navbar/Navbar';
 import Footer from '../../../components/Customer/Footer/Footer';
-import Carousel from '../../../components/Customer/Reservation/Carousel';
+import Carousel from '../../../components/Customer/Reservation/Carousel/Carousel';
 import LoginPopUp from '../../Customer/Login/Login';
 
 const Home = () => {

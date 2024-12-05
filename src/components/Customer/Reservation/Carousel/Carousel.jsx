@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './Carousel.css';
-import './ReservationForm.css'; // Import CSS for the reservation form
-import image1 from '../../../assets/BA1.jpg';
-import image2 from '../../../assets/BA2.jpg';
-import image4 from '../../../assets/B1.jpg';
-import image5 from '../../../assets/B2.jpg';
-import ReservationForm from "../../../components/Customer/Reservation/ReservationForm";
+import image1 from '../../../../assets/BA1.jpg';
+import image2 from '../../../../assets/BA2.jpg';
+import image4 from '../../../../assets/B1.jpg';
+import image5 from '../../../../assets/B2.jpg';
+import ReservationForm from "../ReservationForm/ReservationForm";
 
 const Carousel = ({ items, autoPlayInterval = 1000 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);

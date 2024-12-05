@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import './ReservationForm.css';
-import CustomerReservationMenu from '../../../components/Customer/Reservation/CustomerReservationMenu';
+import CustomerReservationMenu from '../CustomerReservationMenu/CustomerReservationMenu';
+import CustomerReservationReceipt from '../CustomerReservationReceipt/CustomerReservationReceipt'; // Import the receipt component
 import { IoIosCloseCircleOutline } from "react-icons/io";
 
 const ReservationForm = ({ reservationId, onClose }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [reservationDetails, setReservationDetails] = useState(null);
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const [isTermsOpen, setIsTermsOpen] = useState(false);
+  const [isReceiptOpen, setIsReceiptOpen] = useState(false); // New state for receipt
   const branchOptions = ["Batangas", "Bauan"];
 
   const handleCheckboxChange = (e) => {
@@ -16,8 +17,7 @@ const ReservationForm = ({ reservationId, onClose }) => {
 
   const handleTermsClick = (e) => {
     e.preventDefault();
-    setIsTermsOpen(true);
-    document.getElementById('term').classList.add('highlight');
+    setIsReceiptOpen(true); // Open the receipt popup
   };
 
   const handleFormSubmit = async (e) => {
@@ -30,12 +30,12 @@ const ReservationForm = ({ reservationId, onClose }) => {
 
     const formData = {
       reservationDetails: {
-        reservationId: reservationId, // Make sure reservationId is passed here
+        reservationId: reservationId,
         numberofguests: e.target.guests.value,
         reservationdate: e.target.date.value,
         reservationtime: e.target.time.value,
         branch: e.target.branch.value,
-      }, // Ensure selectedItems are also sent if necessary
+      },
     };
 
     try {
@@ -60,10 +60,14 @@ const ReservationForm = ({ reservationId, onClose }) => {
     }
   };
 
-
   return (
     <>
-      {isTermsOpen && <TermsPopup onClose={() => setIsTermsOpen(false)} />}
+      {isReceiptOpen && (
+        <CustomerReservationReceipt
+          reservationId={reservationId}
+          onClose={() => setIsReceiptOpen(false)} // Close the receipt popup
+        />
+      )}
 
       {!isSubmitted ? (
         <div className="res-modal-overlay">
@@ -79,7 +83,7 @@ const ReservationForm = ({ reservationId, onClose }) => {
                     id="guests"
                     name="guests"
                     placeholder="Number of Guests"
-                    min="50" // You can adjust the min value as needed
+                    min="50"
                     required
                   />
                 </div>
@@ -99,7 +103,7 @@ const ReservationForm = ({ reservationId, onClose }) => {
                     id="time"
                     name="time"
                     min="09:30"
-                    max="20:30 "
+                    max="20:30"
                     required
                   />
                 </div>
@@ -123,7 +127,7 @@ const ReservationForm = ({ reservationId, onClose }) => {
                     required
                   />
                   <label htmlFor="terms">
-                    I accept the <a href="#" onClick={handleTermsClick} className='terms-condition'>Terms and Conditions</a>
+                    I accept the <a href="#" onClick={handleTermsClick} className="terms-condition">Terms and Conditions</a>
                   </label>
                 </div>
               </div>

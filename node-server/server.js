@@ -31,7 +31,7 @@ const pool = new Pool({
   host: 'localhost',
   database: 'johannasgrilledb',
   password: 'password',
-  port: 5432, // Default PostgreSQL port
+  port: 5433, // Default PostgreSQL port
 });
 
 // Multer storage for handling image uploads
@@ -683,6 +683,56 @@ app.post('/api/orderitems', async (req, res) => {
     res.status(500).json({ error: 'Failed to add order item' });
   }
 });
+
+app.put('/api/orders/:orderId', async (req, res) => {
+  const { orderId } = req.params;
+  const { ordertype, totalamount } = req.body;
+
+  try {
+    const result = await pool.query(
+      'UPDATE orderstbl SET ordertype = $1, totalamount = $2 WHERE orderid = $3 RETURNING *',
+      [ordertype, totalamount, orderId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    res.status(200).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error updating order:', error.message, error.stack);
+    res.status(500).json({ error: 'Failed to update order' });
+  }
+});
+
+// Confirm an order
+app.post('/api/confirm-order/:orderId', async (req, res) => {
+  const { orderId } = req.params;
+
+  try {
+    // Ensure the order exists
+    const order = await pool.query('SELECT * FROM orderstbl WHERE orderid = $1', [orderId]);
+
+    if (order.rows.length === 0) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    // Perform order confirmation logic (e.g., mark as confirmed in the database)
+    const result = await pool.query(
+      'UPDATE orderstbl SET status = $1 WHERE orderid = $2 RETURNING *',
+      ['Pending', orderId]
+    );
+
+    res.status(200).json({
+      message: 'Order confirmed successfully',
+      order: result.rows[0],
+    });
+  } catch (error) {
+    console.error('Error confirming order:', error.message);
+    res.status(500).json({ error: 'Failed to confirm order' });
+  }
+});
+
 
 app.post('/api/reservations', async (req, res) => {
   const { reservationDetails, selectedItems, totalAmount } = req.body;
