@@ -1,40 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import EmployeeUpdatePopup from '../EmployeeUpdatePopup/EmployeeUpdatePopup';
-import { RxAvatar } from "react-icons/rx";
+import { FaUserCircle } from 'react-icons/fa'; 
 import "./EmployeeProfile.css";
 
 const EmployeeProfile = () => {
     const [image, setImage] = useState('');
     const [firstname, setFirstname] = useState('');
     const [lastname, setLastname] = useState('');
-    const [email, setEmail] = useState('');  // This should store the email
+    const [email, setEmail] = useState('');
     const [usertype, setUserType] = useState('');
     const [username, setUsername] = useState('');
-    const [showPopup, setShowPopup] = useState(false); // Popup state
+    const [showPopup, setShowPopup] = useState(false);
+    const [imagePreview, setImagePreview] = useState(image);
 
     useEffect(() => {
         const storedImage = sessionStorage.getItem('image');
-        console.log('Image URL:', storedImage); // Log the image URL for debugging
-
-        // Prepend base URL if necessary
-        const baseURL = 'http://localhost:3000';
+        const baseURL = 'http://localhost:3000';  // Adjust URL if needed
         setImage(storedImage ? `${baseURL}${storedImage}` : '');
         setFirstname(sessionStorage.getItem('firstname'));
         setLastname(sessionStorage.getItem('lastname'));
-        setEmail(sessionStorage.getItem('email')); // Check if this retrieves the email
+        setEmail(sessionStorage.getItem('email'));
         setUserType(sessionStorage.getItem('usertype'));
         setUsername(sessionStorage.getItem('username'));
-
-        console.log(sessionStorage.getItem('email')); // Check if email is retrieved correctly
     }, []);
 
     const handleUpdateClick = () => {
-        setShowPopup(true); // Show the popup
-      };
-    
-      const handleClosePopup = () => {
-        setShowPopup(false); // Close the popup
-      };
+        setShowPopup(true);
+    };
+
+    const handleClosePopup = () => {
+        setShowPopup(false);
+    };
 
     return (
         <div className="employees-profile-wrapper">
@@ -44,15 +40,15 @@ const EmployeeProfile = () => {
             <div className="employees-profile-content">
                 <div className="employees-profile-info">
                     <div className="employees-avatar-box">
-                        {image ? (
-                            <img src={image} alt="Profile" className="employees-avatar" />
+                        {imagePreview ? (
+                            <img src={imagePreview} alt="Profile Preview" />
                         ) : (
-                            <RxAvatar className="admin-avatar" size={100} />
+                            <FaUserCircle size={100} color="#ccc" /> // Display the icon when no image is set
                         )}
                     </div>
                     <h2>{firstname} {lastname}</h2>
                     <div className="employees-personal-info">
-                        <p>{usertype}</p> {/* Display the actual email */}
+                        <p>{usertype}</p>
                     </div>
                 </div>
 
@@ -100,7 +96,7 @@ const EmployeeProfile = () => {
                         </div>
                     </div>
 
-                    <button className="employees-update-btn" onClick={handleUpdateClick} >Update</button>
+                    <button className="employees-update-btn" onClick={handleUpdateClick}>Update</button>
                 </div>
             </div>
 
@@ -111,12 +107,12 @@ const EmployeeProfile = () => {
                 lastname={lastname}
                 username={username}
                 email={email}
-                image={image} // Pass the current image to the popup
+                image={image}
                 setFirstname={setFirstname}
                 setLastname={setLastname}
                 setUsername={setUsername}
                 setEmail={setEmail}
-                setImage={setImage} // Allow updating the image
+                setImage={setImage}
             />
         </div>
     );

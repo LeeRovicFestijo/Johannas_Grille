@@ -467,6 +467,36 @@ app.post("/api/employeeadd", upload.single('image'), async (req, res) => {
   }
 });
 
+app.put('/api/employees/:id', upload.single('image'), async (req, res) => {
+  const { id } = req.params;
+  const { username, email } = req.body;
+  const image_url = req.file ? `/uploads/${req.file.filename}` : null;
+
+  try {
+    let query = 'UPDATE usertbl SET username = $1, email = $2';
+    const values = [username, email];
+
+    if (image_url) {
+      query += ', image_url = $3 WHERE userid = $4 RETURNING *';
+      values.push(image_url, id);
+    } else {
+      query += ' WHERE userid = $3 RETURNING *';
+      values.push(id);
+    }
+
+    const result = await pool.query(query, values);
+
+    if (result.rows.length > 0) {
+      res.status(200).json(result.rows[0]);
+    } else {
+      res.status(404).json({ error: 'Employee not found' });
+    }
+  } catch (err) {
+    console.error('Error updating employee:', err.message);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // DELETE employee by ID
 app.delete("/api/employees/:id", async (req, res) => {
   const { id } = req.params;

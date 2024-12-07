@@ -12,12 +12,37 @@
 }
 
 .employee-popup-content {
-    width: 450px;
+    max-width: 730px;
+    width: 80%;
     padding: 30px;
     background-color: #fff;
     border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     position: relative;
+}
+
+.employee-popup-details-content {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+
+.employee-profile-popup-left,
+.employee-profile-popup-right {
+    display: flex;
+    flex-direction: column;
+    width: 48%;
+}
+
+.employee-profile-popup-left {
+    flex-grow: 1;
+}
+
+.employee-edit-name-details {
+    display: flex;
+    gap: 20px;
+    flex-grow: 1;
 }
 
 .employee-popup-content h2 {
@@ -43,6 +68,7 @@
 .employee-form-group input[type="text"],
 .employee-form-group input[type="email"],
 .employee-form-group input[type="file"] {
+    width: 100%;
     padding: 12px;
     font-size: 1rem;
     border: 1px solid #ddd;
@@ -57,10 +83,20 @@
     outline: none;
 }
 
+.employee-image-and-input {
+    display: flex;
+    justify-content: center;
+    margin: 10px;
+}
+
 .employee-image-preview {
     display: flex;
     justify-content: center;
-    margin-top: 15px;
+    align-items: center;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
 }
 
 .employee-image-preview img {
@@ -68,6 +104,7 @@
     height: 100px;
     border-radius: 50%;
     object-fit: cover;
+    margin-right: 10px;
 }
 
 .employee-popup-buttons {
@@ -85,24 +122,31 @@
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    flex: 1; /* Allow buttons to take equal space */
-    margin: 0 5px; /* Space between buttons */
+    flex: 1;
+    /* Allow buttons to take equal space */
+    margin: 0 5px;
+    /* Space between buttons */
 }
 
 .employee-popup-update-btn {
-    background-color: #4caf50; /* Green */
+    background-color: #4caf50;
+    /* Green */
     color: #fff;
 }
 
 .employee-popup-update-btn:hover {
-    background-color: #66bb6a; /* Darker green */
+    background-color: #66bb6a;
+    /* Darker green */
 }
 
 .employee-popup-close-btn {
-    background-color: #f44336; /* Red */
+    background-color: #f44336;
+    /* Red */
     color: #fff;
 }
 
 .employee-popup-close-btn:hover {
-    background-color: #ef5350; /* Darker red */
+    background-color: #ef5350;
+    /* Darker red */
 }
+
