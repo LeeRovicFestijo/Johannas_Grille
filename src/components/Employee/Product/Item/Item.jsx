@@ -1,78 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import './Item.css';
 import EditPopup from './EditPopup';
-import DeletePopup from './DeletePopup';
-// Importing the icons for edit and delete
-import { MdDeleteOutline } from "react-icons/md";
 import { RiEditLine } from "react-icons/ri";
 
-const FoodItem = ({ id, name, price, description, image, category }) => {
+const FoodItem = ({ id, name, price, description, image, category, availability }) => {
   const [showEditPopup, setShowEditPopup] = useState(false);
-  const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [foodName, setFoodName] = useState(name);
   const [foodPrice, setFoodPrice] = useState(price);
   const [foodImage, setFoodImage] = useState(image);
   const [foodCategory, setFoodCategory] = useState(category);
-  const [foodItems, setFoodItems] = useState([]);
-  const [menuItems, setMenuItems] = useState([]);
+  const [foodAvailability, setFoodAvailability] = useState(availability);
 
-  // Mock fetchData function to simulate fetching updated data from the server
-  
   const fetchData = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/menuitems'); // Adjust this to your API URL
+      const response = await fetch('http://localhost:3000/api/menuitems');
       const data = await response.json();
-      setFoodItems(data); // Update state with fetched data
-      window.location.reload()
+      // Find the updated item by id and update the states
+      const updatedItem = data.find((item) => item.id === id);
+      if (updatedItem) {
+        setFoodName(updatedItem.name);
+        setFoodPrice(updatedItem.price);
+        setFoodImage(updatedItem.image);
+        setFoodCategory(updatedItem.category);
+        setFoodAvailability(updatedItem.availability);
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
 
-  // Triggering fetchData when the component mounts
-  const fetchMenuItems = async () => {
-    try {
-      const response = await fetch('http://localhost:3000/api/menuitems');
-      if (response.ok) {
-        const data = await response.json();
-        setMenuItems(data);
-      } else {
-        console.error('Error fetching menu em-items:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error fetching menu em-items:', error);
+  const handleSave = (updatedData) => {
+    setFoodName(updatedData.updatedName);
+    setFoodPrice(updatedData.updatedPrice);
+    setFoodAvailability(updatedData.updatedAvailability);
+    if (updatedData.updatedImage) {
+      setFoodImage(URL.createObjectURL(updatedData.updatedImage));
     }
   };
 
   useEffect(() => {
-    fetchMenuItems();
+      fetchData(); // Fetch data when the edit popup is shown
   }, []);
-
-  const handleEditClick = () => {
-    setShowEditPopup(true);
-  };
-
-  const handleDeleteClick = () => {
-    setShowDeletePopup(true);
-  };
-
-  const handleClosePopup = () => {
-    setShowEditPopup(false);
-    setShowDeletePopup(false);
-  };
-
-  const handleUpdate = () => {
-    fetchMenuItems(); // Refresh the menu em-items list
-  };
-
-  const handleSave = (updatedData) => {
-    setFoodName(updatedData.updatedName);
-    setFoodPrice(updatedData.updatedPrice);
-    if (updatedData.updatedImage) {
-      setFoodImage(URL.createObjectURL(updatedData.updatedImage));
-    }
-    fetchData(); // Reload data after saving
-  };
 
   return (
     <div className="em-item-food-card">
@@ -86,23 +54,20 @@ const FoodItem = ({ id, name, price, description, image, category }) => {
       </div>
       <div className="edit-delete-container">
         <div className="edit-btn">
-          {/* Edit Icon Button */}
-          <button className="em-item-btn-cart" onClick={handleEditClick}>
+          <button className="em-item-btn-cart" onClick={() => setShowEditPopup(true)}>
             <RiEditLine size={25} />
-          </button>
-          {/* Delete Icon Button */}
-          <button className="em-item-btn-cart" onClick={handleDeleteClick}>
-            <MdDeleteOutline size={25} />
           </button>
         </div>
       </div>
 
       {showEditPopup && (
-        <EditPopup productId={id} onClose={handleClosePopup} onSave={handleSave} onUpdate={handleUpdate}/>
-      )}
-
-      {showDeletePopup && (
-        <DeletePopup productId={id} onClose={handleClosePopup} onDelete={fetchData} />
+        <EditPopup
+          id={id}
+          name={foodName}
+          availability={foodAvailability}
+          onClose={() => setShowEditPopup(false)}
+          onSave={handleSave}
+        />
       )}
     </div>
   );

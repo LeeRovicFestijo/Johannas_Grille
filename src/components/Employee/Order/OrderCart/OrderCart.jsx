@@ -30,24 +30,6 @@ const OrderCart = ({ category, setCategory, orderId }) => {
     fetchOrderItems();
   });
 
-  const handleAddToOrder = async (menuItemId) => {
-    try {
-      const response = await fetch('http://localhost:3000/api/orderitems', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderid: orderId, menuitemid: menuItemId, quantity: 1 }),
-      });
-
-      if (!response.ok) throw new Error('Failed to add item to order');
-
-      const itemData = await response.json();
-      setOrderItems((prevItems) => [...prevItems, itemData]);
-    } catch (error) {
-      console.error('Error adding item to order:', error);
-      setError(error.message);
-    }
-  };
-
   const updateOrder = async () => {
     const totalAmount = orderItems.reduce(
       (total, item) => total + item.price * (item.quantity || 1),

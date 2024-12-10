@@ -253,6 +253,36 @@ app.post('/api/menuitems', upload.single('image'), async (req, res) => {
   }
 });
 
+app.put('/api/menuitems-edit-availability/:id', async (req, res) => {
+  const { id } = req.params;
+  const { availability } = req.body;
+
+  if (!availability) {
+    return res.status(400).json({ error: 'Availability is required' });
+  }
+
+  try {
+    // Update the item in the database
+    const query = `
+      UPDATE menuitemtbl
+      SET availability = $1
+      WHERE menuitemid = $2
+      RETURNING *;
+    `;
+    const values = [availability, id];
+    const result = await pool.query(query, values);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Menu item not found' });
+    }
+
+    res.status(200).json(result.rows[0]); // Return the updated item
+  } catch (error) {
+    console.error('Error updating menu item:', error);
+    res.status(500).json({ error: 'An error occurred while updating the menu item' });
+  }
+});
+
 app.post('/api/reservations/create', async (req, res) => {
   const { reservationDetails, selectedItems } = req.body;
 
