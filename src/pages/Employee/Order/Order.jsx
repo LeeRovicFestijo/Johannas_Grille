@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Sidebar from '../../../components/Employee/Sidebar/Sidebar';
 import Header from '../../../components/Employee/Header/Header';
+import ExploreMenu from '../../../components/Employee/Order/MenuCategory/MenuCategory';
 import ItemDisplay from '../../../components/Employee/Order/ItemDisplay/ItemDisplay';
 import OrderCart from '../../../components/Employee/Order/OrderCart/OrderCart';
 import './Order.css';
@@ -17,17 +18,13 @@ const EmployeeOrder = () => {
     setOrderId(generateOrderId()); // Generate a new 5-digit random order ID
   };
 
-  // Update orderId when category changes
-  useEffect(() => {
-    createNewOrder(); // Generate a new order ID when category changes
-  }, [category]);
-
   return (
     <div>
       <Sidebar />
       <div className="em-main-content">
         <Header />
         <OrderCart category={category} setCategory={setCategory} orderId={orderId} />
+        <ExploreMenu category={category} setCategory={setCategory} />
         <ItemDisplay category={category} orderId={orderId} /> {/* Pass orderId to ItemDisplay */}
       </div>
     </div>

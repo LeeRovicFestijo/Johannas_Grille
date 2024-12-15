@@ -12,7 +12,13 @@ const InventoryFetch = ({ category }) => {
         const response = await fetch('http://localhost:3000/api/inventory');
         if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
         const data = await response.json();
-        setFoodList(data); // Populate foodList directly with the fetched data
+        // Clean up data to avoid issues with case sensitivity or extra spaces
+        const cleanedData = data.map(item => ({
+          ...item,
+          category: item.category?.trim().toLowerCase(),
+          branch: item.branch?.trim().toLowerCase(),
+        }));
+        setFoodList(cleanedData); // Populate foodList directly with the cleaned data
       } catch (error) {
         console.error('Error fetching inventory:', error);
       }
@@ -25,6 +31,13 @@ const InventoryFetch = ({ category }) => {
     setSelectedBranch(branch);
   };
 
+  // Debugging log to check the filtered foodList
+  const filteredFoodList = foodList.filter((item) =>
+    (category === 'All' || item.category === category.toLowerCase()) &&
+    (selectedBranch === 'All' || item.branch === selectedBranch.toLowerCase())
+  );
+
+  console.log('Filtered Food List:', filteredFoodList); // Log the filtered list for debugging
 
   return (
     <div className='inv-item-food-display' id='food-display'>
@@ -50,15 +63,11 @@ const InventoryFetch = ({ category }) => {
       </div>
 
       <div className="inv-item-food-display-list">
-        {foodList
-          .filter((item) =>
-            (category === 'All' || category === item.category) &&
-            (selectedBranch === 'All' || item.branch === selectedBranch)
-          )
-          .map((item) => (
+        {filteredFoodList.length > 0 ? (
+          filteredFoodList.map((item) => (
             <InventoryCard
               key={item.menuitemid}
-              id={item.menuitemid}// Pass the correct value for id
+              id={item.menuitemid}
               name={item.name}
               price={item.price}
               category={item.category}
@@ -67,8 +76,10 @@ const InventoryFetch = ({ category }) => {
               invid={item.inventoryid}
               branch={item.branch}
             />
-
-          ))}
+          ))
+        ) : (
+          <p>No items found for the selected filters.</p>
+        )}
       </div>
     </div>
   );

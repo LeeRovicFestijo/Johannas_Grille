@@ -1002,6 +1002,50 @@ app.post('/api/send-inventory', async (req, res) => {
   }
 });
 
+app.get('/analytics', async (req, res) => {
+  const { month } = req.query; // Get month from query parameter
+
+  if (month === undefined || isNaN(month) || month < 0 || month > 11) {
+    return res.status(400).send('Invalid month parameter');
+  }
+
+  try {
+    // Get orders for the selected month and the current year
+    const { rows } = await pool.query(
+      `SELECT EXTRACT(week FROM date) AS week, SUM(totalamount) AS total_sales
+       FROM orderstbl
+       WHERE EXTRACT(year FROM date) = EXTRACT(year FROM CURRENT_DATE)
+         AND EXTRACT(month FROM date) = $1
+       GROUP BY week
+       ORDER BY week`,
+      [month + 1] // PostgreSQL month starts at 1, so add 1
+    );
+
+    const weeklySales = rows.map((row) => ({
+      week: `Week ${row.week}`,
+      totalSales: parseFloat(row.total_sales),
+    }));
+
+    // Return data to frontend
+    res.json({
+      labels: weeklySales.map((data) => data.week),
+      datasets: [
+        {
+          label: 'Weekly Sales',
+          data: weeklySales.map((data) => data.totalSales),
+          borderColor: 'rgba(75, 192, 192, 1)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          tension: 0.4,
+        },
+      ],
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal server error');
+  }
+});
+
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);

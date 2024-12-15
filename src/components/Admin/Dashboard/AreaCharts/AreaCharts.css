@@ -11,7 +11,7 @@
 }
 
 /* bar chart */
-.bar-chart {
+.line-chart {
   background-color: #fff;
   padding: 16px 16px 6px 16px;
   border-radius: 5px;
@@ -19,59 +19,59 @@
 }
 
 @media (max-width: 768px) {
-  .bar-chart {
+  .line-chart {
     padding: 12px;
   }
 }
 
-.bar-chart .bar-chart-wrapper {
+.line-chart .line-chart-wrapper {
   width: 100%;
   height: 240px;
 }
 
 @media (max-width: 1400px) {
-  .bar-chart .bar-chart-wrapper .recharts-wrapper {
+  .line-chart .line-chart-wrapper .recharts-wrapper {
     margin-left: -10px;
   }
 }
 
-.bar-chart .bar-chart-info {
+.line-chart .line-chart-info {
   margin-bottom: 32px;
 }
 
-.bar-chart .bar-chart-title {
+.line-chart .line-chart-title {
   margin-bottom: 12px;
   font-size: 18px;
   font-weight: 700;
   color: #292929;
 }
 
-.bar-chart .chart-info-data {
+.line-chart .chart-info-data {
   display: flex;
   align-items: center;
   column-gap: 16px;
 }
 
-.bar-chart .info-data-value {
+.line-chart .info-data-value {
   color: #292929;
   font-size: 24px;
   font-weight: 700;
 }
 
-.bar-chart .info-data-text {
+.line-chart .info-data-text {
   display: flex;
   align-items: center;
   column-gap: 3px;
   color: #4ce13f;
 }
 
-.bar-chart .recharts-default-legend {
+.line-chart .recharts-default-legend {
   position: absolute;
   top: -90px;
   right: 0;
 }
 
-.bar-chart .recharts-tooltip-label {
+.line-chart .recharts-tooltip-label {
   color: #292929;
   font-size: 14px;
   font-weight: 600;

@@ -3,55 +3,71 @@ import './ItemDisplay.css';
 import Item from '../Item/Item';
 
 const ItemDisplay = ({ category, items, orderId }) => {
-    const [cartItems, setCartItems] = useState([]);
+  const [foodList, setFoodList] = useState([]);
 
-    const addToCart = (item) => {
-        setCartItems([...cartItems, item]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/menuitems');
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        setFoodList(data);
+      } catch (error) {
+        console.error('Error fetching food items:', error);
+      }
     };
-    const [foodList, setFoodList] = useState([]);
 
-    useEffect(() => {
-        // Fetch data from the API
-        const fetchData = async () => {
-            try {
-                const response = await fetch('http://localhost:3000/api/menuitems'); // Adjust the port accordingly
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                const data = await response.json();
-                setFoodList(data);
-            } catch (error) {
-                console.error('Error fetching food items:', error);
-            }
-        };
+    fetchData();
+  }, []);
 
-        fetchData();
-    }, []);
+  // Group items by base name and create variants with unique IDs
+  const groupedItems = React.useMemo(() => {
+    const groups = new Map();
 
-    return (
-        <div className='em-order-item-food-display' id='food-display'>
-            <div className="em-order-item-food-display-list">
+    foodList.forEach(item => {
+      const match = item.name.match(/^(.*?)\s*\((.*?)\)$/);
+      if (match) {
+        const baseName = match[1].trim();
+        const variant = match[2].trim();
+        const variantId = `${item.menuitemid}-${variant}`;  // Create a unique ID for the variant
 
-                {foodList.map((item) => {
-                    // Check if the item category matches and if the name has already been displayed
-                    if ((category === "All" || category === item.category)) {
+        if (!groups.has(baseName)) {
+          groups.set(baseName, { ...item, name: baseName, variants: [] });
+        }
+        groups.get(baseName).variants.push({ variant, id: variantId });  // Include the variant's unique ID
+      } else {
+        groups.set(item.name, { ...item, variants: [{ variant: 'Regular', id: item.menuitemid }] });
+      }
+    });
 
-                        return (
-                            <Item
-                                key={item.menuitemid} // Use a unique key
-                                orderId={orderId}
-                                id={item.menuitemid}
-                                name={item.name}
-                                price={item.price}
-                                image={`http://localhost:3000${item.image_url}`}// Use the correct field for the image URL
-                            />
-                        );
-                    }
-                    return null; // Return null if the category does not match or name already displayed
-                })}
-            </div>
-        </div>
-    );
+    return Array.from(groups.values());
+  }, [foodList]);
+
+  return (
+    <div className="em-order-item-food-display" id="food-display">
+      <div className="em-order-item-food-display-list">
+        {groupedItems.map((item) => {
+          // Check if the item category matches
+          if (category === "All" || category === item.category) {
+            return (
+              <Item
+                key={item.menuitemid} // Use a unique key
+                orderId={orderId}  // Pass the orderId properly
+                id={item.menuitemid}  // Pass the base item ID
+                name={item.name}
+                price={item.price}
+                image={`http://localhost:3000${item.image_url}`} // Use the correct field for the image URL
+                variants={item.variants} // Pass the variants to the Item component
+              />
+            );
+          }
+          return null;
+        })}
+      </div>
+    </div>
+  );
 };
 
 export default ItemDisplay;
