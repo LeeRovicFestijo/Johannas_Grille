@@ -53,31 +53,75 @@ const OrderCart = ({ category, setCategory, orderId }) => {
     }
   };
 
+  const handleQuantityChange = async (itemId, newQuantity) => {
+    const updatedItems = orderItems.map((item) =>
+      item.orderitemid === itemId ? { ...item, quantity: newQuantity } : item
+    );
+    setOrderItems(updatedItems);
+
+    if (newQuantity <= 0) {
+      await handleRemoveItem(itemId);
+    } else {
+      await updateOrder();
+    }
+  };
+
+  const handleRemoveItem = async (itemId) => {
+    try {
+      // Call backend to delete item by orderitemid
+      const response = await fetch(`http://localhost:3000/api/orderitems/${itemId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) throw new Error('Failed to delete item');
+
+      // Remove item from the frontend state after successful deletion
+      setOrderItems(orderItems.filter((item) => item.orderitemid !== itemId));
+    } catch (error) {
+      console.error('Error removing item:', error);
+      alert('Failed to remove item.');
+    }
+  };
+
   const handleConfirmOrder = async () => {
     try {
-      await updateOrder(); // Ensure order details are updated before confirmation
-  
-      const response = await fetch(`http://localhost:3000/api/confirm-order/${orderId}`, {
-        method: 'POST',
+      const totalAmount = orderItems.reduce(
+        (total, item) => total + item.price * (item.quantity || 1),
+        0
+      );
+      const customerId = '0000'; // Replace with the actual customer ID
+
+      const currentDate = new Date();
+      const formattedDate = currentDate.toISOString().split('T')[0]; // YYYY-MM-DD
+      const formattedTime = currentDate.toISOString().split('T')[1].split('.')[0]; // HH:MM:SS
+
+      const response = await fetch(`http://localhost:3000/api/orders/${orderId}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customerId: String(customerId),
+          orderType,
+          totalAmount,
+          date: formattedDate,
+          time: formattedTime,
+        }),
       });
-  
+
       if (!response.ok) {
         const errorDetails = await response.json();
         console.error('Server responded with error:', errorDetails);
-        throw new Error(errorDetails.message || 'Order confirmation failed.');
+        throw new Error(errorDetails.message || 'Order update failed.');
       }
-  
+
       const result = await response.json();
-      alert(`Order placed successfully! Order ID: ${result.orderId}`);
+      alert(`Order updated successfully! Order ID: ${result.orderid}`);
       setShowPlaceOrderPopup(false);
       setOrderItems([]); // Clear the cart after placing the order
     } catch (error) {
       console.error('Error confirming order:', error.message);
-      alert(`Failed to place order: ${error.message}`);
+      alert(`Failed to update order: ${error.message}`);
     }
   };
-  
 
   return (
     <div className="em-product-menu">
@@ -115,7 +159,14 @@ const OrderCart = ({ category, setCategory, orderId }) => {
         <div>
           {orderItems.length > 0 ? (
             orderItems.map((item) => (
-              <OrderItem key={item.orderitemid} item={item} order={orderId} />
+              <OrderItem
+                key={item.orderitemid}
+                item={item}
+                increaseQuantity={() => handleQuantityChange(item.orderitemid, item.quantity + 1)}
+                decreaseQuantity={() =>
+                  handleQuantityChange(item.orderitemid, item.quantity === 1 ? 0 : item.quantity - 1)
+                }
+              />
             ))
           ) : (
             <div>No items in your order.</div>

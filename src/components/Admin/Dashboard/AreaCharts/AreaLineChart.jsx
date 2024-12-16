@@ -36,11 +36,11 @@ const AreaLineChart = () => {
         const predictions = response.data.predictions;
 
         // Map the backend data to chart labels and datasets
-        const labels = predictions.map((entry) => entry.date);
-        const data = predictions.map((entry) => entry.predicted_peak_hour);
+        const labels = predictions.map((entry) => entry.date); // X-axis: Days
+        const data = predictions.map((entry) => entry.predicted_peak_hour); // Y-axis: Predicted peak hours
 
         setChartData({
-          labels, // X-axis: Hours
+          labels, // X-axis: Days
           datasets: [
             {
               label: 'Predicted Peak Hour',
@@ -84,30 +84,28 @@ const AreaLineChart = () => {
       ) : error ? (
         <p style={{ color: 'red' }}>{error}</p>
       ) : (
-        <>
-          <Line
-            data={chartData}
-            options={{
-              responsive: true,
-              plugins: {
-                legend: { display: true, position: 'top' },
-                title: {
-                  display: true,
-                  text: 'Predicted Peak Hour',
-                },
+        <Line
+          data={chartData}
+          options={{
+            responsive: true,
+            plugins: {
+              legend: { display: true, position: 'top' },
+              title: {
+                display: true,
+                text: 'Predicted Peak Hour',
               },
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  title: { display: true, text: 'Peak Hours (0-23)' },
-                },
-                x: {
-                  title: { display: true, text: 'Days' },
-                },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                title: { display: true, text: 'Peak Hours (0-23)' },
               },
-            }}
-          />
-        </>
+              x: {
+                title: { display: true, text: 'Days' },
+              },
+            },
+          }}
+        />
       )}
     </div>
   );

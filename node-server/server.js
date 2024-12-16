@@ -746,12 +746,15 @@ app.post('/api/orderitems', async (req, res) => {
 
 app.put('/api/orders/:orderId', async (req, res) => {
   const { orderId } = req.params;
-  const { ordertype, totalamount } = req.body;
+  const { customerId = '0000', orderType, totalAmount, date, time } = req.body;
+
+  // Log the received customerId to verify it's coming through as a string
+  console.log('Received customerId:', customerId);
 
   try {
     const result = await pool.query(
-      'UPDATE orderstbl SET ordertype = $1, totalamount = $2 WHERE orderid = $3 RETURNING *',
-      [ordertype, totalamount, orderId]
+      'UPDATE orderstbl SET customerid = $1, ordertype = $2, totalamount = $3, date = $4, time = $5 WHERE orderid = $6 RETURNING *',
+      [customerId, orderType, totalAmount, date, time, orderId]
     );
 
     if (result.rowCount === 0) {
@@ -790,6 +793,25 @@ app.post('/api/confirm-order/:orderId', async (req, res) => {
   } catch (error) {
     console.error('Error confirming order:', error.message);
     res.status(500).json({ error: 'Failed to confirm order' });
+  }
+});
+
+app.delete('/api/orderitems/:orderitemid', async (req, res) => {
+  const { orderitemid } = req.params;
+
+  try {
+    // Query to delete the item from orderitemtbl
+    const result = await pool.query('DELETE FROM orderitemtbl WHERE orderitemid = $1 RETURNING *', [orderitemid]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'Item not found' });
+    }
+
+    // Return a success message
+    res.status(200).json({ message: 'Item removed successfully' });
+  } catch (err) {
+    console.error('Error removing item:', err);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
