@@ -17,97 +17,118 @@
   margin-bottom: 12px;
 }
 
-.or-content-area-table .or-data-table-diagram {
+/* Data Table Styles */
+.or-data-table-diagram {
   border-radius: 6px;
   border: 1px solid #f2f4ff !important;
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
-.or-content-area-table .or-data-table-diagram::-webkit-scrollbar {
+.or-data-table-diagram::-webkit-scrollbar {
   height: 6px;
   width: 6px;
 }
 
-.or-content-area-table .or-data-table-diagram::-webkit-scrollbar-track {
+.or-data-table-diagram::-webkit-scrollbar-track {
   background-color: var(--scroll-track-bg-color);
 }
 
-.or-content-area-table .or-data-table-diagram::-webkit-scrollbar-thumb {
+.or-data-table-diagram::-webkit-scrollbar-thumb {
   border-radius: 100vh !important;
   background-color: #e9e9e9;
   outline: 1px solid rgba(0, 0, 0, 0.02);
   outline-offset: -1px;
 }
 
-.or-content-area-table .or-data-table-diagram table {
+.or-data-table-diagram table {
   min-width: 900px;
   width: 100%;
   border-collapse: collapse;
   color: var(--text-color-inverted);
 }
 
-.or-content-area-table .or-data-table-diagram table td,
-.or-content-area-table .or-data-table-diagram table th {
+.or-data-table-diagram table td,
+.or-data-table-diagram table th {
   padding: 14px 12px;
 }
 
-@media (max-wior-dth: 768px) {
-  .or-content-area-table .or-data-table-diagram table td,
-  .or-content-area-table .or-data-table-diagram table th {
+@media (max-width: 768px) {
+  .or-data-table-diagram table td,
+  .or-data-table-diagram table th {
     font-size: 15px;
     padding: 12px 10px;
   }
 }
 
-.or-content-area-table .or-data-table-diagram table thead {
+.or-data-table-diagram table thead {
   text-align: left;
   font-size: 17px;
   background-color: #f2f4ff;
 }
 
-.or-content-area-table .or-data-table-diagram table thead th:last-child {
+.or-data-table-diagram table thead th:last-child {
   text-align: center;
 }
 
-.or-content-area-table .or-data-table-diagram table .or-dt-cell-or-action {
+/* Row Cell Action */
+.or-data-table-diagram table .or-dt-cell-action {
   text-align: center;
 }
 
-.or-content-area-table .or-data-table-diagram table .or-dt-status {
+/* Status Dot Styles */
+.or-data-table-diagram table .or-dt-status {
   display: flex;
   align-items: center;
   justify-content: flex-start;
   column-gap: 6px;
 }
 
-.or-content-area-table .or-data-table-diagram table .or-dt-status .or-dt-status-dot {
+.or-data-table-diagram table .or-dt-status .or-dt-status-dot {
   width: 8px;
   height: 8px;
   border-radius: 100%;
 }
 
-.or-content-area-table .or-data-table-diagram table .or-dt-status .or-dt-status-dot.dot-pending {
+.or-data-table-diagram table .or-dt-status .or-dt-status-dot.dot-pending {
   background-color: var(--orange-color);
 }
 
-.or-content-area-table .or-data-table-diagram table .or-dt-status .or-dt-status-dot.dot-canceled {
+.or-data-table-diagram table .or-dt-status .or-dt-status-dot.dot-canceled {
   background-color: var(--red-color);
 }
 
-.or-content-area-table .or-data-table-diagram table .or-dt-status .or-dt-status-dot.dot-delivered {
+.or-data-table-diagram table .or-dt-status .or-dt-status-dot.dot-delivered {
   background-color: var(--green-color);
 }
 
-.or-content-area-table .or-data-table-diagram table .or-dt-status .or-dt-status-text {
+.or-data-table-diagram table .or-dt-status .or-dt-status-text {
   text-transform: capitalize;
 }
 
-.or-content-area-table .or-action-dropdown-btn {
+/* Edit/Delete Button Container */
+.edit-delete-container {
+  display: flex;
+  gap: 10px;
+}
+
+.item-btn-cart {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.item-btn-cart:hover {
+  transform: scale(1.1);
+}
+
+/* Dropdown Menu for Actions */
+.or-action-dropdown-btn {
   color: var(--text-color-inverted);
   position: relative;
 }
 
-.or-content-area-table .or-action-dropdown-menu {
+.or-action-dropdown-menu {
   position: absolute;
   top: 100%;
   right: 50%;
@@ -123,16 +144,16 @@
   text-align: left;
 }
 
-.or-content-area-table .or-dropdown-menu-item {
+.or-dropdown-menu-item {
   margin: 8px 0;
 }
 
-.or-content-area-table .or-dropdown-menu-link {
+.or-dropdown-menu-link {
   color: var(--text-color-inverted);
   font-weight: 600;
   transition: var(--default-transition);
 }
 
-.or-content-area-table .or-dropdown-menu-link:hover {
+.or-dropdown-menu-link:hover {
   opacity: 0.9;
 }

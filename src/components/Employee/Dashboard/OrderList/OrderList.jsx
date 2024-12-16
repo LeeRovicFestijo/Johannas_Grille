@@ -1,107 +1,82 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import OrderItem from '../OrderItem/OrderItem';
 import './OrderList.css';
 
-const orders = [
-  {
-    id: 351,
-    date: '23 Feb 2021, 07:28 PM',
-    items: [
-      { name: 'Vegetable Mixups', price: '₱5.30', qty: 1 },
-      { name: 'Prawn Mix Salad', price: '₱10.60', qty: 1 }
-    ],
-    total: '₱10.60',
-    status: 'Completed',
-    type: 'Dine-in'  // Order type
-  },
-  {
-    id: 352,
-    date: '23 Feb 2021, 08:00 PM',
-    items: [
-      { name: 'Burger', price: '₱8.50', qty: 1 }
-    ],
-    total: '₱8.50',
-    status: 'Completed',
-    type: 'Take-out'
-  },
-  {
-    id: 353,
-    date: '23 Feb 2021, 08:15 PM',
-    items: [
-      { name: 'Pizza', price: '₱15.00', qty: 1 }
-    ],
-    total: '₱15.00',
-    status: 'Completed',
-    type: 'Pick-up'
-  },
-  {
-    id: 354,
-    date: '23 Feb 2021, 07:28 PM',
-    items: [
-      { name: 'Vegetable Mixups', price: '₱5.30', qty: 1 },
-      { name: 'Prawn Mix Salad', price: '₱10.60', qty: 1 }
-    ],
-    total: '₱10.60',
-    status: 'Completed',
-    type: 'Dine-in'  // Order type
-  },
-  {
-    id: 355,
-    date: '23 Feb 2021, 08:00 PM',
-    items: [
-      { name: 'Burger', price: '₱8.50', qty: 1 }
-    ],
-    total: '₱8.50',
-    status: 'Completed',
-    type: 'Take-out'
-  },
-  {
-    id: 356,
-    date: '23 Feb 2021, 08:15 PM',
-    items: [
-      { name: 'Pizza', price: '₱15.00', qty: 1 }
-    ],
-    total: '₱15.00',
-    status: 'Completed',
-    type: 'Pick-up'
-  }
-];
-
 const OrderList = () => {
-  const dineInOrders = orders.filter(order => order.type === 'Dine-in');
-  const takeOutOrders = orders.filter(order => order.type === 'Take-out');
-  const pickUpOrders = orders.filter(order => order.type === 'Pick-up');
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await fetch('/api/employee-orders'); // Fetch orders from backend
+        const data = await response.json(); // Parse JSON response
+        setOrders(data); // Update state with fetched orders
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+      }
+    };
+
+    fetchOrders(); // Trigger the fetch operation
+  }, []);
+
+  // Filter orders based on their type and ensure they're 'Pending'
+  const pendingOrders = orders.filter(order => order.status === 'Pending');
+
+  const dineInOrders = pendingOrders.filter(order => order.type === 'Dine-in');
+  const takeOutOrders = pendingOrders.filter(order => order.type === 'Take-out');
+  const pickUpOrders = pendingOrders.filter(order => order.type === 'Pick-up');
 
   return (
     <div className="em-container">
       <div className="em-columns">
-        {/* Dine-in Column */}
         <div className="em-column">
           <h2>Dine-in Orders</h2>
           <div className="em-orders">
-            {dineInOrders.map(order => (
-              <OrderItem key={order.id} order={order} />
-            ))}
+            {dineInOrders.length > 0 ? (
+              dineInOrders.map(order => (
+                <OrderItem
+                  key={order.id}
+                  orderid={order.id}
+                  items={order.items} // Pass the list of items
+                />
+              ))
+            ) : (
+              <p>No dine-in orders available.</p>
+            )}
           </div>
         </div>
 
-        {/* Take-out Column */}
         <div className="em-column">
           <h2>Take-out Orders</h2>
           <div className="em-orders">
-            {takeOutOrders.map(order => (
-              <OrderItem key={order.id} order={order} />
-            ))}
+            {takeOutOrders.length > 0 ? (
+              takeOutOrders.map(order => (
+                <OrderItem
+                  key={order.id}
+                  orderid={order.id}
+                  items={order.items} // Pass the list of items
+                />
+              ))
+            ) : (
+              <p>No take-out orders available.</p>
+            )}
           </div>
         </div>
 
-        {/* Pick-up Column */}
         <div className="em-column">
           <h2>Pick-up Orders</h2>
           <div className="em-orders">
-            {pickUpOrders.map(order => (
-              <OrderItem key={order.id} order={order} />
-            ))}
+            {pickUpOrders.length > 0 ? (
+              pickUpOrders.map(order => (
+                <OrderItem
+                  key={order.id}
+                  orderid={order.id}
+                  items={order.items} // Pass the list of items
+                />
+              ))
+            ) : (
+              <p>No pick-up orders available.</p>
+            )}
           </div>
         </div>
       </div>

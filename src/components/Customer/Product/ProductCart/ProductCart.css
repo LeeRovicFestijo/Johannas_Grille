@@ -240,8 +240,8 @@
     }
   
     /* Toggle Container */
-    .toggle-container {
-    width: 152px;
+    .pickup-label-container {
+    width: 100px;
     height: 40px;
     background-color: #ddd;
     border-radius: 20px;
@@ -250,11 +250,12 @@
     justify-content: space-between;
     cursor: pointer;
     padding: 5px;
+    padding-left: 24px;
     margin-top: 10px;
     position: relative;
     }
   
-    .toggle-text {
+    .pickup-label {
     color: black;
     display: flex;
     justify-content: space-between;
@@ -264,7 +265,7 @@
     transform: translateY(-50%);
     font-size: 14px;
     font-weight: bold;
-    color: #666;
+    color: #f70101;
     }
   
     .toggle-text span {

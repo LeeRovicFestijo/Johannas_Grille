@@ -793,6 +793,37 @@ app.post('/api/confirm-order/:orderId', async (req, res) => {
   }
 });
 
+app.get('/api/employee-orders', async (req, res) => {
+  try {
+    const query = `
+      SELECT o.orderid, o.ordertype AS type, o.date, o.time, o.totalamount AS total, 
+             mi.name AS menuitemname, oi.quantity, mi.price
+      FROM orderstbl o
+      JOIN orderitemtbl oi ON o.orderid = oi.orderid
+      JOIN menuitemtbl mi ON oi.menuitemid = mi.menuitemid
+      WHERE o.status = 'Pending';
+    `;
+    const result = await pool.query(query);
+
+    const orders = result.rows.reduce((acc, row) => {
+      if (!acc[row.orderid]) {
+        acc[row.orderid] = { id: row.orderid, items: [], total: 0 };
+      }
+      acc[row.orderid].items.push({
+        name: row.menuitemname,
+        price: row.price,
+        qty: row.quantity,
+      });
+      acc[row.orderid].total += parseFloat(row.price) * row.quantity;
+      return acc;
+    }, {});
+
+    res.json(Object.values(orders));
+  } catch (error) {
+    console.error('Error fetching employee orders:', error);
+    res.status(500).send('Server Error');
+  }
+});
 
 app.post('/api/reservations', async (req, res) => {
   const { reservationDetails, selectedItems, totalAmount } = req.body;
@@ -833,23 +864,6 @@ app.post('/api/reservations', async (req, res) => {
 // GET endpoint to fetch menu items
 app.get('/api/menu-items', (req, res) => {
   res.json(menuItems);
-});
-
-// POST endpoint to create a reservation
-app.post('/api/reservations/create', (req, res) => {
-  const { reservationDetails, selectedItems } = req.body;
-
-  // Here, you can save reservation details to a database
-  // For now, we will just log it and send a success response
-
-  console.log("Reservation Details:", reservationDetails);
-  console.log("Selected Items:", selectedItems);
-
-  // Sending a response with reservation ID and status
-  res.json({
-    reservationId: Math.floor(Math.random() * 10000),
-    status: "Reservation Created Successfully"
-  });
 });
 
 app.post('/api/reservations/receipt', async (req, res) => {

@@ -8,7 +8,7 @@ function OrderItem({ item, increaseQuantity, decreaseQuantity }) {
       <div className="emp-item-details">
         <div className="emp-info">
           <span className="emp-item-name">{item.name}</span>
-        <span className="emp-item-price">₱{item.price}</span>
+          <span className="emp-item-price">₱{item.price}</span>
         </div>
         <div className="emp-item-controls">
           <div className="emp-quantity-controls">

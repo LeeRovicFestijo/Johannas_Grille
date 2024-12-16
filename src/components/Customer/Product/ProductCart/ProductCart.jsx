@@ -15,7 +15,6 @@ const ProductCart = ({ orderId }) => {
     "Main Branch, Bauan Batangas City"
   );
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isPickUp, setIsPickUp] = useState(true);
   const [pickupDate, setPickupDate] = useState(
     new Date().toISOString().substring(0, 10)
   );
@@ -60,9 +59,6 @@ const ProductCart = ({ orderId }) => {
     setIsDropdownOpen(false);
   };
 
-  // Toggle pick-up or preorder
-  const toggleFunction = () => setIsPickUp(!isPickUp);
-
   if (!isVisible) return null;
 
   return (
@@ -73,14 +69,10 @@ const ProductCart = ({ orderId }) => {
             <IoIosArrowBack size={30} />
           </i>
           <h2>My Cart</h2>
-          <div className="toggle-container" onClick={toggleFunction}>
-            <div className="toggle-text">
+          <div className="pickup-label-container">
+            <div className="pickup-label">
               <span>PickUp</span>
-              <span>PreOrder</span>
             </div>
-            <div
-              className={`toggle-btn ${isPickUp ? "pickup" : "preorder"}`}
-            ></div>
           </div>
         </header>
 
@@ -122,28 +114,26 @@ const ProductCart = ({ orderId }) => {
         </div>
 
         <div className="addtocart-summary">
-          {isPickUp && (
-            <div className="pickup-time">
-              <label htmlFor="pickupDate">Pick-up Date:</label>
-              <input
-                type="date"
-                id="pickupDate"
-                value={pickupDate}
-                onChange={e => setPickupDate(e.target.value)}
-              />
-              <label htmlFor="pickupHour">Pick-up Time:</label>
-              <select
-                id="pickupHour"
-                value={pickupHour}
-                onChange={e => setPickupHour(e.target.value)}
-              >
-                <option value="12:00">12:00 PM</option>
-                <option value="12:30">12:30 PM</option>
-                <option value="1:00">1:00 PM</option>
-                <option value="1:30">1:30 PM</option>
-              </select>
-            </div>
-          )}
+          <div className="pickup-time">
+            <label htmlFor="pickupDate">Pick-up Date:</label>
+            <input
+              type="date"
+              id="pickupDate"
+              value={pickupDate}
+              onChange={e => setPickupDate(e.target.value)}
+            />
+            <label htmlFor="pickupHour">Pick-up Time:</label>
+            <select
+              id="pickupHour"
+              value={pickupHour}
+              onChange={e => setPickupHour(e.target.value)}
+            >
+              <option value="12:00">12:00 PM</option>
+              <option value="12:30">12:30 PM</option>
+              <option value="1:00">1:00 PM</option>
+              <option value="1:30">1:30 PM</option>
+            </select>
+          </div>
 
           <div className="summary-item">
             <p className="summary-label">Total</p>
@@ -169,7 +159,6 @@ const ProductCart = ({ orderId }) => {
           orderItems={orderItems}
           pickupDate={pickupDate}
           pickupHour={pickupHour}
-          isPickUp={isPickUp}
           onClose={() => setShowOrder(false)}
         />
       )}

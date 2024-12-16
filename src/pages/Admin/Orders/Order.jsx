@@ -1,38 +1,58 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../../components/Admin/Sidebar/Sidebar";
-import "./Order.css";
-import { MdDeleteOutline } from "react-icons/md";
-import { RiEditLine } from "react-icons/ri";
+import OrderTable from "../../../components/Admin/Order/OrderTable";
 import OrderEdit from "../../../components/Admin/Order/OrderEdit";
 import OrderDelete from "../../../components/Admin/Order/OrderDel";
-
-const TABLE_HEADS = [
-  "OrderID",
-  "CustomerID",
-  "OrderType",
-  "Date",
-  "Status",
-  "Total Amount",
-  "Time",
-  "Action",
-];
+import "./Order.css";
 
 const Orders = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [orders, setOrders] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 100;
 
+  // Fetch orders data
   const fetchOrders = () => {
     fetch("http://localhost:3000/api/orders")
       .then((response) => response.json())
-      .then((data) => setOrders(data))
+      .then((data) => {
+        // Sort orders by descending order (assumes orders have a date or ID for sorting)
+        const sortedData = data.sort((a, b) => (a.date > b.date ? -1 : 1));
+        setOrders(sortedData);
+      })
       .catch((error) => console.error("Error fetching order data:", error));
   };
 
   useEffect(() => {
     fetchOrders();
   }, []);
+
+  // Get paginated orders
+  const paginatedOrders = orders.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
+
+  // Handle page change
+  const totalPages = Math.ceil(orders.length / rowsPerPage);
+
+  const handlePageChange = (newPage) => {
+    if (newPage > 0 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
+
+  const handleEdit = (order) => {
+    setSelectedOrder(order);
+    setIsEditModalOpen(true);
+  };
+
+  const handleDelete = (orderId) => {
+    setSelectedOrder(orderId);
+    setIsDeleteModalOpen(true);
+  };
 
   return (
     <main className="page-wrapper">
@@ -44,66 +64,32 @@ const Orders = () => {
             <div className="or-data-table-info">
               <h1 className="or-data-table-title">Latest Orders</h1>
             </div>
-            <div className="or-data-table-diagram">
-              <table>
-                <thead>
-                  <tr>
-                    {TABLE_HEADS?.map((th, index) => (
-                      <th key={index}>{th}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {orders?.map((dataItem) => {
-                    // Format the date and time
-                    const formattedDate = new Date(dataItem.date).toLocaleDateString("en-US", {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    });
-
-                    const formattedTime = new Date(`1970-01-01T${dataItem.time}`).toLocaleTimeString("en-US", {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      hour12: true
-                    });
-
-                    return (
-                      <tr key={dataItem.orderid}>
-                        <td>{dataItem.orderid}</td>
-                        <td>{dataItem.customerid}</td>
-                        <td>{dataItem.ordertype}</td>
-                        <td>{formattedDate}</td>
-                        <td>
-                          <div className="or-dt-status">
-                            <span className={`or-dt-status-dot dot-${dataItem.status}`}></span>
-                            <span className="or-dt-status-text">{dataItem.status}</span>
-                          </div>
-                        </td>
-                        <td>P{dataItem.totalamount}</td>
-                        <td>{formattedTime}</td>
-                        <td className="or-dt-cell-action">
-                          <div className="edit-delete-container">
-                            <div className="edit-btn">
-                              <button className="item-btn-cart">
-                                <RiEditLine size={25} />
-                              </button>
-                              <button className="item-btn-cart">
-                                <MdDeleteOutline size={25} />
-                              </button>
-                            </div>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+            <OrderTable
+              orders={paginatedOrders}
+              handleEdit={handleEdit}
+              handleDelete={handleDelete}
+            />
+            {/* Pagination Controls */}
+            <div className="pagination-controls">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+              <span>
+                Page {currentPage} of {totalPages}
+              </span>
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </button>
             </div>
           </section>
         </div>
 
-        {/* Render EditOrderForm as a modal */}
         {isEditModalOpen && (
           <OrderEdit
             selectedOrder={selectedOrder}
@@ -113,7 +99,6 @@ const Orders = () => {
           />
         )}
 
-        {/* Render OrderDelete modal */}
         {isDeleteModalOpen && (
           <OrderDelete
             selectedOrder={selectedOrder}
