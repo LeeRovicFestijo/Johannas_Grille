@@ -5,6 +5,8 @@ const { Pool } = require('pg');
 const multer = require('multer');
 const path = require('path');
 const bcrypt = require('bcryptjs');
+const { spawn } = require("child_process"); // For calling Python (Prophet)
+const moment = require("moment");
 require('dotenv').config();
 
 // Initialize express app
@@ -548,6 +550,20 @@ app.delete("/api/employees/:id", async (req, res) => {
   }
 });
 
+app.get('/api/employee-orders', async (req, res) => {
+  try {
+    console.log("Fetching orders...");  // Debugging
+    const result = await pool.query(
+      `SELECT * FROM orderstbl WHERE status = 'Pending'`
+    );
+    console.log("Fetched orders:", result.rows);  // Debugging
+    res.json(result.rows); // Send the fetched orders as JSON
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).json({ error: 'Failed to fetch orders' });
+  }
+});
+
 app.get('/api/reservations', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM reservationtbl');
@@ -815,37 +831,6 @@ app.delete('/api/orderitems/:orderitemid', async (req, res) => {
   }
 });
 
-app.get('/api/employee-orders', async (req, res) => {
-  try {
-    const query = `
-      SELECT o.orderid, o.ordertype AS type, o.date, o.time, o.totalamount AS total, 
-             mi.name AS menuitemname, oi.quantity, mi.price
-      FROM orderstbl o
-      JOIN orderitemtbl oi ON o.orderid = oi.orderid
-      JOIN menuitemtbl mi ON oi.menuitemid = mi.menuitemid
-      WHERE o.status = 'Pending';
-    `;
-    const result = await pool.query(query);
-
-    const orders = result.rows.reduce((acc, row) => {
-      if (!acc[row.orderid]) {
-        acc[row.orderid] = { id: row.orderid, items: [], total: 0 };
-      }
-      acc[row.orderid].items.push({
-        name: row.menuitemname,
-        price: row.price,
-        qty: row.quantity,
-      });
-      acc[row.orderid].total += parseFloat(row.price) * row.quantity;
-      return acc;
-    }, {});
-
-    res.json(Object.values(orders));
-  } catch (error) {
-    console.error('Error fetching employee orders:', error);
-    res.status(500).send('Server Error');
-  }
-});
 
 app.post('/api/reservations', async (req, res) => {
   const { reservationDetails, selectedItems, totalAmount } = req.body;
@@ -1081,6 +1066,179 @@ app.get('/analytics', async (req, res) => {
   }
 });
 
+app.get('/api/top-items', async (req, res) => {
+  try {
+      const month = parseInt(req.query.month, 10);
+      const year = new Date().getFullYear();
+      const limit = 5;
+
+      if (!month || !year) {
+          return res.status(400).json({ message: 'Month and year are required' });
+      }
+
+      const result = await pool.query(
+          `
+          SELECT 
+              i.menuitemid, 
+              i.name,
+              SUM(t.quantity) AS percentValues 
+          FROM orderitemtbl t
+          JOIN menuitemtbl i ON t.menuitemid = i.menuitemid
+          JOIN orderstbl o ON o.orderid = t.orderid
+          WHERE 
+              EXTRACT(MONTH FROM o.date) = $1 
+              AND EXTRACT(YEAR FROM o.date) = $2
+          GROUP BY i.menuitemid
+          ORDER BY percentValues DESC
+          LIMIT $3;
+          `,
+          [month, year, limit || 5] 
+      );
+
+      res.status(200).json(result.rows);
+  } catch (error) {
+      console.error('Error fetching top items:', error);
+      res.status(500).json({ message: 'Error fetching top items' });
+  }
+});
+
+
+async function getOrderData() {
+  try {
+    const query = `
+      SELECT orderid, customerid, ordertype, date, totalamount, time
+      FROM orderstbl
+    `;
+    const result = await pool.query(query);
+    return result.rows;
+  } catch (error) {
+    console.error("Error fetching order data:", error);
+    throw new Error("Failed to fetch order data");
+  }
+}
+
+app.get("/api/predict", async (req, res) => {
+  try {
+    const month = req.query.month ? parseInt(req.query.month) : null;
+
+    // Step 1: Query and Prepare Data
+    let orderData = await getOrderData();
+
+    // Data transformation using plain JavaScript
+    orderData = orderData
+      .map((row) => {
+          // Convert date to string if it's a Date object, and concatenate with time
+          const dateStr = row.date instanceof Date ? row.date.toISOString().split('T')[0] : row.date;
+          const timeStr = row.time;
+
+          // Combine date and time to form a full datetime string
+          const datetimeString = `${dateStr} ${timeStr}`;
+          
+          // Create a moment object with the full datetime string and convert to local timezone
+          const datetime = moment(datetimeString, "YYYY-MM-DD HH:mm:ss").local();
+          
+          return {
+          ...row,
+          datetime,
+          };
+      })
+      .filter((row) => {
+          const valid = row.datetime.isValid();
+          if (!valid) {
+          console.log(`Invalid datetime for row:` , row);  // Log invalid rows
+          }
+          return valid;
+      });
+
+
+    // Extract day, month, and hour
+    orderData = orderData.map((row) => ({
+      ...row,
+      day: row.datetime.format("YYYY-MM-DD"),
+      month: row.datetime.month() + 1, // Moment.js months are zero-based
+      hour: row.datetime.hour(),
+    }));
+
+    // Filter for the specified month if provided
+    if (month) {
+      orderData = orderData.filter((row) => row.month === month);
+    }
+
+    // Filter business hours (9 AM to 9 PM)
+    orderData = orderData.filter((row) => row.hour >= 9 && row.hour <= 20);
+
+    // Group data by day and hour
+    const groupedData = {};
+    orderData.forEach((row) => {
+      const key = `${row.day}-${row.hour}`;
+      if (!groupedData[key]) {
+        groupedData[key] = 0;
+      }
+      groupedData[key]++;
+    });
+
+    const peakHours = Object.entries(groupedData)
+      .map(([key, count]) => {
+          const day = key.slice(0, 10);  // Get the first 10 characters (YYYY-MM-DD)
+          const hour = parseInt(key.slice(11));  // Get everything after the 11th character (HH)
+          
+          // Ensure the hour is a valid number
+          if (isNaN(hour)) return null;  // Ignore invalid hour
+          
+          return { day, hour, count };  // Return the day, hour, and count
+      })
+      .filter(Boolean)  // Remove any null values
+      .sort((a, b) => {
+          // Sort by day in ascending order (lexicographical comparison works for YYYY-MM-DD)
+          if (a.day === b.day) {
+              return a.hour - b.hour;  // If days are the same, sort by hour
+          }
+          return a.day < b.day ? -1 : 1;  // Sort by day lexicographically
+      })
+      .reduce((acc, cur) => {
+          // Check for existing peak hours for the same day
+          const existing = acc.find((item) => item.day === cur.day);
+          if (!existing || cur.count > existing.count) {
+              acc = acc.filter((item) => item.day !== cur.day);  // Remove old peak hour
+              acc.push({ day: cur.day, hour: cur.hour, count: cur.count });  // Add new peak hour
+          }
+          return acc;
+      }, []);
+
+    // Step 3: Call Python Script for Forecasting
+    const python = spawn("python", ["prophet_forecast.py", month]);
+
+    // Send data to Python script
+    python.stdin.write(JSON.stringify(peakHours));
+    python.stdin.end();
+
+    let result = "";
+    python.stdout.on("data", (data) => {
+      result += data.toString();
+    });
+
+    python.stderr.on("data", (data) => {
+      console.error(`Error from Python: ${data}`);
+    });
+
+    python.on("close", (code) => {
+      if (code !== 0) {
+        res.status(500).json({
+          message: "Error in Python script.",
+        });
+      } else {
+        const predictions = JSON.parse(result);
+        res.json({
+          message: "Predicted peak hours for the specified month are ready.",
+          predictions,
+        });
+      }
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+});
 
 // Start the server
 app.listen(port, () => {

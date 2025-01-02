@@ -130,3 +130,54 @@
   background-color: #e2e2e2;
   border: none;
 }
+
+.em-order-item {
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.em-order-header {
+  cursor: pointer;
+}
+
+.em-order-name h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.em-order-details {
+  margin-top: 10px;
+}
+
+.em-order-item-detail {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.em-item-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.em-qty {
+  font-size: 14px;
+  color: #555;
+}
+
+.em-order-footer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.em-order-summary {
+  font-weight: bold;
+}
+
+.em-order-total {
+  font-size: 16px;
+  font-weight: bold;
+  color: #000;
+}

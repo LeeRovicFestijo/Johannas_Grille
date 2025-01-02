@@ -1,202 +1,167 @@
-import React, { useState, useEffect } from 'react';
-import CustomerReservationPayment from '../CustomerReservationPayment/CustomerReservationPayment';
+import React, { useState, useEffect } from "react";
+import CustomerReservationPayment from "../CustomerReservationPayment/CustomerReservationPayment";
 import { IoIosCloseCircleOutline } from "react-icons/io";
-import './CustomerReservationMenu.css';
+import "./CustomerReservationMenu.css";
 
 const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId }) => {
     const [menuItems, setMenuItems] = useState({});
     const [selectedItems, setSelectedItems] = useState({});
-    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
     const [isPaymentOpen, setIsPaymentOpen] = useState(false);
 
-    // Fetch menu items from the backend on component mount
+    // Fetch and organize menu data
     useEffect(() => {
         const fetchMenuItems = async () => {
             try {
-                const response = await fetch('http://localhost:3000/api/menu-items');
+                const response = await fetch("http://localhost:3000/api/menu-items");
                 const data = await response.json();
 
-                // Organize data by menu category
                 const organizedData = data.reduce((acc, item) => {
-                    const category = `${item.menu_name} - P${item.package_price ? Number(item.package_price).toFixed(2) : 'N/A'}`;
-                    if (!acc[category]) {
-                        acc[category] = [];
+                    const category = item.menu_name;
+                    if (!acc[category]) acc[category] = { Main: [], Sides: {} };
+
+                    if (item.side_dish.includes("Main")) {
+                        acc[category].Main.push(item);
+                    } else {
+                        const sideCategory = item.side_dish || "Other Sides";
+                        if (!acc[category].Sides[sideCategory]) acc[category].Sides[sideCategory] = [];
+                        acc[category].Sides[sideCategory].push(item);
                     }
-                    acc[category].push({
-                        id: item.menuitemid,
-                        name: item.item_name,
-                        image: item.image_url,
-                        price: item.package_price
-                    });
                     return acc;
                 }, {});
 
                 setMenuItems(organizedData);
-                setSelectedItems(Object.keys(organizedData).reduce((acc, category) => {
-                    acc[category] = {};
-                    return acc;
-                }, {}));
+                setSelectedItems(
+                    Object.keys(organizedData).reduce((acc, category) => {
+                        acc[category] = { Main: [], Sides: {} };
+                        return acc;
+                    }, {})
+                );
             } catch (error) {
-                console.error('Error fetching menu items:', error);
+                console.error("Error fetching menu items:", error);
             }
         };
         fetchMenuItems();
     }, []);
 
-    // Handle item selection and quantity updates
-    const handleItemSelection = (category, item, increment) => {
+    // Handle selections
+    const handleSelection = (category, type, item) => {
         setSelectedItems((prev) => {
-            const menu = { ...prev[category] };
-            const currentQty = menu[item.name]?.qty || 0;
-            const newQty = Math.max(currentQty + increment, 0);
-
-            if (newQty === 0) {
-                delete menu[item.name];
+            const updated = { ...prev };
+            if (type === "Main") {
+                // Allow multiple main dishes (checkbox logic)
+                updated[category].Main = updated[category].Main.some((i) => i.id === item.id)
+                    ? updated[category].Main.filter((i) => i.id !== item.id)
+                    : [...updated[category].Main, item];
             } else {
-                menu[item.name] = { id: item.id, qty: newQty, price: item.price };
+                // Allow only one side dish per side category (radio logic)
+                updated[category].Sides[type] = updated[category].Sides[type]?.id === item.id ? null : item;
             }
-
-            return { ...prev, [category]: menu };
+            return updated;
         });
     };
 
-    const handleConfirmSelection = () => {
-        setIsConfirmOpen(true);
+    // Validate selections
+    const validateSelection = () => {
+        for (const category in selectedItems) {
+            const { Main, Sides } = selectedItems[category];
+            if (Main.length === 0) {
+                alert(`Please select at least one Main Dish for ${category}`);
+                return false;
+            }
+            const allSides = Object.values(Sides).filter((side) => side);
+            if (allSides.length === 0) {
+                alert(`Please select one Side Dish per category for ${category}`);
+                return false;
+            }
+        }
+        return true;
     };
 
     const handleFinalSubmit = async () => {
-        // Prepare the data to be sent to the backend
-        const itemsToSend = [];
-
-        // Loop through the selectedItems and extract item details (id, qty)
-        let totalAmount = 0; // Variable to store the total amount
-
-        Object.keys(selectedItems).forEach((category) => {
-            Object.values(selectedItems[category]).forEach(({ id, qty }) => {
-                if (qty > 0) { // Only send items that have a quantity greater than 0
-                    itemsToSend.push({ reservationId, itemId: id, qty });
-
-                    // Calculate the total amount for this item
-                    const item = menuItems[category].find(item => item.id === id);
-                    if (item) {
-                        totalAmount += item.price * qty;
-                    }
-                }
-            });
-        });
-
-        // Include reservationId and totalAmount in reservationDetails
-        const updatedReservationDetails = {
-            ...reservationDetails,
-            reservationId,
-            totalAmount,
-        };
+        if (!validateSelection()) return;
 
         try {
-            const response = await fetch('http://localhost:3000/api/reservations/items', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ reservationDetails: updatedReservationDetails, items: itemsToSend }),
+            const payload = [];
+            Object.keys(selectedItems).forEach((category) => {
+                const { Main, Sides } = selectedItems[category];
+                Main.forEach((item) => payload.push({ reservationId, itemId: item.menuitemid, qty: 1 }));
+                Object.values(Sides).forEach((item) => {
+                    if (item) payload.push({ reservationId, itemId: item.menuitemid, qty: 1 });
+                });
             });
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`HTTP error! Status: ${response.status} - ${errorText}`);
-            }
-
-            const data = await response.json();
-            console.log('Reservation items submitted:', data);
+            await fetch("http://localhost:3000/api/reservations/items", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
 
             setIsPaymentOpen(true);
-
         } catch (error) {
-            console.error('Error submitting reservation items:', error);
+            console.error("Error submitting reservation:", error);
         }
-    };
-
-
-
-    const ConfirmPopup = ({ selectedItems, onConfirm, onCancel }) => {
-        const totalAmount = Object.values(selectedItems).reduce((total, menu) => {
-            return total + Object.values(menu).reduce((menuTotal, { qty, price }) => {
-                return menuTotal + qty * price;
-            }, 0);
-        }, 0);
-
-        return (
-            <div className="confirm-popup-overlay">
-                <div className="confirm-popup-content">
-                    <h2>Confirm Your Selection</h2>
-                    {Object.entries(selectedItems).map(([category, items]) => (
-                        <div key={category}>
-                            <ul>
-                                {Object.entries(items).map(([item, { qty }]) => (
-                                    <li key={item}>
-                                        {item}: {qty}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    ))}
-                    <h3>Total Amount: P{totalAmount.toFixed(2)}</h3>
-                    <div className="popup-buttons">
-                        <button className="confirm" onClick={onConfirm}>Confirm</button>
-                        <button className="cancel" onClick={onCancel}>Cancel</button>
-                    </div>
-                </div>
-            </div>
-        );
     };
 
     return (
         <div className="cust-res-menu-popup">
             <div className="cust-res-menu-popup-content">
-                <button className="cust-res-menu-popup-close" onClick={onClose}><IoIosCloseCircleOutline size={33}/></button>
-                <h2>Select Your Package</h2>
+                <button className="cust-res-menu-popup-close" onClick={onClose}>
+                    <IoIosCloseCircleOutline size={33} />
+                </button>
+                <h2>Choose Your Package</h2>
+                <div style={{ maxHeight: "400px", overflowY: "auto" }}>
+                    {Object.keys(menuItems).map((category) => (
+                        <div key={category} className="menu-category">
+                            <h3>{category}</h3>
 
-                {Object.keys(menuItems).map((category) => (
-                    <div key={category} className="cust-res-menu-grid-container">
-                        <h3>{category}</h3>
-                        <div className="cust-res-menu-grid">
-                            {menuItems[category].map((item) => (
-                                <div key={item.id} className="cust-res-menu-item">
-                                    <img src={item.image} alt={item.name} className="cust-res-menu-item-image" />
-                                    <div className="cust-res-menu-item-details">
-                                        <h3>{item.name}</h3>
-                                        <div className="cust-res-menu-quantity">
-                                            <button className="cust-res-menu-quantity-button" onClick={() => handleItemSelection(category, item, -1)}>-</button>
-                                            <span>{selectedItems[category][item.name]?.qty || 0}</span>
-                                            <button className="cust-res-menu-quantity-button" onClick={() => handleItemSelection(category, item, 1)}>+</button>
-                                        </div>
+                            {/* Main Dish Selection */}
+                            <div>
+                                <h4>Main Dishes</h4>
+                                {menuItems[category].Main.map((item) => (
+                                    <div key={item.menuitemid} className="menu-item">
+                                        <label>
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedItems[category].Main.some(
+                                                    (i) => i.id === item.menuitemid
+                                                )}
+                                                onChange={() => handleSelection(category, "Main", item)}
+                                            />
+                                            {item.item_name} - P{item.package_price}
+                                        </label>
                                     </div>
+                                ))}
+                            </div>
+
+                            {/* Side Dishes Selection */}
+                            {Object.keys(menuItems[category].Sides).map((sideCategory) => (
+                                <div key={sideCategory}>
+                                    <h4>{sideCategory}</h4>
+                                    {menuItems[category].Sides[sideCategory].map((item) => (
+                                        <div key={item.menuitemid} className="menu-item">
+                                            <label>
+                                                <input
+                                                    type="radio"
+                                                    name={`side-${category}-${sideCategory}`}
+                                                    checked={
+                                                        selectedItems[category].Sides[sideCategory]?.id ===
+                                                        item.menuitemid
+                                                    }
+                                                    onChange={() =>
+                                                        handleSelection(category, sideCategory, item)
+                                                    }
+                                                />
+                                                {item.item_name}
+                                            </label>
+                                        </div>
+                                    ))}
                                 </div>
                             ))}
                         </div>
-                    </div>
-                ))}
-
-                <button onClick={handleConfirmSelection} className="confirm-menu">
-                    Confirm Selection
-                </button>
-
-                {isConfirmOpen && (
-                    <ConfirmPopup
-                        selectedItems={selectedItems}
-                        onConfirm={handleFinalSubmit}
-                        onCancel={() => setIsConfirmOpen(false)}
-                    />
-                )}
-
-                {isPaymentOpen && (
-                    <CustomerReservationPayment
-                        reservationDetails={reservationDetails}
-                        selectedItems={selectedItems}
-                        reservationId={reservationId}
-                        onConfirm={() => setIsPaymentOpen(false)}
-                        onPaymentComplete={() => onClose()}
-                        onClose={onClose}
-                    />
-                )}
+                    ))}
+                </div>
+                <button onClick={handleFinalSubmit}>Confirm Selection</button>
+                {isPaymentOpen && <CustomerReservationPayment reservationId={reservationId} onClose={onClose} />}
             </div>
         </div>
     );

@@ -22,25 +22,24 @@ ChartJS.register(
   Legend
 );
 
-const AreaLineChart = () => {
+const AreaLineChart = ({month, setMonth}) => {
   const [chartData, setChartData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [month, setMonth] = useState(new Date().getMonth() + 1); // Default to current month
 
   // Fetch prediction data from backend
   useEffect(() => {
     const fetchPredictionData = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:3000/api/predict?month=${month}`);
+        const response = await axios.get(`http://localhost:3000/api/predict?month=${month}`);
         const predictions = response.data.predictions;
 
         // Map the backend data to chart labels and datasets
-        const labels = predictions.map((entry) => entry.date); // X-axis: Days
-        const data = predictions.map((entry) => entry.predicted_peak_hour); // Y-axis: Predicted peak hours
+        const labels = predictions.map((entry) => entry.ds);
+        const data = predictions.map((entry) => entry.peak_hour);
 
         setChartData({
-          labels, // X-axis: Days
+          labels, // X-axis: Hours
           datasets: [
             {
               label: 'Predicted Peak Hour',
@@ -84,28 +83,30 @@ const AreaLineChart = () => {
       ) : error ? (
         <p style={{ color: 'red' }}>{error}</p>
       ) : (
-        <Line
-          data={chartData}
-          options={{
-            responsive: true,
-            plugins: {
-              legend: { display: true, position: 'top' },
-              title: {
-                display: true,
-                text: 'Predicted Peak Hour',
+        <>
+          <Line
+            data={chartData}
+            options={{
+              responsive: true,
+              plugins: {
+                legend: { display: true, position: 'top' },
+                title: {
+                  display: true,
+                  text: 'Predicted Peak Hour',
+                },
               },
-            },
-            scales: {
-              y: {
-                beginAtZero: true,
-                title: { display: true, text: 'Peak Hours (0-23)' },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  title: { display: true, text: 'Peak Hours (0-23)' },
+                },
+                x: {
+                  title: { display: true, text: 'Days' },
+                },
               },
-              x: {
-                title: { display: true, text: 'Days' },
-              },
-            },
-          }}
-        />
+            }}
+          />
+        </>
       )}
     </div>
   );
