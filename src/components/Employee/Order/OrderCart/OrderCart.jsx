@@ -172,8 +172,13 @@ const OrderCart = ({ category, setCategory, orderId }) => {
             <div>No items in your order.</div>
           )}
         </div>
-        <div className="em-order-placeorder">
-          <button onClick={() => setShowPlaceOrderPopup(true)}>Place Order</button>
+        <div className="em-order-buttons">
+          <div className="em-order-placeorder">
+            <button onClick={() => setShowPlaceOrderPopup(true)}>Cash</button>
+          </div>
+          <div className="em-order-placeorder">
+            <button >G-Cash</button>
+          </div>
         </div>
       </div>
       {showPlaceOrderPopup && (

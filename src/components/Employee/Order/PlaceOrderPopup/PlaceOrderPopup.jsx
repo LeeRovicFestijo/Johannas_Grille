@@ -30,6 +30,12 @@ const PlaceOrderPopup = ({ orderItems, orderType, onCancel, onConfirm }) => {
                 <p>Order Type: <strong>{orderType}</strong></p>
                 <p>Total Items: <strong>{totalItems}</strong></p>
                 <p>Total Price: <strong>${totalPrice.toFixed(2)}</strong></p>
+                <div className="emp-table-number">
+                    <label>
+                        Table No.
+                        <input type="text" />
+                    </label>
+                </div>
                 <div className="payment-section">
                     <label>
                         Amount Received:
