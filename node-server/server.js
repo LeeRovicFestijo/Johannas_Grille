@@ -555,7 +555,6 @@ app.delete("/api/employees/:id", async (req, res) => {
 
 app.get('/api/employee-orders', async (req, res) => {
   try {
-    console.log("Fetching orders...");  // Debugging
 
     const result = await pool.query(`
       SELECT 
@@ -595,7 +594,6 @@ app.get('/api/employee-orders', async (req, res) => {
 
     // Convert the grouped orders object to an array
     const ordersArray = Object.values(groupedOrders);
-    console.log(ordersArray);
 
     res.status(200).json(ordersArray); // Send the grouped orders
   } catch (error) {
