@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import './ItemDisplay.css';
 import Item from '../Item/Item';
+import { useProvider } from '../../../../global_variable/provider';
 
 const ItemDisplay = ({ category, items, orderId }) => {
-  const [foodList, setFoodList] = useState([]);
+  const { foodList, setFoodList }  = useProvider();
 
   useEffect(() => {
     const fetchData = async () => {

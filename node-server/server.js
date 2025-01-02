@@ -8,6 +8,9 @@ const bcrypt = require('bcryptjs');
 const { spawn } = require("child_process"); // For calling Python (Prophet)
 const moment = require("moment");
 require('dotenv').config();
+const axios = require('axios');
+
+const PAYMONGO_SECRET_KEY = 'sk_test_sEx9zBemN6cU4uY4RudHyvtG';
 
 // Initialize express app
 const app = express();
@@ -32,7 +35,7 @@ const pool = new Pool({
   user: 'postgres',
   host: 'localhost',
   database: 'johannasgrilledb',
-  password: 'password',
+  password: '12345678',
   port: 5433, // Default PostgreSQL port
 });
 
@@ -553,11 +556,48 @@ app.delete("/api/employees/:id", async (req, res) => {
 app.get('/api/employee-orders', async (req, res) => {
   try {
     console.log("Fetching orders...");  // Debugging
-    const result = await pool.query(
-      `SELECT * FROM orderstbl WHERE status = 'Pending'`
-    );
-    console.log("Fetched orders:", result.rows);  // Debugging
-    res.json(result.rows); // Send the fetched orders as JSON
+
+    const result = await pool.query(`
+      SELECT 
+        o.orderid,
+        o.ordertype,
+        oi.menuitemid, 
+        oi.quantity, 
+        m.name, 
+        m.price
+      FROM 
+        orderstbl o
+      JOIN 
+        orderitemtbl oi ON o.orderid = oi.orderid
+      JOIN 
+        menuitemtbl m ON oi.menuitemid = m.menuitemid
+      WHERE 
+        o.status = 'Pending' -- Ensure the orders are 'Pending'
+    `);
+    
+    // Group the items by orderid
+    const groupedOrders = result.rows.reduce((acc, item) => {
+      if (!acc[item.orderid]) {
+        acc[item.orderid] = {
+          orderid: item.orderid,
+          ordertype: item.ordertype,
+          items: [] // Initialize the items array
+        };
+      }
+      // Push the item details into the items array
+      acc[item.orderid].items.push({
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity
+      });
+      return acc;
+    }, {});
+
+    // Convert the grouped orders object to an array
+    const ordersArray = Object.values(groupedOrders);
+    console.log(ordersArray);
+
+    res.status(200).json(ordersArray); // Send the grouped orders
   } catch (error) {
     console.error('Error fetching orders:', error);
     res.status(500).json({ error: 'Failed to fetch orders' });
@@ -1237,6 +1277,118 @@ app.get("/api/predict", async (req, res) => {
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({ error: "Something went wrong" });
+  }
+});
+
+app.post('/api/gcash-checkout', async (req, res) => {
+  const { lineItems } = req.body;
+
+  const formattedLineItems = lineItems.map((item) => {
+      return {
+          currency: 'PHP',
+          amount: Math.round(item.price * 100), 
+          name: item.name,
+          quantity: item.quantity,
+      };
+  });
+
+  try {
+      const response = await axios.post(
+          'https://api.paymongo.com/v1/checkout_sessions',
+          {
+              data: {
+                  attributes: {
+                      send_email_receipt: false,
+                      show_line_items: true,
+                      line_items: formattedLineItems, 
+                      payment_method_types: ['gcash'],
+                      success_url: 'http://localhost:5173/employee/success',
+                      cancel_url: 'http://localhost:5173/employee/order',
+                  },
+              },
+          },
+          {
+              headers: {
+                  accept: 'application/json',
+                  'Content-Type': 'application/json',
+                  Authorization: `Basic ${Buffer.from(PAYMONGO_SECRET_KEY).toString('base64')}`, 
+              },
+          }
+      );
+
+      const checkoutUrl = response.data.data.attributes.checkout_url;
+
+      if (!checkoutUrl) {
+          return res.status(500).json({ error: 'Checkout URL not found in response' });
+      }
+      res.status(200).json({ url: checkoutUrl });
+  } catch (error) {
+      console.error('Error creating checkout session:', error.response ? error.response.data : error.message);
+      res.status(500).json({ error: 'Failed to create checkout session', details: error.response ? error.response.data : error.message });
+  }
+});
+
+app.post('/api/create-order', async (req, res) => {
+  const { customerid, orderItems, totalamount, ordertype, date, time, tableno, status } = req.body;
+
+  try {
+    // Extract orderid from the first item in orderItems
+    const formattedDate = date.replace(/-/g, ""); // Remove dashes from date
+    const orderid = `${formattedDate}${orderItems[0].orderid}`;
+
+    // Insert into Orders table with manually provided orderid
+    await pool.query(
+      'INSERT INTO orderstbl (orderid, customerid, totalamount, ordertype, date, time, tableno, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+      [orderid, customerid, totalamount, ordertype, date, time, tableno, status]
+    );
+
+    // Insert items into the orderitemtbl table
+    for (let item of orderItems) {
+      await pool.query(
+        'INSERT INTO orderitemtbl (orderid, menuitemid, quantity) VALUES ($1, $2, $3)',
+        [orderid, item.menuitemid, item.order_quantity]
+      );
+    }
+
+    for (let item of orderItems) {
+      await pool.query(
+          'UPDATE inventorytbl SET quantity = quantity - $1 WHERE menuitemid = $2',
+          [item.order_quantity, item.menuitemid]
+      );
+    }
+
+    res.status(200).json({ message: 'Order created successfully' });
+  } catch (err) {
+    console.error('Error:', err.message);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.patch('/api/orders/:orderid/status', async (req, res) => {
+  const { orderid } = req.params; // Extract order ID from URL
+  const { status } = req.body;    // Extract new status (e.g., 'Complete') from the request body
+
+  if (!status || status !== 'Complete') {
+    return res.status(400).json({ error: 'Invalid status or missing status' });
+  }
+
+  try {
+    // Update the order status in the database
+    const result = await pool.query(
+      'UPDATE orderstbl SET status = $1 WHERE orderid = $2 RETURNING *',
+      [status, orderid] // Set the new status and use the order ID to locate the order
+    );
+
+    // If no rows were affected, the order ID was not found
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    // Successfully updated, return the updated order
+    res.status(200).json({ message: 'Order updated successfully', order: result.rows[0] });
+  } catch (error) {
+    console.error('Error updating order status:', error);
+    res.status(500).json({ error: 'Failed to update order status' });
   }
 });
 

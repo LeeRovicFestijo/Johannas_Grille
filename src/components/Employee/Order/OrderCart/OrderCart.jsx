@@ -2,33 +2,15 @@ import React, { useState, useEffect } from 'react';
 import OrderItem from '../OrderItem';
 import PlaceOrderPopup from '../PlaceOrderPopup/PlaceOrderPopup';
 import './OrderCart.css';
+import { useProvider } from '../../../../global_variable/provider';
+import GCashOrderPopup from '../GCashOrderPopup/GCashOrderPopup';
 
 const OrderCart = ({ category, setCategory, orderId }) => {
-  const [orderItems, setOrderItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { orderItems, setOrderItems, orderType, setOrderType } = useProvider();
+  const [loading, setLoading] = useState(false); // You can set loading to false as data is already available
   const [error, setError] = useState(null);
   const [showPlaceOrderPopup, setShowPlaceOrderPopup] = useState(false);
-  const [orderType, setOrderType] = useState('Dine In');
-
-  useEffect(() => {
-    const fetchOrderItems = async () => {
-      if (!orderId) return;
-
-      try {
-        const response = await fetch(`http://localhost:3000/api/order/${orderId}`);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const data = await response.json();
-        setOrderItems(data);
-      } catch (error) {
-        console.error('Error fetching order items:', error);
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchOrderItems();
-  });
+  const [gcashOrderPopup, setGCashOrderPopup] = useState(false);
 
   const updateOrder = async () => {
     const totalAmount = orderItems.reduce(
@@ -160,7 +142,7 @@ const OrderCart = ({ category, setCategory, orderId }) => {
           {orderItems.length > 0 ? (
             orderItems.map((item) => (
               <OrderItem
-                key={item.orderitemid}
+                key={item.menuitemid}
                 item={item}
                 increaseQuantity={() => handleQuantityChange(item.orderitemid, item.quantity + 1)}
                 decreaseQuantity={() =>
@@ -174,18 +156,25 @@ const OrderCart = ({ category, setCategory, orderId }) => {
         </div>
         <div className="em-order-buttons">
           <div className="em-order-placeorder">
-            <button onClick={() => setShowPlaceOrderPopup(true)}>Cash</button>
+            <button onClick={() => setShowPlaceOrderPopup(true)} disabled={orderItems.length === 0}>Cash</button>
           </div>
           <div className="em-order-placeorder">
-            <button >G-Cash</button>
+            <button onClick={() => setGCashOrderPopup(true)} disabled={orderItems.length === 0}>G-Cash</button>
           </div>
         </div>
       </div>
       {showPlaceOrderPopup && (
         <PlaceOrderPopup
+          onCancel={() => setShowPlaceOrderPopup(false)}
+          onConfirm={handleConfirmOrder}
+        />
+      )}
+
+      {gcashOrderPopup && (
+        <GCashOrderPopup
           orderItems={orderItems}
           orderType={orderType}
-          onCancel={() => setShowPlaceOrderPopup(false)}
+          onCancel={() => setGCashOrderPopup(false)}
           onConfirm={handleConfirmOrder}
         />
       )}
