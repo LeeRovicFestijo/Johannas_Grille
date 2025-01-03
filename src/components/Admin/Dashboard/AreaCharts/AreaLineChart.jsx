@@ -22,7 +22,8 @@ ChartJS.register(
   Legend
 );
 
-const AreaLineChart = ({month, setMonth}) => {
+const AreaLineChart = ({ month, setMonth }) => {
+  const [year, setYear] = useState(new Date().getFullYear()); // State for the year
   const [chartData, setChartData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -31,7 +32,9 @@ const AreaLineChart = ({month, setMonth}) => {
   useEffect(() => {
     const fetchPredictionData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/api/predict?month=${month}`);
+        const response = await axios.get(
+          `http://localhost:3000/api/predict?month=${month}&year=${year}`
+        );
         const predictions = response.data.predictions;
 
         // Map the backend data to chart labels and datasets
@@ -43,7 +46,7 @@ const AreaLineChart = ({month, setMonth}) => {
           datasets: [
             {
               label: 'Predicted Peak Hour',
-              data, 
+              data,
               borderColor: 'rgba(75, 192, 192, 1)',
               backgroundColor: 'rgba(75, 192, 192, 0.2)',
               tension: 0.4,
@@ -60,7 +63,7 @@ const AreaLineChart = ({month, setMonth}) => {
     };
 
     fetchPredictionData();
-  }, [month]); // Re-fetch data when month changes
+  }, [month, year]); // Re-fetch data when month or year changes
 
   return (
     <div style={{ width: '80%', margin: '0 auto' }}>
@@ -78,35 +81,50 @@ const AreaLineChart = ({month, setMonth}) => {
           </option>
         ))}
       </select>
+
+      <label htmlFor="year" style={{ marginLeft: '10px' }}>
+      Select Year:
+      </label>
+      <select
+        id="year"
+        value={year}
+        onChange={(e) => setYear(Number(e.target.value))}
+        style={{ padding: '5px', fontSize: '16px', marginLeft: '10px' }}
+      >
+        {[2024, 2025].map((y) => (
+          <option key={y} value={y}>
+            {y}
+          </option>
+        ))}
+      </select>
+
       {loading ? (
         <p>Loading...</p>
       ) : error ? (
         <p style={{ color: 'red' }}>{error}</p>
       ) : (
-        <>
-          <Line
-            data={chartData}
-            options={{
-              responsive: true,
-              plugins: {
-                legend: { display: true, position: 'top' },
-                title: {
-                  display: true,
-                  text: 'Predicted Peak Hour',
-                },
+        <Line
+          data={chartData}
+          options={{
+            responsive: true,
+            plugins: {
+              legend: { display: true, position: 'top' },
+              title: {
+                display: true,
+                text: 'Predicted Peak Hour',
               },
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  title: { display: true, text: 'Peak Hours (0-23)' },
-                },
-                x: {
-                  title: { display: true, text: 'Days' },
-                },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                title: { display: true, text: 'Peak Hours (0-23)' },
               },
-            }}
-          />
-        </>
+              x: {
+                title: { display: true, text: 'Days' },
+              },
+            },
+          }}
+        />
       )}
     </div>
   );

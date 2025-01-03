@@ -4,6 +4,7 @@ from prophet import Prophet
 import pandas as pd
 
 month = int(sys.argv[1])
+year = int(sys.argv[2])
 
 # Read data from stdin
 data = json.loads(sys.stdin.read())
@@ -28,9 +29,8 @@ forecasted_peak_hours.loc[:, "peak_hour"] = forecasted_peak_hours["yhat"].round(
 
 # Filter forecasts by the requested month (if month was provided)
 if month:
-    current_year = pd.Timestamp.now().year  # Get the current year dynamically
     forecasted_peak_hours = forecasted_peak_hours[
-        (forecasted_peak_hours['ds'].dt.month == month) & (forecasted_peak_hours['ds'].dt.year == current_year)
+        (forecasted_peak_hours['ds'].dt.month == month) & (forecasted_peak_hours['ds'].dt.year == year)
     ]
 
 # Convert 'ds' column (timestamp) to readable date format 'YYYY-MM-DD'

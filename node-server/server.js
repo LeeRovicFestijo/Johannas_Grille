@@ -1176,6 +1176,7 @@ async function getOrderData() {
 app.get("/api/predict", async (req, res) => {
   try {
     const month = req.query.month ? parseInt(req.query.month) : null;
+    const year = req.query.year ? parseInt(req.query.year) : null; // Get the year from query
 
     // Step 1: Query and Prepare Data
     let orderData = await getOrderData();
@@ -1183,39 +1184,28 @@ app.get("/api/predict", async (req, res) => {
     // Data transformation using plain JavaScript
     orderData = orderData
       .map((row) => {
-          // Convert date to string if it's a Date object, and concatenate with time
-          const dateStr = row.date instanceof Date ? row.date.toISOString().split('T')[0] : row.date;
-          const timeStr = row.time;
-
-          // Combine date and time to form a full datetime string
-          const datetimeString = `${dateStr} ${timeStr}`;
-          
-          // Create a moment object with the full datetime string and convert to local timezone
-          const datetime = moment(datetimeString, "YYYY-MM-DD HH:mm:ss").local();
-          
-          return {
-          ...row,
-          datetime,
-          };
+        const dateStr = row.date instanceof Date ? row.date.toISOString().split('T')[0] : row.date;
+        const timeStr = row.time;
+        const datetimeString = `${dateStr} ${timeStr}`;
+        const datetime = moment(datetimeString, "YYYY-MM-DD HH:mm:ss").local();
+        return { ...row, datetime };
       })
-      .filter((row) => {
-          const valid = row.datetime.isValid();
-          if (!valid) {
-          console.log(`Invalid datetime for row:` , row);  // Log invalid rows
-          }
-          return valid;
-      });
-
+      .filter((row) => row.datetime.isValid());
 
     // Extract day, month, and hour
     orderData = orderData.map((row) => ({
       ...row,
       day: row.datetime.format("YYYY-MM-DD"),
       month: row.datetime.month() + 1, // Moment.js months are zero-based
+      year: row.datetime.year(), // Add year to the data
       hour: row.datetime.hour(),
     }));
 
-    // Filter for the specified month if provided
+    // Filter by year and month if provided
+    if (year) {
+      orderData = orderData.filter((row) => row.year === year);
+    }
+
     if (month) {
       orderData = orderData.filter((row) => row.month === month);
     }
@@ -1235,34 +1225,29 @@ app.get("/api/predict", async (req, res) => {
 
     const peakHours = Object.entries(groupedData)
       .map(([key, count]) => {
-          const day = key.slice(0, 10);  // Get the first 10 characters (YYYY-MM-DD)
-          const hour = parseInt(key.slice(11));  // Get everything after the 11th character (HH)
-          
-          // Ensure the hour is a valid number
-          if (isNaN(hour)) return null;  // Ignore invalid hour
-          
-          return { day, hour, count };  // Return the day, hour, and count
+        const day = key.slice(0, 10);  // YYYY-MM-DD
+        const hour = parseInt(key.slice(11));  // HH
+        if (isNaN(hour)) return null;
+        return { day, hour, count };
       })
-      .filter(Boolean)  // Remove any null values
+      .filter(Boolean)
       .sort((a, b) => {
-          // Sort by day in ascending order (lexicographical comparison works for YYYY-MM-DD)
-          if (a.day === b.day) {
-              return a.hour - b.hour;  // If days are the same, sort by hour
-          }
-          return a.day < b.day ? -1 : 1;  // Sort by day lexicographically
+        if (a.day === b.day) {
+          return a.hour - b.hour;
+        }
+        return a.day < b.day ? -1 : 1;
       })
       .reduce((acc, cur) => {
-          // Check for existing peak hours for the same day
-          const existing = acc.find((item) => item.day === cur.day);
-          if (!existing || cur.count > existing.count) {
-              acc = acc.filter((item) => item.day !== cur.day);  // Remove old peak hour
-              acc.push({ day: cur.day, hour: cur.hour, count: cur.count });  // Add new peak hour
-          }
-          return acc;
+        const existing = acc.find((item) => item.day === cur.day);
+        if (!existing || cur.count > existing.count) {
+          acc = acc.filter((item) => item.day !== cur.day);
+          acc.push({ day: cur.day, hour: cur.hour, count: cur.count });
+        }
+        return acc;
       }, []);
 
     // Step 3: Call Python Script for Forecasting
-    const python = spawn("python", ["prophet_forecast.py", month]);
+    const python = spawn("python", ["prophet_forecast.py", month, year]);
 
     // Send data to Python script
     python.stdin.write(JSON.stringify(peakHours));
@@ -1279,13 +1264,11 @@ app.get("/api/predict", async (req, res) => {
 
     python.on("close", (code) => {
       if (code !== 0) {
-        res.status(500).json({
-          message: "Error in Python script.",
-        });
+        res.status(500).json({ message: "Error in Python script." });
       } else {
         const predictions = JSON.parse(result);
         res.json({
-          message: "Predicted peak hours for the specified month are ready.",
+          message: "Predicted peak hours for the specified month and year are ready.",
           predictions,
         });
       }
@@ -1295,6 +1278,7 @@ app.get("/api/predict", async (req, res) => {
     res.status(500).json({ error: "Something went wrong" });
   }
 });
+
 
 app.post('/api/gcash-checkout', async (req, res) => {
   const { lineItems } = req.body;
