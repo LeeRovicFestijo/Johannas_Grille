@@ -1456,6 +1456,54 @@ app.patch('/api/orders/:orderid/status', async (req, res) => {
   }
 });
 
+app.post('/api/reservation-gcash-checkout', async (req, res) => {
+  const { lineItems } = req.body;
+
+  const formattedLineItems = lineItems.map((item) => {
+      return {
+          currency: 'PHP',
+          amount: Math.round(item.price * 100), 
+          name: item.name,
+          quantity: item.quantity,
+      };
+  });
+
+  try {
+      const response = await axios.post(
+          'https://api.paymongo.com/v1/checkout_sessions',
+          {
+              data: {
+                  attributes: {
+                      send_email_receipt: false,
+                      show_line_items: true,
+                      line_items: formattedLineItems, 
+                      payment_method_types: ['gcash'],
+                      success_url: 'http://localhost:5173/success-reservation',
+                      cancel_url: 'http://localhost:5173/',
+                  },
+              },
+          },
+          {
+              headers: {
+                  accept: 'application/json',
+                  'Content-Type': 'application/json',
+                  Authorization: `Basic ${Buffer.from(PAYMONGO_SECRET_KEY).toString('base64')}`, 
+              },
+          }
+      );
+
+      const checkoutUrl = response.data.data.attributes.checkout_url;
+
+      if (!checkoutUrl) {
+          return res.status(500).json({ error: 'Checkout URL not found in response' });
+      }
+      res.status(200).json({ url: checkoutUrl });
+  } catch (error) {
+      console.error('Error creating checkout session:', error.response ? error.response.data : error.message);
+      res.status(500).json({ error: 'Failed to create checkout session', details: error.response ? error.response.data : error.message });
+  }
+});
+
 app.post('/api/create-reservation', async (req, res) => {
   const reservations = req.body; // The payload array from the frontend
 

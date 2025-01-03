@@ -27,6 +27,7 @@ import EmployeeOrder from './pages/Employee/Order/Order';
 import { Provider } from './global_variable/provider';
 import SuccessPage from './pages/Employee/Success/Success';
 import SuccessCustomerPage from './pages/Customer/Success/success';
+import SuccessReservationPage from './pages/Customer/Success/SuccessReservation';
 const App = () => {
   return (
     <>
@@ -58,6 +59,7 @@ const App = () => {
             <Route path='/employee/profile' element={<ProtectedRoute> <ProfileEmployee /> </ProtectedRoute>} />
             <Route path='/employee/success' element={<ProtectedRoute> <SuccessPage /> </ProtectedRoute>} />
             <Route path='/success' element={<ProtectedRoute> <SuccessCustomerPage /> </ProtectedRoute>} />
+            <Route path='/success-reservation' element={<ProtectedRoute> <SuccessReservationPage /> </ProtectedRoute>} />
           </Routes>
         </Provider>
       </div>

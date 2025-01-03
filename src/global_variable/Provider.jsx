@@ -19,6 +19,7 @@ export function Provider({ children }) {
   const [pickupHour, setPickupHour] = usePersistState('hour', "12:00");
   const [reserveItems, setReserveItems] = usePersistState('reserve', []);
   const [reservationDetails, setReservationDetails] = usePersistState('details', null);
+  const [payloadDetails, setPayloadDetails] = usePersistState('payload', []);
 
   return (
     <Context.Provider value={{ orderItems, setOrderItems, foodList, setFoodList, tableNumber, setTableNumber, orderType, setOrderType, customer, setCustomer, selectedBranch, setSelectedBranch, cartItems, setCartItems, pickupDate, setPickupDate, pickupHour, setPickupHour, reserveItems, setReserveItems, reservationDetails, setReservationDetails, selectedEmployeeBranch, setSelectedEmployeeBranch }}>

@@ -95,6 +95,27 @@ const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId })
     const handleFinalSubmit = async () => {
         if (!validateSelection()) return;
     
+        // try {
+        //     const gcashPayload = Object.keys(selectedCategories)
+        //     .filter((category) => selectedCategories[category])
+        //     .map((category) => ({
+        //         name: category, 
+        //         quantity: 1, 
+        //         price: menuItems[category]?.package_price || 0,
+        //     }));
+    
+        //     const body = { lineItems: gcashPayload };
+        //     console.log(body);
+    
+        //     const response = await axios.post('http://localhost:3000/api/reservation-gcash-checkout', body);
+        //     const { url } = response.data;
+    
+        //     window.location.href = url;
+        // } catch (error) {
+        //     console.error('Error initiating payment:', error);
+        //     return;
+        // }
+    
         try {
             const payload = [];
             let totalAmount = 0;
@@ -102,7 +123,9 @@ const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId })
             Object.keys(selectedCategories).forEach((category) => {
                 if (selectedCategories[category]) {
                     const { Main, Sides } = menuItems[category];
-    
+                    const categoryPrice = parseFloat(menuItems[category]?.package_price) || 0;
+                    totalAmount += categoryPrice;
+
                     // Add all main dishes
                     Main.forEach((item) => {
                         payload.push({
@@ -110,15 +133,14 @@ const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId })
                             customerid: customer.customerid, // assuming reservationDetails has customerId
                             numberOfGuests: reservationDetails.numberofguests, // assuming number of guests is in reservationDetails
                             reservationDate: reservationDetails.reservationdate, // assuming date is in reservationDetails
-                            reservationTime: reservationDetails.reservationtime, // assuming time is in reservationDetails
+                            reservationTime: `${reservationDetails.reservationtime}:00`, // assuming time is in reservationDetails
                             branch: reservationDetails.branch, // assuming branch is in reservationDetails
-                            amount: item.package_price, // Start with package price of main dishes
+                            amount: totalAmount || 0, // Set amount to price of the main dish
                             modeOfPayment: "GCash",
-                            status: "Approved", // default status (could be updated later)
+                            status: "Approved", // default status
                             menuItemId: item.menuitemid,
                             quantity: 1,
                         });
-                        totalAmount += item.package_price;
                     });
     
                     // Add selected side dishes
@@ -131,17 +153,22 @@ const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId })
                                 reservationDate: reservationDetails.reservationdate,
                                 reservationTime: `${reservationDetails.reservationtime}:00`,
                                 branch: reservationDetails.branch,
-                                amount: item.package_price, // Add package price of side dishes
+                                amount: totalAmount || 0, // Set amount to price of the side dish
                                 modeOfPayment: "GCash",
                                 status: "Approved",
                                 menuItemId: item.menuitemid,
                                 quantity: 1,
                             });
-                            totalAmount += item.package_price;
                         }
                     });
                 }
             });
+
+            payload.forEach(reservation => {
+                reservation.amount = totalAmount; 
+            });
+
+            console.log(payload);
     
             // Send the data to the API using axios
             await axios.post("http://localhost:3000/api/create-reservation", payload, {
@@ -152,9 +179,8 @@ const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId })
             setReserveItems((prev) => [
                 ...prev,
                 ...payload.filter((item) => item.menuItemId), // Only add items with a menuItemId
-            ]);
-    
-            setIsPaymentOpen(true);
+            ])
+
         } catch (error) {
             console.error("Error submitting reservation:", error);
         }
