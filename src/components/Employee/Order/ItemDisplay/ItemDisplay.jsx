@@ -12,12 +12,9 @@ const ItemDisplay = ({ category, items, orderId }) => {
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      console.log(selectedEmployeeBranch);
       const data = await response.json();
       const filteredData = data.filter(item => item.quantity > 0 && item.branch === selectedEmployeeBranch);
-      console.log(filteredData);
       setFoodList(filteredData);
-      console.log(foodList);
     } catch (error) {
       console.error('Error fetching food items:', error);
     }
