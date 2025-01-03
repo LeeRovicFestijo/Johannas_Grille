@@ -9,7 +9,6 @@ const FoodItem = ({ id, name, price, image, onAddToOrder, orderId }) => {
   const [menuItems, setMenuItems] = useState([]);
 
   const handleAddToOrder = async () => {
-    console.log(customer);
     if (!customer) {
       alert(`Please sign in first!`);
       return;
@@ -72,6 +71,10 @@ const FoodItem = ({ id, name, price, image, onAddToOrder, orderId }) => {
   useEffect(() => {
     fetchMenuItems();
   }, []);
+
+  // useEffect(() => {
+  //   window.location.reload();
+  // }, [customer]);
 
   return (
     <div className="food-card">

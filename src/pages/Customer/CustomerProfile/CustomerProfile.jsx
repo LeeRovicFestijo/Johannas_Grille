@@ -2,16 +2,17 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 import './CustomerProfile.css';
+import { useProvider } from '../../../global_variable/provider';
 
 const CustomerProfile = () => {
+    const { customer, setCustomer } = useProvider();
     const navigate = useNavigate(); // Hook for programmatic navigation
 
     const handleLogout = () => {
         // Clear user session (e.g., remove token)
         localStorage.removeItem('token'); // Adjust based on your token storage method
-
-        // Redirect to home page or login page
-        navigate('/'); // Change this to your desired route
+        setCustomer(null);
+        window.location.reload();
     };
 
     return (

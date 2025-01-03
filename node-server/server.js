@@ -108,6 +108,7 @@ app.post('/api/customer/login', async (req, res) => {
       success: true, 
       message: 'Login successful', 
       token,
+      customerid: user.customerid,
       firstname: user.firstname, 
       lastname: user.lastname, 
       email: user.email, 

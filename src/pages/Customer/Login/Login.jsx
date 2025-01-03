@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import './Login.css';
 import { IoIosCloseCircle } from "react-icons/io";
 import axios from 'axios';
+import { useProvider } from '../../../global_variable/provider';
 
 const LoginPopUp = () => {
+  const { customer, setCustomer } = useProvider();
   const [currState, setCurrState] = useState("Sign Up");
   const [isVisible, setIsVisible] = useState(true);
   const [firstName, setFirstName] = useState('');
@@ -58,6 +60,7 @@ const LoginPopUp = () => {
   
       if (response.status === 200) {
         localStorage.setItem('token', response.data.token);
+        setCustomer(response.data);
         window.location.reload();
       } else {
         setMessage('Login failed');
