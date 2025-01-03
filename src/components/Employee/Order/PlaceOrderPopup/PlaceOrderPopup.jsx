@@ -47,7 +47,7 @@ const PlaceOrderPopup = ({ onCancel, onConfirm }) => {
           date: currentDate,
           time: currentTime,
           tableno: tableNumber,
-          status: "Completed",
+          status: "Pending",
         };
     
         try {

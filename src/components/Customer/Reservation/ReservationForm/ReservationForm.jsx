@@ -3,10 +3,11 @@ import './ReservationForm.css';
 import CustomerReservationMenu from '../CustomerReservationMenu/CustomerReservationMenu';
 import CustomerReservationReceipt from '../CustomerReservationReceipt/CustomerReservationReceipt'; // Import the receipt component
 import { IoIosCloseCircleOutline } from "react-icons/io";
+import { useProvider } from '../../../../global_variable/provider';
 
 const ReservationForm = ({ reservationId, onClose }) => {
+  const { reservationDetails, setReservationDetails } = useProvider();
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [reservationDetails, setReservationDetails] = useState(null);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [isReceiptOpen, setIsReceiptOpen] = useState(false); // New state for receipt
   const branchOptions = ["Batangas", "Bauan"];
@@ -20,7 +21,7 @@ const ReservationForm = ({ reservationId, onClose }) => {
     setIsReceiptOpen(true); // Open the receipt popup
   };
 
-  const handleFormSubmit = async (e) => {
+  const handleFormSubmit = (e) => {
     e.preventDefault();
 
     if (!termsAccepted) {
@@ -29,35 +30,15 @@ const ReservationForm = ({ reservationId, onClose }) => {
     }
 
     const formData = {
-      reservationDetails: {
-        reservationId: reservationId,
-        numberofguests: e.target.guests.value,
-        reservationdate: e.target.date.value,
-        reservationtime: e.target.time.value,
-        branch: e.target.branch.value,
-      },
+      reservationId: reservationId,
+      numberofguests: e.target.guests.value,
+      reservationdate: e.target.date.value,
+      reservationtime: e.target.time.value,
+      branch: e.target.branch.value,
     };
 
-    try {
-      const response = await fetch('http://localhost:3000/api/reservations/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setIsSubmitted(true);
-        setReservationDetails(data);
-        console.log('Reservation created:', data);
-      } else {
-        console.error('Failed to create reservation');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
+    setReservationDetails(formData); // Directly update the reservation details
+    setIsSubmitted(true); // Mark the form as submitted
   };
 
   return (

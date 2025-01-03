@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import CustomerReservationPayment from "../CustomerReservationPayment/CustomerReservationPayment";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import "./CustomerReservationMenu.css";
+import { useProvider } from "../../../../global_variable/provider";
 
 const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId }) => {
+    const { reserveItems, setReserveItems, customer } = useProvider();
     const [menuItems, setMenuItems] = useState({});
     const [selectedCategories, setSelectedCategories] = useState({});
     const [selectedSideDishes, setSelectedSideDishes] = useState({});
@@ -17,8 +19,8 @@ const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId })
 
                 const organizedData = data.reduce((acc, item) => {
                     const category = item.menu_name;
-                    if (!acc[category]) acc[category] = { Main: [], Sides: {} };
-
+                    if (!acc[category]) acc[category] = { Main: [], Sides: {}, package_price: item.package_price };
+                
                     if (item.side_dish.includes("Main")) {
                         acc[category].Main.push(item);
                     } else {
@@ -91,36 +93,87 @@ const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId })
 
     const handleFinalSubmit = async () => {
         if (!validateSelection()) return;
-
+    
         try {
             const payload = [];
+            let totalAmount = 0;
+    
             Object.keys(selectedCategories).forEach((category) => {
                 if (selectedCategories[category]) {
                     const { Main, Sides } = menuItems[category];
-
+    
                     // Add all main dishes
                     Main.forEach((item) => {
-                        payload.push({ reservationId, itemId: item.menuitemid, qty: 1 });
+                        payload.push({
+                            reservationId,
+                            customerid: customer.customerid, // assuming reservationDetails has customerId
+                            numberOfGuests: reservationDetails.numberofguests, // assuming number of guests is in reservationDetails
+                            reservationDate: reservationDetails.reservationdate, // assuming date is in reservationDetails
+                            reservationTime: reservationDetails.reservationtime, // assuming time is in reservationDetails
+                            branch: reservationDetails.branch, // assuming branch is in reservationDetails
+                            amount: item.package_price, // Start with package price of main dishes
+                            modeOfPayment: "GCash",
+                            status: "Pending", // default status (could be updated later)
+                            menuItemId: item.menuitemid,
+                            quantity: 1,
+                        });
+                        totalAmount += item.package_price;
                     });
-
+    
                     // Add selected side dishes
                     Object.values(selectedSideDishes[category] || {}).forEach((item) => {
-                        if (item) payload.push({ reservationId, itemId: item.menuitemid, qty: 1 });
+                        if (item) {
+                            payload.push({
+                                reservationId,
+                                customerid: customer.customerid,
+                                numberOfGuests: reservationDetails.numberofguests,
+                                reservationDate: reservationDetails.reservationdate,
+                                reservationTime: reservationDetails.reservationtime,
+                                branch: reservationDetails.branch,
+                                amount: item.package_price, // Add package price of side dishes
+                                modeOfPayment: "GCash",
+                                status: "pending",
+                                menuItemId: item.menuitemid,
+                                quantity: 1,
+                            });
+                            totalAmount += item.package_price;
+                        }
                     });
                 }
             });
+    
+            // Add total amount to the payload if needed, or you can process it separately.
+            // payload.push({
+            //     reservationId,
+            //     customerid: customer.customerid,
+            //     totalAmount, // Sum of all selected items
+            //     modeOfPayment: "GCash",
+            //     status: "pending",
+            // });
 
+            console.log(payload);
+    
+            // Send the data to the API
             await fetch("http://localhost:3000/api/reservations/items", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload),
             });
-
+    
+            // Add the items to the reserveItems state in the provider
+            setReserveItems(prev => [
+                ...prev,
+                ...payload.filter(item => item.menuItemId) // Only add items with a menuItemId
+            ]);
+    
             setIsPaymentOpen(true);
         } catch (error) {
             console.error("Error submitting reservation:", error);
         }
     };
+
+    // Check if any category has been selected
+    const isAnyCategorySelected = Object.values(selectedCategories).includes(true);
 
     return (
         <div className="cust-res-menu-popup">
@@ -138,7 +191,7 @@ const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId })
                                     checked={selectedCategories[category]}
                                     onChange={() => handleCategorySelection(category)}
                                 />
-                                <h3>{category}</h3>
+                                <h3>{category} - {menuItems[category].package_price}</h3>
                             </label>
 
                             {selectedCategories[category] && (
@@ -181,7 +234,12 @@ const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId })
                         </div>
                     ))}
                 </div>
-                <button onClick={handleFinalSubmit}>Confirm Selection</button>
+                <button 
+                    onClick={handleFinalSubmit} 
+                    disabled={!isAnyCategorySelected}
+                >
+                    Confirm Selection
+                </button>
                 {isPaymentOpen && <CustomerReservationPayment reservationId={reservationId} onClose={onClose} />}
             </div>
         </div>

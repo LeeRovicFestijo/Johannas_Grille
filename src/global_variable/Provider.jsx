@@ -16,9 +16,11 @@ export function Provider({ children }) {
     new Date().toISOString().substring(0, 10)
   );
   const [pickupHour, setPickupHour] = usePersistState('hour', "12:00");
+  const [reserveItems, setReserveItems] = usePersistState('reserve', []);
+  const [reservationDetails, setReservationDetails] = usePersistState('details', null);
 
   return (
-    <Context.Provider value={{ orderItems, setOrderItems, foodList, setFoodList, tableNumber, setTableNumber, orderType, setOrderType, customer, setCustomer, selectedBranch, setSelectedBranch, cartItems, setCartItems, pickupDate, setPickupDate, pickupHour, setPickupHour }}>
+    <Context.Provider value={{ orderItems, setOrderItems, foodList, setFoodList, tableNumber, setTableNumber, orderType, setOrderType, customer, setCustomer, selectedBranch, setSelectedBranch, cartItems, setCartItems, pickupDate, setPickupDate, pickupHour, setPickupHour, reserveItems, setReserveItems, reservationDetails, setReservationDetails }}>
       {children}
     </Context.Provider>
   );
