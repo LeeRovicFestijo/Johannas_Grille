@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import CustomerReservationPayment from "../CustomerReservationPayment/CustomerReservationPayment";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import "./CustomerReservationMenu.css";
@@ -128,7 +129,7 @@ const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId })
                                 customerid: customer.customerid,
                                 numberOfGuests: reservationDetails.numberofguests,
                                 reservationDate: reservationDetails.reservationdate,
-                                reservationTime: reservationDetails.reservationtime,
+                                reservationTime: `${reservationDetails.reservationtime}:00`,
                                 branch: reservationDetails.branch,
                                 amount: item.package_price, // Add package price of side dishes
                                 modeOfPayment: "GCash",

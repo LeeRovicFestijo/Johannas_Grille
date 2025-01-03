@@ -1492,10 +1492,10 @@ app.post('/api/create-reservation', async (req, res) => {
           );
 
           // Update inventory stock
-          await pool.query(
-              `UPDATE inventory SET quality_stocks = quality_stocks - $1 WHERE item_id = $2`,
-              [quantity, menuItemId]
-          );
+          // await pool.query(
+          //     `UPDATE inventory SET quality_stocks = quality_stocks - $1 WHERE item_id = $2`,
+          //     [quantity, menuItemId]
+          // );
       }
 
       res.status(200).json({ message: 'Reservations created successfully' });
