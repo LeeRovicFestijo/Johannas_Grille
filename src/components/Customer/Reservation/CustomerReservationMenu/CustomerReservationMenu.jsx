@@ -113,7 +113,7 @@ const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId })
                             branch: reservationDetails.branch, // assuming branch is in reservationDetails
                             amount: item.package_price, // Start with package price of main dishes
                             modeOfPayment: "GCash",
-                            status: "Pending", // default status (could be updated later)
+                            status: "Approved", // default status (could be updated later)
                             menuItemId: item.menuitemid,
                             quantity: 1,
                         });
@@ -132,7 +132,7 @@ const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId })
                                 branch: reservationDetails.branch,
                                 amount: item.package_price, // Add package price of side dishes
                                 modeOfPayment: "GCash",
-                                status: "pending",
+                                status: "Approved",
                                 menuItemId: item.menuitemid,
                                 quantity: 1,
                             });
@@ -142,28 +142,15 @@ const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId })
                 }
             });
     
-            // Add total amount to the payload if needed, or you can process it separately.
-            // payload.push({
-            //     reservationId,
-            //     customerid: customer.customerid,
-            //     totalAmount, // Sum of all selected items
-            //     modeOfPayment: "GCash",
-            //     status: "pending",
-            // });
-
-            console.log(payload);
-    
-            // Send the data to the API
-            await fetch("http://localhost:3000/api/reservations/items", {
-                method: "POST",
+            // Send the data to the API using axios
+            await axios.post("http://localhost:3000/api/create-reservation", payload, {
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
             });
     
             // Add the items to the reserveItems state in the provider
-            setReserveItems(prev => [
+            setReserveItems((prev) => [
                 ...prev,
-                ...payload.filter(item => item.menuItemId) // Only add items with a menuItemId
+                ...payload.filter((item) => item.menuItemId), // Only add items with a menuItemId
             ]);
     
             setIsPaymentOpen(true);

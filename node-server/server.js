@@ -1456,6 +1456,55 @@ app.patch('/api/orders/:orderid/status', async (req, res) => {
   }
 });
 
+app.post('/api/create-reservation', async (req, res) => {
+  const reservations = req.body; // The payload array from the frontend
+
+  try {
+      // Loop through each reservation item in the payload
+      for (let reservation of reservations) {
+          const {
+              reservationId,
+              customerid,
+              numberOfGuests,
+              reservationDate,
+              reservationTime,
+              branch,
+              amount,
+              modeOfPayment,
+              status,
+              menuItemId,
+              quantity,
+          } = reservation;
+
+          // Insert into reservation table (only if new reservation)
+          await pool.query(
+              `INSERT INTO reservationtbl (reservationid, customerid, numberofguests, reservationdate, reservationtime, branch, amount, modeofpayment, status)
+               VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+               ON CONFLICT (reservationid) DO NOTHING`, // Prevent duplicate reservations
+              [reservationId, customerid, numberOfGuests, reservationDate, reservationTime, branch, amount, modeOfPayment, status]
+          );
+
+          // Insert item details into transactions table
+          await pool.query(
+              `INSERT INTO reservationitemtbl (reservationid, menuitemid, qty)
+               VALUES ($1, $2, $3)`,
+              [reservationId, menuItemId, quantity]
+          );
+
+          // Update inventory stock
+          await pool.query(
+              `UPDATE inventory SET quality_stocks = quality_stocks - $1 WHERE item_id = $2`,
+              [quantity, menuItemId]
+          );
+      }
+
+      res.status(200).json({ message: 'Reservations created successfully' });
+  } catch (err) {
+      console.error(err.message);
+      res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
