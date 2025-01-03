@@ -5,10 +5,10 @@ import "./CustomerReservationMenu.css";
 
 const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId }) => {
     const [menuItems, setMenuItems] = useState({});
-    const [selectedItems, setSelectedItems] = useState({});
+    const [selectedCategories, setSelectedCategories] = useState({});
+    const [selectedSideDishes, setSelectedSideDishes] = useState({});
     const [isPaymentOpen, setIsPaymentOpen] = useState(false);
 
-    // Fetch and organize menu data
     useEffect(() => {
         const fetchMenuItems = async () => {
             try {
@@ -30,48 +30,60 @@ const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId })
                 }, {});
 
                 setMenuItems(organizedData);
-                setSelectedItems(
-                    Object.keys(organizedData).reduce((acc, category) => {
-                        acc[category] = { Main: [], Sides: {} };
-                        return acc;
-                    }, {})
-                );
+
+                // Initialize selection states
+                const initialSelectedCategories = Object.keys(organizedData).reduce((acc, category) => {
+                    acc[category] = false;
+                    return acc;
+                }, {});
+
+                const initialSelectedSideDishes = Object.keys(organizedData).reduce((acc, category) => {
+                    acc[category] = {};
+                    return acc;
+                }, {});
+
+                setSelectedCategories(initialSelectedCategories);
+                setSelectedSideDishes(initialSelectedSideDishes);
             } catch (error) {
                 console.error("Error fetching menu items:", error);
             }
         };
+
         fetchMenuItems();
     }, []);
 
-    // Handle selections
-    const handleSelection = (category, type, item) => {
-        setSelectedItems((prev) => {
-            const updated = { ...prev };
-            if (type === "Main") {
-                // Allow multiple main dishes (checkbox logic)
-                updated[category].Main = updated[category].Main.some((i) => i.id === item.id)
-                    ? updated[category].Main.filter((i) => i.id !== item.id)
-                    : [...updated[category].Main, item];
-            } else {
-                // Allow only one side dish per side category (radio logic)
-                updated[category].Sides[type] = updated[category].Sides[type]?.id === item.id ? null : item;
-            }
-            return updated;
-        });
+    const handleCategorySelection = (category) => {
+        setSelectedCategories((prev) => ({
+            ...prev,
+            [category]: !prev[category],
+        }));
     };
 
-    // Validate selections
+    const handleSideDishSelection = (category, sideCategory, item) => {
+        setSelectedSideDishes((prev) => ({
+            ...prev,
+            [category]: {
+                ...prev[category],
+                [sideCategory]: 
+                    prev[category]?.[sideCategory]?.menuitemid === item.menuitemid 
+                        ? null 
+                        : item,
+            },
+        }));
+    };
+
     const validateSelection = () => {
-        for (const category in selectedItems) {
-            const { Main, Sides } = selectedItems[category];
-            if (Main.length === 0) {
-                alert(`Please select at least one Main Dish for ${category}`);
-                return false;
-            }
-            const allSides = Object.values(Sides).filter((side) => side);
-            if (allSides.length === 0) {
-                alert(`Please select one Side Dish per category for ${category}`);
-                return false;
+        for (const category in selectedCategories) {
+            if (selectedCategories[category]) {
+                const sideDishes = selectedSideDishes[category];
+                const allSideCategories = menuItems[category]?.Sides || {};
+                const selectedSides = Object.keys(allSideCategories).every(
+                    (sideCategory) => sideDishes[sideCategory]
+                );
+                if (!selectedSides) {
+                    alert(`Please select one side dish for each side category in ${category}.`);
+                    return false;
+                }
             }
         }
         return true;
@@ -82,12 +94,20 @@ const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId })
 
         try {
             const payload = [];
-            Object.keys(selectedItems).forEach((category) => {
-                const { Main, Sides } = selectedItems[category];
-                Main.forEach((item) => payload.push({ reservationId, itemId: item.menuitemid, qty: 1 }));
-                Object.values(Sides).forEach((item) => {
-                    if (item) payload.push({ reservationId, itemId: item.menuitemid, qty: 1 });
-                });
+            Object.keys(selectedCategories).forEach((category) => {
+                if (selectedCategories[category]) {
+                    const { Main, Sides } = menuItems[category];
+
+                    // Add all main dishes
+                    Main.forEach((item) => {
+                        payload.push({ reservationId, itemId: item.menuitemid, qty: 1 });
+                    });
+
+                    // Add selected side dishes
+                    Object.values(selectedSideDishes[category] || {}).forEach((item) => {
+                        if (item) payload.push({ reservationId, itemId: item.menuitemid, qty: 1 });
+                    });
+                }
             });
 
             await fetch("http://localhost:3000/api/reservations/items", {
@@ -112,51 +132,52 @@ const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId })
                 <div style={{ maxHeight: "400px", overflowY: "auto" }}>
                     {Object.keys(menuItems).map((category) => (
                         <div key={category} className="menu-category">
-                            <h3>{category}</h3>
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={selectedCategories[category]}
+                                    onChange={() => handleCategorySelection(category)}
+                                />
+                                <h3>{category}</h3>
+                            </label>
 
-                            {/* Main Dish Selection */}
-                            <div>
-                                <h4>Main Dishes</h4>
-                                {menuItems[category].Main.map((item) => (
-                                    <div key={item.menuitemid} className="menu-item">
-                                        <label>
-                                            <input
-                                                type="checkbox"
-                                                checked={selectedItems[category].Main.some(
-                                                    (i) => i.id === item.menuitemid
-                                                )}
-                                                onChange={() => handleSelection(category, "Main", item)}
-                                            />
-                                            {item.item_name} - P{item.package_price}
-                                        </label>
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* Side Dishes Selection */}
-                            {Object.keys(menuItems[category].Sides).map((sideCategory) => (
-                                <div key={sideCategory}>
-                                    <h4>{sideCategory}</h4>
-                                    {menuItems[category].Sides[sideCategory].map((item) => (
-                                        <div key={item.menuitemid} className="menu-item">
-                                            <label>
-                                                <input
-                                                    type="radio"
-                                                    name={`side-${category}-${sideCategory}`}
-                                                    checked={
-                                                        selectedItems[category].Sides[sideCategory]?.id ===
-                                                        item.menuitemid
-                                                    }
-                                                    onChange={() =>
-                                                        handleSelection(category, sideCategory, item)
-                                                    }
-                                                />
+                            {selectedCategories[category] && (
+                                <>
+                                    {/* Main Dishes */}
+                                    <div>
+                                        <h4>Main Dishes</h4>
+                                        {menuItems[category].Main.map((item) => (
+                                            <div key={item.menuitemid} className="menu-item">
                                                 {item.item_name}
-                                            </label>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* Side Dishes */}
+                                    {Object.keys(menuItems[category].Sides).map((sideCategory) => (
+                                        <div key={sideCategory}>
+                                            <h4>{sideCategory}</h4>
+                                            {menuItems[category].Sides[sideCategory].map((item) => (
+                                                <div key={item.menuitemid} className="menu-item">
+                                                    <label>
+                                                    <input
+                                                        type="radio"
+                                                        name={`side-${category}-${sideCategory}`}
+                                                        checked={
+                                                            selectedSideDishes[category]?.[sideCategory]?.menuitemid === item.menuitemid
+                                                        }
+                                                        onChange={() =>
+                                                            handleSideDishSelection(category, sideCategory, item)
+                                                        }
+                                                    />
+                                                        {item.item_name}
+                                                    </label>
+                                                </div>
+                                            ))}
                                         </div>
                                     ))}
-                                </div>
-                            ))}
+                                </>
+                            )}
                         </div>
                     ))}
                 </div>
