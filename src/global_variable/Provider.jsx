@@ -5,12 +5,20 @@ const Context = createContext();
 
 export function Provider({ children }) {
   const [orderItems, setOrderItems] = usePersistState('cart', []);
+  const [cartItems, setCartItems] = usePersistState('item', []);
+  const [customer, setCustomer] = usePersistState('customer', null);
   const [foodList, setFoodList] = useState([]);
   const [tableNumber, setTableNumber] = usePersistState('table', '');
   const [orderType, setOrderType] = usePersistState('order', 'Dine In');
+  const [selectedBranch, setSelectedBranch] = useState("Bauan");
+  const [pickupDate, setPickupDate] = usePersistState(
+    'date',
+    new Date().toISOString().substring(0, 10)
+  );
+  const [pickupHour, setPickupHour] = usePersistState('hour', "12:00");
 
   return (
-    <Context.Provider value={{ orderItems, setOrderItems, foodList, setFoodList, tableNumber, setTableNumber, orderType, setOrderType }}>
+    <Context.Provider value={{ orderItems, setOrderItems, foodList, setFoodList, tableNumber, setTableNumber, orderType, setOrderType, customer, setCustomer, selectedBranch, setSelectedBranch, cartItems, setCartItems, pickupDate, setPickupDate, pickupHour, setPickupHour }}>
       {children}
     </Context.Provider>
   );

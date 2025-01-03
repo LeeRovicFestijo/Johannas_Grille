@@ -127,7 +127,7 @@ app.get('/api/customer/info', async (req, res) => {
     }
 
     const decoded = jwt.verify(token, SECRET_KEY);
-    const result = await pool.query('SELECT firstname, lastname, email, username, image_url FROM customertbl WHERE customerid = $1', [decoded.id]);
+    const result = await pool.query('SELECT customerid, firstname, lastname, email, username, image_url FROM customertbl WHERE customerid = $1', [decoded.id]);
 
     const user = result.rows[0];
     if (!user) {
@@ -168,6 +168,7 @@ app.post('/user/login', async (req, res) => {
     // Send back firstname, lastname, usertype, email, and image_url
     res.json({ 
       success: true, 
+      customerid: user.customerid,
       firstname: user.firstname, 
       lastname: user.lastname, 
       usertype: user.usertype, 
@@ -185,7 +186,23 @@ app.post('/user/login', async (req, res) => {
 // Fetch all menu items
 app.get('/api/menuitems', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM menuitemtbl ORDER BY menuitemid');
+    const result = await pool.query(`
+      SELECT 
+        m.menuitemid, 
+        m.name, 
+        m.price, 
+        m.category, 
+        m.image_url,
+        i.inventoryid,
+        i.branch,
+        i.quantity 
+      FROM 
+        menuitemtbl m
+      JOIN inventorytbl i ON i.menuitemid = m.menuitemid
+      WHERE i.quantity > 0  -- Ensure only items with quantity > 0 are returned
+      ORDER BY 
+        m.menuitemid
+    `);
     res.json(result.rows);
   } catch (err) {
     console.error('Error fetching menu items:', err.message);
@@ -1302,6 +1319,54 @@ app.post('/api/gcash-checkout', async (req, res) => {
                       payment_method_types: ['gcash'],
                       success_url: 'http://localhost:5173/employee/success',
                       cancel_url: 'http://localhost:5173/employee/order',
+                  },
+              },
+          },
+          {
+              headers: {
+                  accept: 'application/json',
+                  'Content-Type': 'application/json',
+                  Authorization: `Basic ${Buffer.from(PAYMONGO_SECRET_KEY).toString('base64')}`, 
+              },
+          }
+      );
+
+      const checkoutUrl = response.data.data.attributes.checkout_url;
+
+      if (!checkoutUrl) {
+          return res.status(500).json({ error: 'Checkout URL not found in response' });
+      }
+      res.status(200).json({ url: checkoutUrl });
+  } catch (error) {
+      console.error('Error creating checkout session:', error.response ? error.response.data : error.message);
+      res.status(500).json({ error: 'Failed to create checkout session', details: error.response ? error.response.data : error.message });
+  }
+});
+
+app.post('/api/customer-gcash-checkout', async (req, res) => {
+  const { lineItems } = req.body;
+
+  const formattedLineItems = lineItems.map((item) => {
+      return {
+          currency: 'PHP',
+          amount: Math.round(item.price * 100), 
+          name: item.name,
+          quantity: item.quantity,
+      };
+  });
+
+  try {
+      const response = await axios.post(
+          'https://api.paymongo.com/v1/checkout_sessions',
+          {
+              data: {
+                  attributes: {
+                      send_email_receipt: false,
+                      show_line_items: true,
+                      line_items: formattedLineItems, 
+                      payment_method_types: ['gcash'],
+                      success_url: 'http://localhost:5173/success',
+                      cancel_url: 'http://localhost:5173/',
                   },
               },
           },

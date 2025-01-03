@@ -4,9 +4,10 @@ import { RxAvatar } from "react-icons/rx";
 import Navbar from '../../../pages/Customer/Navbar/Navbar';
 import './CustomerInfo.css';
 import axios from 'axios';
+import { useProvider } from '../../../global_variable/provider';
 
 const ProfileCustomer = () => {
-  const [customer, setCustomer] = useState(null);
+  const { customer, setCustomer } = useProvider();
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -43,7 +44,7 @@ const ProfileCustomer = () => {
     };
 
     fetchCustomerInfo();
-  }, [navigate]);
+  }, []);
 
   if (loading) {
     return (

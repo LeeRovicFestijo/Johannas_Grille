@@ -5,45 +5,21 @@ import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import ProductPayment from "../ProductPayment/ProductPayment";
 import "./ProductCart.css";
 import ProductItem from "../../Cart/ProductItem/ProductItem";
+import { useProvider } from "../../../../global_variable/provider";
 
 const ProductCart = ({ orderId }) => {
+  const { selectedBranch, setSelectedBranch, cartItems, setCartItems, pickupDate, setPickupDate, pickupHour, setPickupHour } = useProvider();
   const [isVisible, setIsVisible] = useState(true);
   const [orderItems, setOrderItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showOrder, setShowOrder] = useState(false);
-  const [selectedBranch, setSelectedBranch] = useState(
-    "Main Branch, Bauan Batangas City"
-  );
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [pickupDate, setPickupDate] = useState(
-    new Date().toISOString().substring(0, 10)
-  );
-  const [pickupHour, setPickupHour] = useState("12:00");
-
-  // Fetch order items
-  useEffect(() => {
-    const fetchOrderItems = async () => {
-      if (!orderId) return;
-      try {
-        const response = await fetch(`http://localhost:3000/api/order/${orderId}`);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const data = await response.json();
-        setOrderItems(data.map(item => ({ ...item, quantity: item.quantity || 1 }))); // Default quantity to 1
-      } catch (error) {
-        console.error("Error fetching order items:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchOrderItems();
-  }, [orderId]);
 
   // Update quantity handler
   const updateQuantity = (id, change) => {
-    setOrderItems(prevItems =>
+    setCartItems(prevItems =>
       prevItems.map(item =>
-        item.orderitemid === id
+        item.orderid === id
           ? { ...item, quantity: Math.max(1, item.quantity + change) }
           : item
       )
@@ -57,6 +33,7 @@ const ProductCart = ({ orderId }) => {
   const selectBranch = branch => {
     setSelectedBranch(branch);
     setIsDropdownOpen(false);
+    setCartItems([]);
   };
 
   if (!isVisible) return null;
@@ -80,7 +57,7 @@ const ProductCart = ({ orderId }) => {
           <i className="location-icon">
             <TbBrandGoogleMaps size={31} />
           </i>
-          <span>{selectedBranch}</span>
+          <span>{selectedBranch === 'Bauan' ? 'Main Branch, Bauan Batangas' : 'Branch 2: Batangas City'}</span>
           <i className="down-icon" onClick={toggleDropdown}>
             {isDropdownOpen ? <IoIosArrowUp size={28} /> : <IoIosArrowDown size={28} />}
           </i>
@@ -89,23 +66,23 @@ const ProductCart = ({ orderId }) => {
 
         {isDropdownOpen && (
           <div className="branch-dropdown">
-            <p onClick={() => selectBranch("Main Branch, Bauan Batangas City")}>
-              Main Branch, Bauan Batangas City
+            <p onClick={() => selectBranch("Bauan")}>
+              Main Branch, Bauan Batangas
             </p>
-            <p onClick={() => selectBranch("Branch 2: Batangas City")}>
+            <p onClick={() => selectBranch("Batangas")}>
               Branch 2: Batangas City
             </p>
           </div>
         )}
 
         <div>
-          {orderItems.length > 0 ? (
-            orderItems.map(item => (
+          {cartItems.length > 0 ? (
+            cartItems.map(item => (
               <ProductItem
-                key={item.orderitemid}
+                key={item.orderid}
                 item={item}
-                increaseQuantity={() => updateQuantity(item.orderitemid, 1)}
-                decreaseQuantity={() => updateQuantity(item.orderitemid, -1)}
+                increaseQuantity={() => updateQuantity(item.orderid, 1)}
+                decreaseQuantity={() => updateQuantity(item.orderid, -1)}
               />
             ))
           ) : (
@@ -139,7 +116,7 @@ const ProductCart = ({ orderId }) => {
             <p className="summary-label">Total</p>
             <p className="summary-value">
               P
-              {orderItems
+              {cartItems
                 .reduce((acc, item) => acc + (parseFloat(item.price) || 0) * item.quantity, 0)
                 .toFixed(2)}
             </p>
@@ -156,7 +133,7 @@ const ProductCart = ({ orderId }) => {
       {showOrder && (
         <ProductPayment
           selectedBranch={selectedBranch}
-          orderItems={orderItems}
+          orderItems={cartItems}
           pickupDate={pickupDate}
           pickupHour={pickupHour}
           onClose={() => setShowOrder(false)}

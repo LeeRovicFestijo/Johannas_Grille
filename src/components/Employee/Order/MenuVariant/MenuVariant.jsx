@@ -94,10 +94,6 @@ const MenuVariant = ({ variants, isOpen, onClose, orderId, itemId, price }) => {
     onClose(); // Close the popup after adding the item or updating quantity
   };
 
-  const resetMe = () => {
-    setOrderItems([]);
-  }
-
   return (
     <div className="employee-menu-variant-popup">
       <div className="employee-menu-variant-container">
@@ -125,9 +121,6 @@ const MenuVariant = ({ variants, isOpen, onClose, orderId, itemId, price }) => {
           disabled={loading || !selectedVariant}
         >
           {loading ? "Adding..." : "Add to Order"}
-        </button>
-        <button onClick={resetMe}>
-          reset
         </button>
       </div>
     </div>
