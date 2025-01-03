@@ -8,23 +8,6 @@ const MenuVariant = ({ variants, isOpen, onClose, orderId, itemId, price }) => {
   const [popupMessage, setPopupMessage] = useState("");
   const { orderItems, setOrderItems, foodList, setFoodList } = useProvider();
 
-  useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const response = await fetch('http://localhost:3000/api/menuitems');
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          const data = await response.json();
-          setFoodList(data);
-        } catch (error) {
-          console.error('Error fetching food items:', error);
-        }
-      };
-  
-      fetchData();
-    }, []);
-
   if (!isOpen) return null; // Ensure the component is not rendered when closed
 
   const handleVariantChange = (variant) => {

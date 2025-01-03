@@ -4,13 +4,16 @@ import PlaceOrderPopup from '../PlaceOrderPopup/PlaceOrderPopup';
 import './OrderCart.css';
 import { useProvider } from '../../../../global_variable/provider';
 import GCashOrderPopup from '../GCashOrderPopup/GCashOrderPopup';
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import { TbBrandGoogleMaps } from "react-icons/tb";
 
 const OrderCart = ({ category, setCategory, orderId }) => {
-  const { orderItems, setOrderItems, orderType, setOrderType } = useProvider();
-  const [loading, setLoading] = useState(false); // You can set loading to false as data is already available
+  const { orderItems, setOrderItems, orderType, setOrderType, selectedEmployeeBranch, setSelectedEmployeeBranch } = useProvider();
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showPlaceOrderPopup, setShowPlaceOrderPopup] = useState(false);
   const [gcashOrderPopup, setGCashOrderPopup] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const updateOrder = async () => {
     const totalAmount = orderItems.reduce(
@@ -35,6 +38,13 @@ const OrderCart = ({ category, setCategory, orderId }) => {
     }
   };
 
+  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+
+  const selectBranch = (branch) => {
+    setSelectedEmployeeBranch(branch); // Update selected branch state
+    setIsDropdownOpen(false); // Close the dropdown after selection
+  };
+
   const handleQuantityChange = async (itemId, newQuantity) => {
     const updatedItems = orderItems.map((item) =>
       item.orderitemid === itemId ? { ...item, quantity: newQuantity } : item
@@ -50,14 +60,12 @@ const OrderCart = ({ category, setCategory, orderId }) => {
 
   const handleRemoveItem = async (itemId) => {
     try {
-      // Call backend to delete item by orderitemid
       const response = await fetch(`http://localhost:3000/api/orderitems/${itemId}`, {
         method: 'DELETE',
       });
 
       if (!response.ok) throw new Error('Failed to delete item');
 
-      // Remove item from the frontend state after successful deletion
       setOrderItems(orderItems.filter((item) => item.orderitemid !== itemId));
     } catch (error) {
       console.error('Error removing item:', error);
@@ -71,7 +79,7 @@ const OrderCart = ({ category, setCategory, orderId }) => {
         (total, item) => total + item.price * (item.quantity || 1),
         0
       );
-      const customerId = '0000'; // Replace with the actual customer ID
+      const customerId = '0000'; // Replace with actual customer ID
 
       const currentDate = new Date();
       const formattedDate = currentDate.toISOString().split('T')[0]; // YYYY-MM-DD
@@ -98,7 +106,7 @@ const OrderCart = ({ category, setCategory, orderId }) => {
       const result = await response.json();
       alert(`Order updated successfully! Order ID: ${result.orderid}`);
       setShowPlaceOrderPopup(false);
-      setOrderItems([]); // Clear the cart after placing the order
+      setOrderItems([]); // Clear cart after placing order
     } catch (error) {
       console.error('Error confirming order:', error.message);
       alert(`Failed to update order: ${error.message}`);
@@ -113,6 +121,21 @@ const OrderCart = ({ category, setCategory, orderId }) => {
       </div>
       <div className="em-ordercart">
         <h2>Cart</h2>
+        <section className="addtocart-branch">
+          <i className="location-icon">
+            <TbBrandGoogleMaps size={31} />
+          </i>
+          <span>{selectedEmployeeBranch === 'Bauan' ? 'Main Branch, Bauan Batangas' : 'Branch 2: Batangas City'}</span>
+          <i className="down-icon" onClick={toggleDropdown}>
+            {isDropdownOpen ? <IoIosArrowUp size={28} /> : <IoIosArrowDown size={28} />}
+          </i>
+        </section>
+        {isDropdownOpen && (
+          <div className="branch-dropdown">
+            <p onClick={() => selectBranch("Bauan")}>Main Branch, Bauan Batangas</p>
+            <p onClick={() => selectBranch("Batangas")}>Branch 2: Batangas City</p>
+          </div>
+        )}
         <div className="order-id">
           <h6>Order ID: {orderId}</h6>
         </div>

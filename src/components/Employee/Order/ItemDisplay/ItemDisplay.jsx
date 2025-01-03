@@ -4,24 +4,29 @@ import Item from '../Item/Item';
 import { useProvider } from '../../../../global_variable/provider';
 
 const ItemDisplay = ({ category, items, orderId }) => {
-  const { foodList, setFoodList }  = useProvider();
+  const { foodList, setFoodList, selectedEmployeeBranch, setSelectedEmployeeBranch }  = useProvider();
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/menuitems');
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      console.log(selectedEmployeeBranch);
+      const data = await response.json();
+      const filteredData = data.filter(item => item.quantity > 0 && item.branch === selectedEmployeeBranch);
+      console.log(filteredData);
+      setFoodList(filteredData);
+      console.log(foodList);
+    } catch (error) {
+      console.error('Error fetching food items:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/api/menuitems');
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = await response.json();
-        setFoodList(data);
-      } catch (error) {
-        console.error('Error fetching food items:', error);
-      }
-    };
-
     fetchData();
-  }, []);
+  }, [selectedEmployeeBranch]);
+
 
   // Group items by base name and create variants with unique IDs
   const groupedItems = React.useMemo(() => {

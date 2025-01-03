@@ -11,6 +11,7 @@ export function Provider({ children }) {
   const [tableNumber, setTableNumber] = usePersistState('table', '');
   const [orderType, setOrderType] = usePersistState('order', 'Dine In');
   const [selectedBranch, setSelectedBranch] = useState("Bauan");
+  const [selectedEmployeeBranch, setSelectedEmployeeBranch] = useState("Bauan");
   const [pickupDate, setPickupDate] = usePersistState(
     'date',
     new Date().toISOString().substring(0, 10)
@@ -20,7 +21,7 @@ export function Provider({ children }) {
   const [reservationDetails, setReservationDetails] = usePersistState('details', null);
 
   return (
-    <Context.Provider value={{ orderItems, setOrderItems, foodList, setFoodList, tableNumber, setTableNumber, orderType, setOrderType, customer, setCustomer, selectedBranch, setSelectedBranch, cartItems, setCartItems, pickupDate, setPickupDate, pickupHour, setPickupHour, reserveItems, setReserveItems, reservationDetails, setReservationDetails }}>
+    <Context.Provider value={{ orderItems, setOrderItems, foodList, setFoodList, tableNumber, setTableNumber, orderType, setOrderType, customer, setCustomer, selectedBranch, setSelectedBranch, cartItems, setCartItems, pickupDate, setPickupDate, pickupHour, setPickupHour, reserveItems, setReserveItems, reservationDetails, setReservationDetails, selectedEmployeeBranch, setSelectedEmployeeBranch }}>
       {children}
     </Context.Provider>
   );
