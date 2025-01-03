@@ -6,7 +6,7 @@ import "./CustomerReservationMenu.css";
 import { useProvider } from "../../../../global_variable/provider";
 
 const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId }) => {
-    const { reserveItems, setReserveItems, customer } = useProvider();
+    const { reserveItems, setReserveItems, customer, setPayloadDetails } = useProvider();
     const [menuItems, setMenuItems] = useState({});
     const [selectedCategories, setSelectedCategories] = useState({});
     const [selectedSideDishes, setSelectedSideDishes] = useState({});
@@ -95,26 +95,26 @@ const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId })
     const handleFinalSubmit = async () => {
         if (!validateSelection()) return;
     
-        // try {
-        //     const gcashPayload = Object.keys(selectedCategories)
-        //     .filter((category) => selectedCategories[category])
-        //     .map((category) => ({
-        //         name: category, 
-        //         quantity: 1, 
-        //         price: menuItems[category]?.package_price || 0,
-        //     }));
+        try {
+            const gcashPayload = Object.keys(selectedCategories)
+            .filter((category) => selectedCategories[category])
+            .map((category) => ({
+                name: category, 
+                quantity: 1, 
+                price: menuItems[category]?.package_price || 0,
+            }));
     
-        //     const body = { lineItems: gcashPayload };
-        //     console.log(body);
+            const body = { lineItems: gcashPayload };
+            console.log(body);
     
-        //     const response = await axios.post('http://localhost:3000/api/reservation-gcash-checkout', body);
-        //     const { url } = response.data;
+            const response = await axios.post('http://localhost:3000/api/reservation-gcash-checkout', body);
+            const { url } = response.data;
     
-        //     window.location.href = url;
-        // } catch (error) {
-        //     console.error('Error initiating payment:', error);
-        //     return;
-        // }
+            window.location.href = url;
+        } catch (error) {
+            console.error('Error initiating payment:', error);
+            return;
+        }
     
         try {
             const payload = [];
@@ -168,18 +168,7 @@ const CustomerReservationMenu = ({ reservationDetails, onClose, reservationId })
                 reservation.amount = totalAmount; 
             });
 
-            console.log(payload);
-    
-            // Send the data to the API using axios
-            await axios.post("http://localhost:3000/api/create-reservation", payload, {
-                headers: { "Content-Type": "application/json" },
-            });
-    
-            // Add the items to the reserveItems state in the provider
-            setReserveItems((prev) => [
-                ...prev,
-                ...payload.filter((item) => item.menuItemId), // Only add items with a menuItemId
-            ])
+            setPayloadDetails(payload);
 
         } catch (error) {
             console.error("Error submitting reservation:", error);

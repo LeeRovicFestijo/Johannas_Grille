@@ -5,40 +5,23 @@ import "./success.css";
 import { useProvider } from "../../../global_variable/provider";
 
 function SuccessReservationPage() {
-  const { cartItems, setCartItems, customer, pickupHour, setPickupHour, pickupDate, setPickupDate } = useProvider();
+  const { payloadDetails, setPayloadDetails, setReservationDetails, setReserveItems,  } = useProvider();
   const navigate = useNavigate();
   const hasCalledPayment = useRef(false);
-
-  const totalPrice = cartItems.reduce(
-    (total, item) => total + (Number(item.price) || 0) * (item.quantity || 0),
-    0
-  );
 
   const handleConfirmPayment = async () => {
     if (hasCalledPayment.current) return;
     hasCalledPayment.current = true;
 
-    const orderData = {
-      customerid: customer.customerid,
-      orderItems: cartItems.map(item => ({
-        orderid: item.orderid,
-        menuitemid: item.menuitemid,
-        order_quantity: item.quantity,
-      })),
-      totalamount: totalPrice,
-      ordertype: 'Pickup',
-      date: pickupDate,
-      time: `${pickupHour}:00`,
-      tableno: '00000',
-      status: "Pending",
-    };
-
     try {
-      const response = await axios.post("http://localhost:3000/api/create-order", orderData);
+      const response = await axios.post("http://localhost:3000/api/create-reservation", payloadDetails, {
+        headers: { "Content-Type": "application/json" },
+      });
+
       if (response.status === 200) {
-        setCartItems([]);
-        setPickupHour("12:00");
-        setPickupDate(new Date().toISOString().substring(0, 10))
+        setPayloadDetails([]);
+        setReserveItems([]);
+        setReservationDetails(null)
       }
     } catch (error) {
       alert("Failed to create order. Please try again.");

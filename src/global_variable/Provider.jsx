@@ -22,7 +22,7 @@ export function Provider({ children }) {
   const [payloadDetails, setPayloadDetails] = usePersistState('payload', []);
 
   return (
-    <Context.Provider value={{ orderItems, setOrderItems, foodList, setFoodList, tableNumber, setTableNumber, orderType, setOrderType, customer, setCustomer, selectedBranch, setSelectedBranch, cartItems, setCartItems, pickupDate, setPickupDate, pickupHour, setPickupHour, reserveItems, setReserveItems, reservationDetails, setReservationDetails, selectedEmployeeBranch, setSelectedEmployeeBranch }}>
+    <Context.Provider value={{ orderItems, setOrderItems, foodList, setFoodList, tableNumber, setTableNumber, orderType, setOrderType, customer, setCustomer, selectedBranch, setSelectedBranch, cartItems, setCartItems, pickupDate, setPickupDate, pickupHour, setPickupHour, reserveItems, setReserveItems, reservationDetails, setReservationDetails, selectedEmployeeBranch, setSelectedEmployeeBranch, payloadDetails, setPayloadDetails }}>
       {children}
     </Context.Provider>
   );
