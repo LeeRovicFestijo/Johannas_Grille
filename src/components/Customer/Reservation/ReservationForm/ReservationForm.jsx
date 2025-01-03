@@ -6,7 +6,7 @@ import { IoIosCloseCircleOutline } from "react-icons/io";
 import { useProvider } from '../../../../global_variable/provider';
 
 const ReservationForm = ({ reservationId, onClose }) => {
-  const { reservationDetails, setReservationDetails } = useProvider();
+  const { reservationDetails, setReservationDetails, customer } = useProvider();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [isReceiptOpen, setIsReceiptOpen] = useState(false); // New state for receipt
@@ -23,6 +23,11 @@ const ReservationForm = ({ reservationId, onClose }) => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
+
+    if (!customer) {
+      alert('Please sign in first!');
+      return;
+    }
 
     if (!termsAccepted) {
       alert('Please accept the terms and conditions.');
